@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 
@@ -20,14 +21,6 @@ public class DragLayer extends FrameLayout {
      * 旋转View
      */
     private FanMum mFanMum;
-    /**
-     * fan的旋转角度
-     */
-    private int mFanCurRotation = 0;
-    /**
-     * 按下时相对底部的角度
-     */
-    private double mLastRotation;
     /**
      * 当前的旋转状态
      */
@@ -49,14 +42,6 @@ public class DragLayer extends FrameLayout {
      */
     private static final int TOUCH_STATE_NEXT = 3;
 
-    /**
-     * 顺时针/逆时针
-     */
-    private int mWhirling = ALONG;
-
-    private static final int ALONG = 0;
-
-    private static final int INVERSE = 1;
 
     private float mDownMotionX;
 
@@ -70,6 +55,11 @@ public class DragLayer extends FrameLayout {
      */
     private int mTouchSlop;
 
+    private VelocityTracker mVelocityTracker;
+
+    private int mMaximumVelocity, mMinmumVelocity;
+
+    private static final int ALLOW_AUTO = 3000;
     /**
      * 容器的宽高
      */
@@ -90,6 +80,8 @@ public class DragLayer extends FrameLayout {
         super(context, attrs, defStyleAttr);
         ViewConfiguration mConfig = ViewConfiguration.get(context);
         mTouchSlop = mConfig.getScaledTouchSlop();
+        mMaximumVelocity = ViewConfiguration.get(context).getScaledMaximumFlingVelocity();
+        mMinmumVelocity = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
     }
 
     @Override
@@ -122,8 +114,6 @@ public class DragLayer extends FrameLayout {
         } else if (mFanMum.POSITION == FanMum.RIGHT) {
             mFanMum.layout(offset, mHeight - fanSize, mWidth, mHeight);
         }
-
-
     }
 
 
@@ -133,6 +123,8 @@ public class DragLayer extends FrameLayout {
         if (getChildCount() <= 0) {
             return super.onTouchEvent(event);
         }
+
+        initVeloCityTracker(event);
         final int action = event.getAction();
 
         switch (action & MotionEvent.ACTION_MASK) {
@@ -144,9 +136,12 @@ public class DragLayer extends FrameLayout {
                 mActivePointId = event.getPointerId(0);
                 if (mTouchState == TOUCH_STATE_WHIRLING) {
                     //正在滚动的时候
-
                 }
-                mLastRotation = Math.toDegrees(Math.atan((mLastMotionX) / ((mHeight - mLastMotionY))));
+                if (mFanMum.POSITION == FanMum.LEFT) {
+                    mFanMum.downAngle(mLastMotionX, mHeight - mLastMotionY);
+                } else {
+                    mFanMum.downAngle(mWidth - mLastMotionX, mHeight - mLastMotionY);
+                }
                 break;
             case MotionEvent.ACTION_MOVE:
 
@@ -159,43 +154,54 @@ public class DragLayer extends FrameLayout {
                 }
 
                 if (mTouchState == TOUCH_STATE_WHIRLING) {
-                    double rotation = Math.toDegrees(Math.atan(newX / (mHeight - newY)));
-                    double diffrotation = rotation - mLastRotation;
-                    Log.i("Gmw", "diffrotation=" + diffrotation);
-                    if (diffrotation > 0) {
-                        mWhirling = ALONG;
+                    if (mFanMum.POSITION == FanMum.LEFT) {
+                        mFanMum.changeAngle(newX, mHeight - newY);
                     } else {
-                        mWhirling = INVERSE;
+                        mFanMum.changeAngle(mWidth - newX, mHeight - newY);
                     }
-                    mFanMum.refresh(diffrotation);
                 }
 
                 break;
             case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-
-                if (mWhirling == ALONG) {
-                    if (mFanMum.getRitation() % FanMum.UNIT_DEGREES > 0 && mFanMum.getRitation() %
-                            FanMum.UNIT_DEGREES < FanMum.OFFSET_DEGREES) {
-                        Log.i("Gmw", "顺时针_返回当前");
-                    } else {
-                        Log.i("Gmw", "顺时针_下一个");
+                mFanMum.upAngle();
+                mTouchState = TOUCH_STATE_REST;
+                mVelocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
+                float vy = mVelocityTracker.getYVelocity();
+                float vx = mVelocityTracker.getXVelocity();
+                if (mFanMum.POSITION == FanMum.LEFT) {
+                    if (vy > ALLOW_AUTO || vx > ALLOW_AUTO) {
+                        mFanMum.flingAlong();
+                    } else if (vx < -ALLOW_AUTO || vy < -ALLOW_AUTO) {
+                        mFanMum.flingInvrse();
                     }
                 } else {
-                    if (mFanMum.getRitation() % FanMum.UNIT_DEGREES > (FanMum.UNIT_DEGREES - FanMum.OFFSET_DEGREES)) {
-                        Log.i("Gmw", "逆时针_返回当前");
-                    } else {
-                        Log.i("Gmw", "逆时针_上一个");
+                    if (vx > ALLOW_AUTO || vy < -ALLOW_AUTO) {
+                        mFanMum.flingAlong();
+                    } else if (vx < -ALLOW_AUTO || vy > ALLOW_AUTO) {
+                        mFanMum.flingInvrse();
                     }
                 }
-                if (mFanMum.getRitation() % FanMum.UNIT_DEGREES > FanMum.OFFSET_DEGREES) {
-                    Log.i("Gmw", "touch_ACTION_UP=" + mFanMum.getRitation() % FanMum.UNIT_DEGREES);
-                }
-                mTouchState = TOUCH_STATE_REST;
-
+                recyleVelocityTracker();
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                recyleVelocityTracker();
                 break;
         }
 
         return true;
+    }
+
+    private void initVeloCityTracker(MotionEvent event) {
+        if (mVelocityTracker == null) {
+            mVelocityTracker = VelocityTracker.obtain();
+        }
+        mVelocityTracker.addMovement(event);
+    }
+
+    private void recyleVelocityTracker() {
+        if (mVelocityTracker != null) {
+            mVelocityTracker.recycle();
+            mVelocityTracker = null;
+        }
     }
 }
