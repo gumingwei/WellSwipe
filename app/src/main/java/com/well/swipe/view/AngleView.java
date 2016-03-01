@@ -3,8 +3,6 @@ package com.well.swipe.view;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
@@ -13,9 +11,7 @@ import android.widget.TextView;
 /**
  * Created by mingwei on 2/25/16.
  */
-public class FanMum extends ViewGroup {
-
-    private Paint mTestPaint;
+public class AngleView extends ViewGroup {
     /**
      * 旋转的基数角度
      */
@@ -29,7 +25,7 @@ public class FanMum extends ViewGroup {
      */
     private double mDownAngle;
     /**
-     * 转轴X,Y
+     * 转轴PivotX,PivotY
      */
     private int mPivotX = 0;
 
@@ -38,19 +34,21 @@ public class FanMum extends ViewGroup {
     static int LEFT = 1;
 
     static int RIGHT = 2;
-
+    /**
+     * 容器在做右下角区分
+     */
     public int POSITION = RIGHT;
 
     /**
      * 顺时针/逆时针
      */
-    public int WHIRLING_STATE = WHIRLING_STATE_REST;
+    public int ANGLE_STATE = ANGLE_STATE_REST;
 
-    public static final int WHIRLING_STATE_REST = 0;
+    public static final int ANGLE_STATE_REST = 0;
 
-    public static final int WHIRLING_STATE_ALONG = 1;
+    public static final int ANGLE_STATE_ALONG = 1;
 
-    public static final int WHIRLING_STATE_INVERSE = 2;
+    public static final int ANGLE_STATE_INVERSE = 2;
 
     public static final int DEGREES_360 = 360;
     /**
@@ -60,23 +58,22 @@ public class FanMum extends ViewGroup {
     /**
      * 判定范围
      */
-    public static final int OFFSET_DEGREES = 25;
+    public static final int OFFSET_DEGREES = 20;
+    /**
+     * 判定Fling动作的域
+     */
+    private static final int ALLOW_FLING = 2500;
 
-
-    public FanMum(Context context) {
+    public AngleView(Context context) {
         this(context, null);
     }
 
-    public FanMum(Context context, AttributeSet attrs) {
+    public AngleView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public FanMum(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AngleView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mTestPaint = new Paint();
-        mTestPaint.setColor(Color.BLUE);
-        mTestPaint.setAntiAlias(true);
-        mTestPaint.setStyle(Paint.Style.FILL);
         for (int i = 0; i < 4; i++) {
             TextView item = new TextView(context);
             item.setText("item=" + i);
@@ -90,7 +87,6 @@ public class FanMum extends ViewGroup {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         mPivotX = getMeasuredWidth();
         mPivotY = getMeasuredHeight();
-
     }
 
     @Override
@@ -117,7 +113,6 @@ public class FanMum extends ViewGroup {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-
     }
 
     @Override
@@ -131,7 +126,7 @@ public class FanMum extends ViewGroup {
         super.dispatchDraw(canvas);
         canvas.restore();
     }
-    
+
     /**
      * 手指按下时的初始角度
      */
@@ -141,7 +136,7 @@ public class FanMum extends ViewGroup {
         } else {
             mDownAngle = DEGREES_360 - Math.toDegrees(Math.atan(x / y));
         }
-        WHIRLING_STATE = WHIRLING_STATE_REST;
+        ANGLE_STATE = ANGLE_STATE_REST;
 
     }
 
@@ -153,21 +148,20 @@ public class FanMum extends ViewGroup {
      * @param y
      */
     public void changeAngle(float x, float y) {
-        double diffrotation;
-        double rotation;
+        double diffAngle;
+        double angle;
         if (POSITION == LEFT) {
-            rotation = Math.toDegrees(Math.atan(x / y));
+            angle = Math.toDegrees(Math.atan(x / y));
         } else {
-            rotation = DEGREES_360 - Math.toDegrees(Math.atan(x / y));
+            angle = DEGREES_360 - Math.toDegrees(Math.atan(x / y));
         }
-        diffrotation = rotation - mDownAngle;
-        if (diffrotation > 0) {
-            WHIRLING_STATE = FanMum.WHIRLING_STATE_ALONG;
+        diffAngle = angle - mDownAngle;
+        if (diffAngle > 0) {
+            ANGLE_STATE = AngleView.ANGLE_STATE_ALONG;
         } else {
-            WHIRLING_STATE = FanMum.WHIRLING_STATE_INVERSE;
+            ANGLE_STATE = AngleView.ANGLE_STATE_INVERSE;
         }
-        changeAngle(diffrotation);
-
+        changeAngle(diffAngle);
     }
 
     /**
@@ -180,32 +174,42 @@ public class FanMum extends ViewGroup {
         invalidate();
     }
 
+    /**
+     * 松手后根据当前已经旋转的角，POSITION，顺逆时针来决定角度是回到当前还是转到下一个
+     */
     public void upAngle() {
-        if (POSITION == LEFT) {
-            if (WHIRLING_STATE == FanMum.WHIRLING_STATE_ALONG) {
-                along();
-            } else {
-                inverse();
+        if (ANGLE_STATE == AngleView.ANGLE_STATE_ALONG) {
+            along();
+        } else {
+            inverse();
+        }
+    }
+
+    public void flingAngle(float vx, float vy) {
+        if (POSITION == AngleView.LEFT) {
+            if (vy > ALLOW_FLING || vx > ALLOW_FLING) {
+                flingNext();
+            } else if (vx < -ALLOW_FLING || vy < -ALLOW_FLING) {
+                flingRecover();
             }
         } else {
-            if (WHIRLING_STATE == FanMum.WHIRLING_STATE_ALONG) {
-                along();
-            } else {
-                inverse();
+            if (vx > ALLOW_FLING || vy < -ALLOW_FLING) {
+                flingNext();
+            } else if (vx < -ALLOW_FLING || vy > ALLOW_FLING) {
+                flingRecover();
             }
         }
-
     }
 
     /**
      * 顺时针旋转
      */
     public void along() {
-        if (getAngleValues() % FanMum.DEGREES_90 > 0 && getAngleValues() %
-                FanMum.DEGREES_90 < FanMum.OFFSET_DEGREES) {
-            autoWhirling(getAngleValues(), ((int) (getAngleValues() / FanMum.DEGREES_90)) * FanMum.DEGREES_90);
+        if (getAngleValues() % AngleView.DEGREES_90 > 0 && getAngleValues() % AngleView.DEGREES_90 < AngleView.
+                OFFSET_DEGREES) {
+            flingRecover();
         } else {
-            autoWhirling(getAngleValues(), ((int) (getAngleValues() / FanMum.DEGREES_90) + 1) * FanMum.DEGREES_90);
+            flingNext();
         }
     }
 
@@ -214,26 +218,26 @@ public class FanMum extends ViewGroup {
      * 逆时针旋转
      */
     public void inverse() {
-        if ((DEGREES_360 - getAngleValues()) % FanMum.DEGREES_90 > 0 && (DEGREES_360 - getAngleValues()) %
-                FanMum.DEGREES_90 < FanMum.OFFSET_DEGREES) {
-            autoWhirling(getAngleValues(), ((int) (getAngleValues() / FanMum.DEGREES_90) + 1) * FanMum.DEGREES_90);
+        if ((DEGREES_360 - getAngleValues()) % AngleView.DEGREES_90 > 0 && (DEGREES_360 - getAngleValues())
+                % AngleView.DEGREES_90 < AngleView.OFFSET_DEGREES) {
+            flingNext();
         } else {
-            autoWhirling(getAngleValues(), ((int) (getAngleValues() / FanMum.DEGREES_90)) * FanMum.DEGREES_90);
+            flingRecover();
         }
     }
 
     /**
-     * 顺时针自动旋转
+     * 顺时针到下一个90度
      */
-    public void flingAlong() {
-        autoWhirling(getAngleValues(), ((int) (getAngleValues() / FanMum.DEGREES_90) + 1) * FanMum.DEGREES_90);
+    public void flingNext() {
+        autoWhirling(getAngleValues(), ((int) (getAngleValues() / AngleView.DEGREES_90) + 1) * AngleView.DEGREES_90);
     }
 
     /**
-     * 逆时针自动转
+     * 回到当前的角度
      */
-    public void flingInvrse() {
-        autoWhirling(getAngleValues(), ((int) (getAngleValues() / FanMum.DEGREES_90)) * FanMum.DEGREES_90);
+    public void flingRecover() {
+        autoWhirling(getAngleValues(), ((int) (getAngleValues() / AngleView.DEGREES_90)) * AngleView.DEGREES_90);
     }
 
     public void autoWhirling(float start, float end) {
