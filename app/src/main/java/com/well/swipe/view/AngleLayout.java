@@ -90,7 +90,7 @@ public class AngleLayout extends FrameLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mAngleView = (AngleView) findViewById(R.id.angleview);
-        //setRotationY(180);
+        //setRotationY();
         //mFanMum.setRotationY(180);
         //mFanMum.setTranslationX(mFanMumOffset);
     }
@@ -112,11 +112,12 @@ public class AngleLayout extends FrameLayout {
         super.onLayout(changed, left, top, right, bottom);
         int offset = Utils.dp2px(getContext(), mFanMumOffset);
         int fanSize = mWidth - offset;
-        if (mAngleView.POSITION == AngleView.LEFT) {
-            mAngleView.layout(0, mHeight - fanSize, fanSize, mHeight);
-        } else if (mAngleView.POSITION == AngleView.RIGHT) {
-            mAngleView.layout(offset, mHeight - fanSize, mWidth, mHeight);
-        }
+        mAngleView.layout(0, mHeight - fanSize, fanSize, mHeight);
+//        if (mAngleView.POSITION == AngleView.LEFT) {
+//            mAngleView.layout(0, mHeight - fanSize, fanSize, mHeight);
+//        } else if (mAngleView.POSITION == AngleView.RIGHT) {
+//            mAngleView.layout(offset, mHeight - fanSize, mWidth, mHeight);
+//        }
     }
 
 
@@ -140,11 +141,12 @@ public class AngleLayout extends FrameLayout {
                 if (mTouchState == TOUCH_STATE_WHIRLING) {
                     //正在滚动的时候
                 }
-                if (mAngleView.POSITION == AngleView.LEFT) {
-                    mAngleView.downAngle(mLastMotionX, mHeight - mLastMotionY);
-                } else {
-                    mAngleView.downAngle(mWidth - mLastMotionX, mHeight - mLastMotionY);
-                }
+                mAngleView.downAngle(mLastMotionX, mHeight - mLastMotionY);
+//                if (mAngleView.POSITION == AngleView.LEFT) {
+//                    mAngleView.downAngle(mLastMotionX, mHeight - mLastMotionY);
+//                } else {
+//                    mAngleView.downAngle(mWidth - mLastMotionX, mHeight - mLastMotionY);
+//                }
                 break;
             case MotionEvent.ACTION_MOVE:
                 float newX = event.getX();
@@ -156,11 +158,12 @@ public class AngleLayout extends FrameLayout {
                 }
 
                 if (mTouchState == TOUCH_STATE_WHIRLING) {
-                    if (mAngleView.POSITION == AngleView.LEFT) {
-                        mAngleView.changeAngle(newX, mHeight - newY);
-                    } else {
-                        mAngleView.changeAngle(mWidth - newX, mHeight - newY);
-                    }
+                    mAngleView.changeAngle(newX, mHeight - newY);
+//                    if (mAngleView.POSITION == AngleView.LEFT) {
+//                        mAngleView.changeAngle(newX, mHeight - newY);
+//                    } else {
+//                        mAngleView.changeAngle(mWidth - newX, mHeight - newY);
+//                    }
                 }
 
                 break;
@@ -177,6 +180,15 @@ public class AngleLayout extends FrameLayout {
         }
 
         return true;
+    }
+
+    /**
+     * 充要方法:反转Angle
+     * 反转之后根据不同情况对子控件做反转
+     */
+    private void setRotationY() {
+        setRotationY(180);
+        mAngleView.POSITION_STATE = AngleView.RIGHT;
     }
 
     /**

@@ -50,7 +50,9 @@ public class AngleView extends ViewGroup {
     /**
      * 容器在做右下角区分
      */
-    public int POSITION = LEFT;
+    //public int POSITION = LEFT;
+
+    public int POSITION_STATE = LEFT;
     /**
      * 顺时针/逆时针
      */
@@ -99,7 +101,7 @@ public class AngleView extends ViewGroup {
     public AngleView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         ArrayList<TextView> list0 = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 7; i++) {
             TextView view = new TextView(context);
             view.setGravity(Gravity.CENTER);
             view.setText("A=" + i);
@@ -108,7 +110,7 @@ public class AngleView extends ViewGroup {
         mMap.put(0, list0);
 
         ArrayList<TextView> list1 = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 8; i++) {
             TextView view = new TextView(context);
             view.setGravity(Gravity.CENTER);
             view.setText("B=" + i);
@@ -153,65 +155,34 @@ public class AngleView extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        if (POSITION == LEFT) {
-            Iterator<Map.Entry<Integer, ArrayList<TextView>>> it = mMap.entrySet().iterator();
-            int count = 0;
-            while (it.hasNext()) {
-                Map.Entry<Integer, ArrayList<TextView>> arraylist = it.next();
-                ArrayList<TextView> views = arraylist.getValue();
-                if (arraylist.getKey() == 0) {
-                    /**
-                     * 把第0组数据放在第0限象
-                     */
-                    itemLayout(views, 0);
+        //if (POSITION == LEFT) {
+        Iterator<Map.Entry<Integer, ArrayList<TextView>>> it = mMap.entrySet().iterator();
+        int count = 0;
+        while (it.hasNext()) {
+            Map.Entry<Integer, ArrayList<TextView>> arraylist = it.next();
+            ArrayList<TextView> views = arraylist.getValue();
+            if (arraylist.getKey() == 0) {
+                /**
+                 * 把第0组数据放在第0限象
+                 */
+                itemLayout(views, 0);
 
-                    for (int i = 0; i < views.size(); i++) {
-                        views.get(i).setRotationY(180);
-                    }
+            } else if (arraylist.getKey() == 1) {
+                /**
+                 * 把第1组数据放在第1限象
+                 */
+                itemLayout(views, 1);
 
-                } else if (arraylist.getKey() == 1) {
-                    /**
-                     * 把第1组数据放在第1限象
-                     */
-                    itemLayout(views, 1);
+            } else if (arraylist.getKey() == 2) {
+                /**
+                 * 把第2组数据放在第3限象
+                 */
+                itemLayout(views, 3);
 
-                } else if (arraylist.getKey() == 2) {
-                    /**
-                     * 把第2组数据放在第3限象
-                     */
-                    itemLayout(views, 3);
-
-                }
-
-                count++;
             }
-        } else {
-            Iterator<Map.Entry<Integer, ArrayList<TextView>>> it = mMap.entrySet().iterator();
-            int count = 0;
-            while (it.hasNext()) {
-                Map.Entry<Integer, ArrayList<TextView>> arraylist = it.next();
-                ArrayList<TextView> views = arraylist.getValue();
-                if (arraylist.getKey() == 0) {
-                    /**
-                     * 把第0组数据放在第0限象
-                     */
-                    itemLayout(views, 0);
-
-                } else if (arraylist.getKey() == 1) {
-                    /**
-                     * 把第1组数据放在第1限象
-                     */
-                    itemLayout(views, 1);
-                } else if (arraylist.getKey() == 2) {
-                    /**
-                     * 把第2组数据放在第3限象
-                     */
-                    itemLayout(views, 3);
-                }
-
-                count++;
-            }
+            count++;
         }
+        //}
     }
 
     /**
@@ -302,14 +273,18 @@ public class AngleView extends ViewGroup {
                 newdegree = (int) ((group + 0.5) * degree);
             }
             /**
-             * 按照限象使用不同的三角函数计算所得x,y坐标
-             * 子控件根据不同的呃限象旋转位置满足在第0限象的正常显示效果
+             * 1.按照限象使用不同的三角函数计算所得x,y坐标
+             * 2.子控件根据不同的呃限象旋转位置满足在第0限象的正常显示效果
+             * 3.当整个控件的容器反转之后，为保证显示效果，要做一定的反转
              */
             double x = 0l;
             double y = 0l;
             if (qua == 0) {
                 x = Math.sin(Math.toRadians(newdegree)) * radius;
                 y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
+                if (POSITION_STATE == RIGHT) {
+                    views.get(index).setRotationY(180);
+                }
             } else if (qua == 1) {
                 x = Math.cos(Math.toRadians(newdegree)) * radius;
                 y = mHeight + Math.sin(Math.toRadians(newdegree)) * radius;
@@ -317,14 +292,26 @@ public class AngleView extends ViewGroup {
                  * 旋转一定的角度
                  */
                 views.get(index).setRotation(DEGREES_90 * 1);
+                /**
+                 * 当PISITION_STATE==RIGHT时，根据不同的情况对子view做反转
+                 */
+                if (POSITION_STATE == RIGHT) {
+                    views.get(index).setRotationX(180);
+                }
             } else if (qua == 2) {
                 x = -Math.sin(Math.toRadians(newdegree)) * radius;
                 y = mHeight + Math.cos(Math.toRadians(newdegree)) * radius;
                 views.get(index).setRotation(DEGREES_90 * 2);
+                if (POSITION_STATE == RIGHT) {
+                    views.get(index).setRotationY(180);
+                }
             } else if (qua == 3) {
                 x = -Math.cos(Math.toRadians(newdegree)) * radius;
                 y = mHeight - Math.sin(Math.toRadians(newdegree)) * radius;
                 views.get(index).setRotation(DEGREES_90 * 3);
+                if (POSITION_STATE == RIGHT) {
+                    views.get(index).setRotationX(180);
+                }
             }
             /**
              * 指定位置
@@ -344,11 +331,12 @@ public class AngleView extends ViewGroup {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         canvas.save();
-        if (POSITION == LEFT) {
-            canvas.rotate(mBaseAngle + mChangeAngle, 0, mPivotY);
-        } else {
-            canvas.rotate(mBaseAngle + mChangeAngle, mPivotX, mPivotY);
-        }
+        canvas.rotate(mBaseAngle + mChangeAngle, 0, mPivotY);
+//        if (POSITION == LEFT) {
+//            canvas.rotate(mBaseAngle + mChangeAngle, 0, mPivotY);
+//        } else {
+//            canvas.rotate(mBaseAngle + mChangeAngle, mPivotX, mPivotY);
+//        }
         super.dispatchDraw(canvas);
         canvas.restore();
     }
@@ -357,11 +345,12 @@ public class AngleView extends ViewGroup {
      * 手指按下时的初始角度
      */
     public void downAngle(float x, float y) {
-        if (POSITION == LEFT) {
-            mDownAngle = Math.toDegrees(Math.atan(x / y));
-        } else {
-            mDownAngle = DEGREES_360 - Math.toDegrees(Math.atan(x / y));
-        }
+        mDownAngle = Math.toDegrees(Math.atan(x / y));
+//        if (POSITION == LEFT) {
+//            mDownAngle = Math.toDegrees(Math.atan(x / y));
+//        } else {
+//            mDownAngle = DEGREES_360 - Math.toDegrees(Math.atan(x / y));
+//        }
         ANGLE_STATE = ANGLE_STATE_REST;
 
     }
@@ -376,11 +365,12 @@ public class AngleView extends ViewGroup {
     public void changeAngle(float x, float y) {
         double diffAngle;
         double angle;
-        if (POSITION == LEFT) {
-            angle = Math.toDegrees(Math.atan(x / y));
-        } else {
-            angle = DEGREES_360 - Math.toDegrees(Math.atan(x / y));
-        }
+        angle = Math.toDegrees(Math.atan(x / y));
+//        if (POSITION == LEFT) {
+//            angle = Math.toDegrees(Math.atan(x / y));
+//        } else {
+//            angle = DEGREES_360 - Math.toDegrees(Math.atan(x / y));
+//        }
         diffAngle = angle - mDownAngle;
         if (diffAngle > 0) {
             ANGLE_STATE = AngleView.ANGLE_STATE_ALONG;
@@ -420,23 +410,30 @@ public class AngleView extends ViewGroup {
      * @param vy
      */
     public void flingAngle(float vx, float vy) {
-        if (POSITION == AngleView.LEFT) {
-            if (vy > ALLOW_FLING || vx > ALLOW_FLING) {
-                flingNext();
-            } else if (vx < -ALLOW_FLING || vy < -ALLOW_FLING) {
-                flingCurrnet();
-            } else {
-                upAngle();
-            }
+        if (vy > ALLOW_FLING || vx > ALLOW_FLING) {
+            flingNext();
+        } else if (vx < -ALLOW_FLING || vy < -ALLOW_FLING) {
+            flingCurrnet();
         } else {
-            if (vx > ALLOW_FLING || vy < -ALLOW_FLING) {
-                flingNext();
-            } else if (vx < -ALLOW_FLING || vy > ALLOW_FLING) {
-                flingCurrnet();
-            } else {
-                upAngle();
-            }
+            upAngle();
         }
+//        if (POSITION == AngleView.LEFT) {
+//            if (vy > ALLOW_FLING || vx > ALLOW_FLING) {
+//                flingNext();
+//            } else if (vx < -ALLOW_FLING || vy < -ALLOW_FLING) {
+//                flingCurrnet();
+//            } else {
+//                upAngle();
+//            }
+//        } else {
+//            if (vx > ALLOW_FLING || vy < -ALLOW_FLING) {
+//                flingNext();
+//            } else if (vx < -ALLOW_FLING || vy > ALLOW_FLING) {
+//                flingCurrnet();
+//            } else {
+//                upAngle();
+//            }
+//        }
     }
 
     /**
@@ -498,9 +495,10 @@ public class AngleView extends ViewGroup {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (POSITION == LEFT) {
-                    mIndex = ((int) ((mBaseAngle) / DEGREES_90));
-                }
+                mIndex = ((int) ((mBaseAngle) / DEGREES_90));
+//                if (POSITION == LEFT) {
+//                    mIndex = ((int) ((mBaseAngle) / DEGREES_90));
+//                }
                 requestLayout();
             }
 
