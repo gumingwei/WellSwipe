@@ -50,8 +50,6 @@ public class AngleView extends ViewGroup {
     /**
      * 容器在做右下角区分
      */
-    //public int POSITION = LEFT;
-
     public int POSITION_STATE = LEFT;
     /**
      * 顺时针/逆时针
@@ -155,7 +153,6 @@ public class AngleView extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        //if (POSITION == LEFT) {
         Iterator<Map.Entry<Integer, ArrayList<TextView>>> it = mMap.entrySet().iterator();
         int count = 0;
         while (it.hasNext()) {
@@ -182,36 +179,6 @@ public class AngleView extends ViewGroup {
             }
             count++;
         }
-        //}
-    }
-
-    /**
-     * 布局子控价位置
-     *
-     * @param views  当前圈的views
-     * @param radius 当前圈的半径值
-     * @param index  子控件在当前数据组中的索引
-     * @param group  子控件在当前圈中的索引
-     * @param size   当前的数据组中的总长度，考虑到子控件要布局两圈，所以要区分当前所在的圈上的子控件数量
-     */
-    private void layouttest(ArrayList<TextView> views, int radius, int index, int group, int qua, int size) {
-        float degree = (float) DEGREES_90 / (float) (size);
-        float newdegree;
-        if (index == 0) {
-            newdegree = degree / 2;
-        } else {
-            newdegree = (int) ((group + 0.5) * degree);
-        }
-        double x = 0l;
-        double y = 0l;
-        if (qua == 0) {
-            x = Math.sin(Math.toRadians(newdegree)) * radius;
-            y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
-        } else if (qua == 1) {
-            x = Math.cos(Math.toRadians(newdegree)) * radius;
-            y = mHeight + Math.sin(Math.toRadians(newdegree)) * radius;
-        }
-        views.get(index).layout((int) (x - 60), (int) (y - 60), (int) (x + 60), (int) (y + 60));
     }
 
     /**
@@ -332,11 +299,6 @@ public class AngleView extends ViewGroup {
     protected void dispatchDraw(Canvas canvas) {
         canvas.save();
         canvas.rotate(mBaseAngle + mChangeAngle, 0, mPivotY);
-//        if (POSITION == LEFT) {
-//            canvas.rotate(mBaseAngle + mChangeAngle, 0, mPivotY);
-//        } else {
-//            canvas.rotate(mBaseAngle + mChangeAngle, mPivotX, mPivotY);
-//        }
         super.dispatchDraw(canvas);
         canvas.restore();
     }
@@ -346,11 +308,6 @@ public class AngleView extends ViewGroup {
      */
     public void downAngle(float x, float y) {
         mDownAngle = Math.toDegrees(Math.atan(x / y));
-//        if (POSITION == LEFT) {
-//            mDownAngle = Math.toDegrees(Math.atan(x / y));
-//        } else {
-//            mDownAngle = DEGREES_360 - Math.toDegrees(Math.atan(x / y));
-//        }
         ANGLE_STATE = ANGLE_STATE_REST;
 
     }
@@ -366,11 +323,6 @@ public class AngleView extends ViewGroup {
         double diffAngle;
         double angle;
         angle = Math.toDegrees(Math.atan(x / y));
-//        if (POSITION == LEFT) {
-//            angle = Math.toDegrees(Math.atan(x / y));
-//        } else {
-//            angle = DEGREES_360 - Math.toDegrees(Math.atan(x / y));
-//        }
         diffAngle = angle - mDownAngle;
         if (diffAngle > 0) {
             ANGLE_STATE = AngleView.ANGLE_STATE_ALONG;
@@ -417,23 +369,6 @@ public class AngleView extends ViewGroup {
         } else {
             upAngle();
         }
-//        if (POSITION == AngleView.LEFT) {
-//            if (vy > ALLOW_FLING || vx > ALLOW_FLING) {
-//                flingNext();
-//            } else if (vx < -ALLOW_FLING || vy < -ALLOW_FLING) {
-//                flingCurrnet();
-//            } else {
-//                upAngle();
-//            }
-//        } else {
-//            if (vx > ALLOW_FLING || vy < -ALLOW_FLING) {
-//                flingNext();
-//            } else if (vx < -ALLOW_FLING || vy > ALLOW_FLING) {
-//                flingCurrnet();
-//            } else {
-//                upAngle();
-//            }
-//        }
     }
 
     /**
@@ -496,9 +431,6 @@ public class AngleView extends ViewGroup {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mIndex = ((int) ((mBaseAngle) / DEGREES_90));
-//                if (POSITION == LEFT) {
-//                    mIndex = ((int) ((mBaseAngle) / DEGREES_90));
-//                }
                 requestLayout();
             }
 
