@@ -40,6 +40,10 @@ public class AngleLayout extends FrameLayout {
      */
     private static final int TOUCH_STATE_NEXT = 3;
 
+    private static final int TOUCH_STATE_AUTO = 4;
+
+    private boolean isAllowAngle = true;
+
 
     private float mDownMotionX;
 
@@ -85,7 +89,8 @@ public class AngleLayout extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mAngleView = (AngleView) findViewById(R.id.fanmum);
+        mAngleView = (AngleView) findViewById(R.id.angleview);
+        //setRotationY(180);
         //mFanMum.setRotationY(180);
         //mFanMum.setTranslationX(mFanMumOffset);
     }
@@ -146,7 +151,7 @@ public class AngleLayout extends FrameLayout {
                 float newY = event.getY();
                 float diffX = newX - mLastMotionX;
                 float diffY = newY - mLastMotionY;
-                if (Math.abs(diffX) > mTouchSlop || Math.abs(diffY) > mTouchSlop) {
+                if ((Math.abs(diffX) > mTouchSlop || Math.abs(diffY) > mTouchSlop) && isAllowAngle) {
                     mTouchState = TOUCH_STATE_WHIRLING;
                 }
 
@@ -160,8 +165,6 @@ public class AngleLayout extends FrameLayout {
 
                 break;
             case MotionEvent.ACTION_UP:
-                mAngleView.upAngle();
-                mTouchState = TOUCH_STATE_REST;
                 mVelocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
                 float vx = mVelocityTracker.getXVelocity();
                 float vy = mVelocityTracker.getYVelocity();
@@ -197,4 +200,6 @@ public class AngleLayout extends FrameLayout {
             mVelocityTracker = null;
         }
     }
+
+
 }
