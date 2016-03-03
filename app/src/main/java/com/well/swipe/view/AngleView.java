@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
@@ -82,7 +83,9 @@ public class AngleView extends ViewGroup {
 
     private static final int COUNT_4 = 4;
 
-    private Map<Integer, ArrayList<TextView>> mMap = new HashMap<>();
+    private int mCurrentIndex = 0;
+
+    private Map<Integer, ArrayList<View>> mMap = new HashMap<>();
     /**
      * 三部分数据的分割点值的数组，这在布局的时候用来根据此值来求索引
      */
@@ -98,8 +101,8 @@ public class AngleView extends ViewGroup {
 
     public AngleView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        ArrayList<TextView> list0 = new ArrayList<>();
-        for (int i = 0; i < 7; i++) {
+        ArrayList<View> list0 = new ArrayList<>();
+        for (int i = 0; i < 9; i++) {
             TextView view = new TextView(context);
             view.setGravity(Gravity.CENTER);
             view.setText("A=" + i);
@@ -107,7 +110,7 @@ public class AngleView extends ViewGroup {
         }
         mMap.put(0, list0);
 
-        ArrayList<TextView> list1 = new ArrayList<>();
+        ArrayList<View> list1 = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
             TextView view = new TextView(context);
             view.setGravity(Gravity.CENTER);
@@ -116,8 +119,8 @@ public class AngleView extends ViewGroup {
         }
         mMap.put(1, list1);
 
-        ArrayList<TextView> list2 = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
+        ArrayList<View> list2 = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
             TextView view = new TextView(context);
             view.setGravity(Gravity.CENTER);
             view.setText("C=" + i);
@@ -125,14 +128,14 @@ public class AngleView extends ViewGroup {
         }
         mMap.put(2, list2);
 
-        Iterator<Map.Entry<Integer, ArrayList<TextView>>> it = mMap.entrySet().iterator();
+        Iterator<Map.Entry<Integer, ArrayList<View>>> it = mMap.entrySet().iterator();
         int count = 0;
         int index = 0;
         while (it.hasNext()) {
-            Map.Entry<Integer, ArrayList<TextView>> arraylist = it.next();
-            ArrayList<TextView> views = arraylist.getValue();
+            Map.Entry<Integer, ArrayList<View>> arraylist = it.next();
+            ArrayList<View> views = arraylist.getValue();
             mIndexArray[count] = index;
-            for (TextView view : views) {
+            for (View view : views) {
                 addView(view);
                 index++;
             }
@@ -153,11 +156,11 @@ public class AngleView extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        Iterator<Map.Entry<Integer, ArrayList<TextView>>> it = mMap.entrySet().iterator();
+        Iterator<Map.Entry<Integer, ArrayList<View>>> it = mMap.entrySet().iterator();
         int count = 0;
         while (it.hasNext()) {
-            Map.Entry<Integer, ArrayList<TextView>> arraylist = it.next();
-            ArrayList<TextView> views = arraylist.getValue();
+            Map.Entry<Integer, ArrayList<View>> arraylist = it.next();
+            ArrayList<View> views = arraylist.getValue();
             if (arraylist.getKey() == 0) {
                 /**
                  * 把第0组数据放在第0限象
@@ -175,7 +178,6 @@ public class AngleView extends ViewGroup {
                  * 把第2组数据放在第3限象
                  */
                 itemLayout(views, 3);
-
             }
             count++;
         }
@@ -187,7 +189,7 @@ public class AngleView extends ViewGroup {
      * @param views 需要布局的数据组
      * @param qua   限象
      */
-    private void itemLayout(ArrayList<TextView> views, int qua) {
+    private void itemLayout(ArrayList<View> views, int qua) {
         for (int index = 0; index < views.size(); index++) {
             /**
              * size按照当前views的总数，以4为区分，分别计算出<4,=4,超出4的部分剪掉4即从1，2，3重新开始计数
@@ -293,6 +295,7 @@ public class AngleView extends ViewGroup {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+
     }
 
     @Override
@@ -379,6 +382,9 @@ public class AngleView extends ViewGroup {
         if (diff > 0 && diff < AngleView.OFFSET_DEGREES) {
             flingCurrnet();
         } else if (diff > AngleView.OFFSET_DEGREES && diff < DEGREES_90) {
+            /**
+             * 转到下一个
+             */
             flingNext();
         }
     }
@@ -391,6 +397,9 @@ public class AngleView extends ViewGroup {
         if (diff > 0 && diff < AngleView.OFFSET_DEGREES) {
             flingNext();
         } else if (diff > AngleView.OFFSET_DEGREES && diff < DEGREES_90) {
+            /**
+             * 转到下一个
+             */
             flingCurrnet();
         }
     }
@@ -431,7 +440,8 @@ public class AngleView extends ViewGroup {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mIndex = ((int) ((mBaseAngle) / DEGREES_90));
-                requestLayout();
+                //Log.i("Gmw", "Index=" + get);
+                int index = getIndex(mIndex);
             }
 
             @Override
@@ -464,6 +474,14 @@ public class AngleView extends ViewGroup {
 
     public int getNullIndex(int index) {
         return (index + 2) % COUNT_4;
+    }
+
+    public int getPreIndex(int index) {
+        return index == 0 ? 3 : (index - 1) % COUNT_4;
+    }
+
+    public int getNextIndex() {
+        return 0;
     }
 
 

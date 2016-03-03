@@ -183,7 +183,7 @@ public class AngleLayout extends FrameLayout {
     }
 
     /**
-     * 充要方法:反转Angle
+     * 重要方法:反转AngleLayout
      * 反转之后根据不同情况对子控件做反转
      */
     private void setRotationY() {
