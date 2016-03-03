@@ -64,6 +64,9 @@ public class AngleView extends ViewGroup {
     public static final int ANGLE_STATE_INVERSE = 2;
 
     public static final int DEGREES_360 = 360;
+
+    public static final int DEGREES_1080 = DEGREES_360 * 3;
+
     /**
      * 单位度数
      */
@@ -71,7 +74,7 @@ public class AngleView extends ViewGroup {
     /**
      * 判定范围
      */
-    public static final int OFFSET_DEGREES = 20;
+    public static final int DEGREES_OFFSET = 20;
     /**
      * 判定Fling动作的域
      */
@@ -79,7 +82,7 @@ public class AngleView extends ViewGroup {
     /**
      * 当前的限象
      */
-    private int mIndex = 0;
+    //private int mIndex = 0;
 
     private static final int COUNT_4 = 4;
 
@@ -156,31 +159,9 @@ public class AngleView extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        Iterator<Map.Entry<Integer, ArrayList<View>>> it = mMap.entrySet().iterator();
-        int count = 0;
-        while (it.hasNext()) {
-            Map.Entry<Integer, ArrayList<View>> arraylist = it.next();
-            ArrayList<View> views = arraylist.getValue();
-            if (arraylist.getKey() == 0) {
-                /**
-                 * 把第0组数据放在第0限象
-                 */
-                itemLayout(views, 0);
-
-            } else if (arraylist.getKey() == 1) {
-                /**
-                 * 把第1组数据放在第1限象
-                 */
-                itemLayout(views, 1);
-
-            } else if (arraylist.getKey() == 2) {
-                /**
-                 * 把第2组数据放在第3限象
-                 */
-                itemLayout(views, 3);
-            }
-            count++;
-        }
+        itemLayout(mMap.get(getPreViews(getViews(0))), getPreIndex(getIndex(0)));
+        itemLayout(mMap.get(getViews(0)), getIndex(0));
+        itemLayout(mMap.get(getNextViews(getViews(0))), getNextIndex(getIndex(0)));
     }
 
     /**
@@ -301,6 +282,7 @@ public class AngleView extends ViewGroup {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         canvas.save();
+
         canvas.rotate(mBaseAngle + mChangeAngle, 0, mPivotY);
         super.dispatchDraw(canvas);
         canvas.restore();
@@ -312,7 +294,6 @@ public class AngleView extends ViewGroup {
     public void downAngle(float x, float y) {
         mDownAngle = Math.toDegrees(Math.atan(x / y));
         ANGLE_STATE = ANGLE_STATE_REST;
-
     }
 
     /**
@@ -332,8 +313,6 @@ public class AngleView extends ViewGroup {
         } else {
             ANGLE_STATE = AngleView.ANGLE_STATE_INVERSE;
         }
-
-
         changeAngle(diffAngle);
     }
 
@@ -379,9 +358,9 @@ public class AngleView extends ViewGroup {
      */
     private void along() {
         float diff = getAngleValues() % AngleView.DEGREES_90;
-        if (diff > 0 && diff < AngleView.OFFSET_DEGREES) {
+        if (diff > 0 && diff < AngleView.DEGREES_OFFSET) {
             flingCurrnet();
-        } else if (diff > AngleView.OFFSET_DEGREES && diff < DEGREES_90) {
+        } else if (diff > AngleView.DEGREES_OFFSET && diff < DEGREES_90) {
             /**
              * 转到下一个
              */
@@ -393,10 +372,10 @@ public class AngleView extends ViewGroup {
      * 逆时针旋转
      */
     private void recover() {
-        float diff = (DEGREES_360 - getAngleValues()) % AngleView.DEGREES_90;
-        if (diff > 0 && diff < AngleView.OFFSET_DEGREES) {
+        float diff = (DEGREES_1080 - getAngleValues()) % AngleView.DEGREES_90;
+        if (diff > 0 && diff < AngleView.DEGREES_OFFSET) {
             flingNext();
-        } else if (diff > AngleView.OFFSET_DEGREES && diff < DEGREES_90) {
+        } else if (diff > AngleView.DEGREES_OFFSET && diff < DEGREES_90) {
             /**
              * 转到下一个
              */
@@ -428,20 +407,22 @@ public class AngleView extends ViewGroup {
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = (float) animation.getAnimatedValue();
                 mBaseAngle = value;
-                mBaseAngle = mBaseAngle % DEGREES_360;
+                mBaseAngle = mBaseAngle % DEGREES_1080;
                 invalidate();
             }
         });
         animator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
+
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                mIndex = ((int) ((mBaseAngle) / DEGREES_90));
-                //Log.i("Gmw", "Index=" + get);
-                int index = getIndex(mIndex);
+                int mIndex = ((int) ((mBaseAngle) / DEGREES_90));
+                itemLayout(mMap.get(getPreViews(getViews(mIndex))), getPreIndex(getIndex(mIndex)));
+                itemLayout(mMap.get(getViews(mIndex)), getIndex(mIndex));
+                itemLayout(mMap.get(getNextViews(getViews(mIndex))), getNextIndex(getIndex(mIndex)));
             }
 
             @Override
@@ -464,25 +445,71 @@ public class AngleView extends ViewGroup {
      */
     public float getAngleValues() {
         float newrotation = (mBaseAngle + mChangeAngle);
-        return newrotation < 0 ? DEGREES_360 + (newrotation) : (newrotation);
+        return newrotation < 0 ? DEGREES_1080 + (newrotation) : (newrotation);
     }
 
-
+    /**
+     * 根据当前的index获取当前显示限象index
+     * 比如11->1,10->2,9->38->0
+     *
+     * @param index 转动结束后根据BaseAngle的值除以90得出的范围0-11
+     *              3,4的最小公倍数的是12
+     * @return
+     */
     public int getIndex(int index) {
-        return index == 0 ? 0 : COUNT_4 - index;
+        return index == 0 ? 0 : (12 - index) % COUNT_4;
     }
 
-    public int getNullIndex(int index) {
-        return (index + 2) % COUNT_4;
-    }
-
+    /**
+     * 获取当前index的上一个index
+     *
+     * @param index 传入的是getIndex()的返回值
+     * @return 得到上一个index
+     */
     public int getPreIndex(int index) {
-        return index == 0 ? 3 : (index - 1) % COUNT_4;
+        return index == 0 ? 3 : (index - 1);
     }
 
-    public int getNextIndex() {
-        return 0;
+    /**
+     * 获取当前index的下一个index
+     *
+     * @param index 传入的是getIndex()的返回值
+     * @return 得到下一个index
+     */
+    private int getNextIndex(int index) {
+        return index == 3 ? 0 : (index + 1);
     }
 
+    /**
+     * 根据index获取当先index所需要的数据索引
+     * 比如: 11->1,10->2,9->0,8->1,7->2,6->0
+     *
+     * @param index 转动结束后根据BaseAngle的值除以90得出的范围0-11
+     *              3,4的最小公倍数的是12
+     * @return
+     */
+    private int getViews(int index) {
+        return (12 - index) % 3;
+    }
+
+    /**
+     * 上一个数据索引
+     *
+     * @param index 传入的是getViews()的返回值
+     * @return
+     */
+    public int getPreViews(int index) {
+        return index == 0 ? 2 : (index - 1);
+    }
+
+    /**
+     * 下一个数据索引
+     *
+     * @param index 传入的是getViews()的返回值
+     * @return
+     */
+    public int getNextViews(int index) {
+        return index == 2 ? 0 : (index + 1);
+    }
 
 }

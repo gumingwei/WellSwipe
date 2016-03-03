@@ -142,11 +142,6 @@ public class AngleLayout extends FrameLayout {
                     //正在滚动的时候
                 }
                 mAngleView.downAngle(mLastMotionX, mHeight - mLastMotionY);
-//                if (mAngleView.POSITION == AngleView.LEFT) {
-//                    mAngleView.downAngle(mLastMotionX, mHeight - mLastMotionY);
-//                } else {
-//                    mAngleView.downAngle(mWidth - mLastMotionX, mHeight - mLastMotionY);
-//                }
                 break;
             case MotionEvent.ACTION_MOVE:
                 float newX = event.getX();
@@ -159,11 +154,6 @@ public class AngleLayout extends FrameLayout {
 
                 if (mTouchState == TOUCH_STATE_WHIRLING) {
                     mAngleView.changeAngle(newX, mHeight - newY);
-//                    if (mAngleView.POSITION == AngleView.LEFT) {
-//                        mAngleView.changeAngle(newX, mHeight - newY);
-//                    } else {
-//                        mAngleView.changeAngle(mWidth - newX, mHeight - newY);
-//                    }
                 }
 
                 break;
