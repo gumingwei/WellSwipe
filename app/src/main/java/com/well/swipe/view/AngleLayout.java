@@ -90,9 +90,7 @@ public class AngleLayout extends FrameLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mAngleView = (AngleView) findViewById(R.id.angleview);
-        //setRotationY();
-        //mFanMum.setRotationY(180);
-        //mFanMum.setTranslationX(mFanMumOffset);
+        setRotationY();
     }
 
     @Override
@@ -113,11 +111,6 @@ public class AngleLayout extends FrameLayout {
         int offset = Utils.dp2px(getContext(), mFanMumOffset);
         int fanSize = mWidth - offset;
         mAngleView.layout(0, mHeight - fanSize, fanSize, mHeight);
-//        if (mAngleView.POSITION == AngleView.LEFT) {
-//            mAngleView.layout(0, mHeight - fanSize, fanSize, mHeight);
-//        } else if (mAngleView.POSITION == AngleView.RIGHT) {
-//            mAngleView.layout(offset, mHeight - fanSize, mWidth, mHeight);
-//        }
     }
 
 

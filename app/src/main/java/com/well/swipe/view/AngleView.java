@@ -4,7 +4,10 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -171,6 +174,7 @@ public class AngleView extends ViewGroup {
      * @param qua   限象
      */
     private void itemLayout(ArrayList<View> views, int qua) {
+        Log.i("Gmw", "position=" + POSITION_STATE);
         for (int index = 0; index < views.size(); index++) {
             /**
              * size按照当前views的总数，以4为区分，分别计算出<4,=4,超出4的部分剪掉4即从1，2，3重新开始计数
@@ -232,35 +236,42 @@ public class AngleView extends ViewGroup {
             if (qua == 0) {
                 x = Math.sin(Math.toRadians(newdegree)) * radius;
                 y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
-                if (POSITION_STATE == RIGHT) {
-                    views.get(index).setRotationY(180);
-                }
+
             } else if (qua == 1) {
                 x = Math.cos(Math.toRadians(newdegree)) * radius;
                 y = mHeight + Math.sin(Math.toRadians(newdegree)) * radius;
                 /**
-                 * 旋转一定的角度
+                 * 当POSITION_STATE==RIGHT时，根据不同的情况对子view做反转
                  */
-                views.get(index).setRotation(DEGREES_90 * 1);
-                /**
-                 * 当PISITION_STATE==RIGHT时，根据不同的情况对子view做反转
-                 */
-                if (POSITION_STATE == RIGHT) {
-                    views.get(index).setRotationX(180);
-                }
+
             } else if (qua == 2) {
                 x = -Math.sin(Math.toRadians(newdegree)) * radius;
                 y = mHeight + Math.cos(Math.toRadians(newdegree)) * radius;
-                views.get(index).setRotation(DEGREES_90 * 2);
-                if (POSITION_STATE == RIGHT) {
-                    views.get(index).setRotationY(180);
-                }
+
             } else if (qua == 3) {
                 x = -Math.cos(Math.toRadians(newdegree)) * radius;
                 y = mHeight - Math.sin(Math.toRadians(newdegree)) * radius;
-                views.get(index).setRotation(DEGREES_90 * 3);
-                if (POSITION_STATE == RIGHT) {
-                    views.get(index).setRotationX(180);
+
+            }
+            /**
+             * 旋转一定的角度,以保证旋转至第0限象时方向是正的
+             */
+            if (POSITION_STATE == LEFT) {
+                views.get(index).setRotation(DEGREES_90 * qua);
+            }
+            /**
+             * 翻转容器之后在内部翻转子控件
+             */
+            if (POSITION_STATE == RIGHT) {
+                views.get(index).setRotationY(DEGREES_90 * 2);
+                if (qua == 0) {
+                    views.get(index).setRotation(-DEGREES_90 * qua);
+                } else if (qua == 1) {
+                    views.get(index).setRotation(-DEGREES_90 * qua);
+                } else if (qua == 2) {
+                    views.get(index).setRotation(-DEGREES_90 * qua);
+                } else if (qua == 3) {
+                    views.get(index).setRotation(-DEGREES_90 * qua);
                 }
             }
             /**
@@ -279,11 +290,19 @@ public class AngleView extends ViewGroup {
 
     }
 
+
+    Paint mPain = new Paint();
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        canvas.save();
+        mPain.setTextSize(20);
 
+        canvas.save();
         canvas.rotate(mBaseAngle + mChangeAngle, 0, mPivotY);
+        canvas.drawText("0", 300, 300, mPain);
+        canvas.drawText("1", 300, 900, mPain);
+        canvas.drawText("2", -300, 900, mPain);
+        canvas.drawText("3", -300, 300, mPain);
         super.dispatchDraw(canvas);
         canvas.restore();
     }
