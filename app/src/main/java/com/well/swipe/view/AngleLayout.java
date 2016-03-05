@@ -19,7 +19,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
      */
     private AngleView mAngleView;
 
-    private IndicatorView mIndicator;
+    private AngleIndicatorView mIndicator;
     /**
      * 当前的旋转状态
      */
@@ -92,7 +92,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         super.onFinishInflate();
         mAngleView = (AngleView) findViewById(R.id.angleview);
         mAngleView.setOnAngleChangeListener(this);
-        mIndicator = (IndicatorView) findViewById(R.id.indicator);
+        mIndicator = (AngleIndicatorView) findViewById(R.id.indicator);
         mIndicator.setCurrent(0);
 
         //setRotationY();
@@ -162,7 +162,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                     mTouchState = TOUCH_STATE_WHIRLING;
                 }
 
-                if (mTouchState == TOUCH_STATE_WHIRLING && !mAngleView.isAnimatorComplete() && newY < mHeight) {
+                if (mTouchState == TOUCH_STATE_WHIRLING && newY < mHeight) {
                     mAngleView.changeAngle(newX, mHeight - newY);
                 }
 
@@ -182,13 +182,8 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     }
 
     @Override
-    public void forward(int cur, float pre) {
-        mIndicator.onForward(cur, pre);
-    }
-
-    @Override
-    public void reverse(int cur, float pre) {
-        mIndicator.onReverse(cur, pre);
+    public void onAngleChanged(int cur, float p) {
+        mIndicator.onForward(cur, p);
     }
 
     /**
@@ -197,7 +192,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
      */
     private void setRotationY() {
         setRotationY(180);
-        mIndicator.setSTATE(IndicatorView.STATE_RIGHT);
+        mIndicator.setSTATE(AngleIndicatorView.STATE_RIGHT);
         mAngleView.POSITION_STATE = AngleView.RIGHT;
     }
 

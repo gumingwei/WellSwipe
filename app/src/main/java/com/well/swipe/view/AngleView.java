@@ -5,6 +5,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,7 +90,7 @@ public class AngleView extends ViewGroup {
 
     private ValueAnimator mAngleAnimator;
 
-    private boolean isAnimatorComplete = false;
+    //private boolean isAnimatorComplete = false;
 
     private Map<Integer, ArrayList<View>> mMap = new HashMap<>();
 
@@ -97,21 +98,14 @@ public class AngleView extends ViewGroup {
     OnAngleChangeListener mAngleListener;
 
     public interface OnAngleChangeListener {
-        /**
-         * AngleView顺时针旋转
-         *
-         * @param cur 当前
-         * @param pre 百分比
-         */
-        void forward(int cur, float pre);
 
         /**
-         * AngleView逆时针旋转
+         * 角度发生变化时传递当前的所显示的数据索引值&当前的百分比
          *
-         * @param cur 当前
-         * @param pre 百分比
+         * @param cur 正在显示的是数据index
+         * @param p   百分比
          */
-        void reverse(int cur, float pre);
+        void onAngleChanged(int cur, float p);
 
     }
 
@@ -309,6 +303,8 @@ public class AngleView extends ViewGroup {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         canvas.save();
+        Log.i("Gmw", "canvas=" + getViewsIndex((int) (getAngleValues() / 90)));
+        mAngleListener.onAngleChanged(getViewsIndex((int) (getAngleValues() / 90)), ((getAngleValues() % 90) / 90));
         canvas.rotate(mBaseAngle + mChangeAngle, 0, mPivotY);
         super.dispatchDraw(canvas);
         canvas.restore();
@@ -337,14 +333,6 @@ public class AngleView extends ViewGroup {
         double angle;
         angle = Math.toDegrees(Math.atan(x / y));
         diffAngle = angle - mDownAngle;
-        if (diffAngle > 0) {
-            ANGLE_STATE = AngleView.ANGLE_STATE_ALONG;
-            mAngleListener.forward(getViewsIndex(mCurrentIndex), (mChangeAngle) / DEGREES_90);
-        } else {
-            ANGLE_STATE = AngleView.ANGLE_STATE_INVERSE;
-            mAngleListener.reverse(getViewsIndex(mCurrentIndex), (mChangeAngle / 90));
-
-        }
         changeAngle(diffAngle);
 
     }
@@ -437,72 +425,46 @@ public class AngleView extends ViewGroup {
      * @param end   结束为止
      */
     private void autoWhirling(float start, float end) {
-        if (!isAnimatorComplete) {
-            isAnimatorComplete = true;
-            mChangeAngle = 0;
-            mAngleAnimator = ValueAnimator.ofFloat(start, end);
-            mAngleAnimator.setDuration(400);
-            mAngleAnimator.setInterpolator(new DecelerateInterpolator());
-            mAngleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float value = (float) animation.getAnimatedValue();
-                    mBaseAngle = value;
-                    mBaseAngle = mBaseAngle % DEGREES_1080;
-                    /**
-                     * 回传参数
-                     */
-                    if (ANGLE_STATE == AngleView.ANGLE_STATE_ALONG) {
-                        if ((getAngleValues() % DEGREES_90) != 0) {
-                            mAngleListener.forward(getViewsIndex(mCurrentIndex), (getAngleValues() % DEGREES_90) / DEGREES_90);
-                        }
-                    } else if (ANGLE_STATE == AngleView.ANGLE_STATE_INVERSE) {
-                        if ((getAngleValues() % DEGREES_90) != 0) {
-                            mAngleListener.reverse(getViewsIndex(mCurrentIndex), (((getAngleValues() % DEGREES_90) - 90)) / 90);
-                        }
+        mChangeAngle = 0;
+        mAngleAnimator = ValueAnimator.ofFloat(start, end);
+        mAngleAnimator.setDuration(400);
+        mAngleAnimator.setInterpolator(new DecelerateInterpolator());
+        mAngleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = (float) animation.getAnimatedValue();
+                mBaseAngle = value;
+                mBaseAngle = mBaseAngle % DEGREES_1080;
 
-                    }
+                invalidate();
+            }
+        });
+        mAngleAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
 
-                    invalidate();
-                }
-            });
-            mAngleAnimator.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
+            }
 
-                }
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                int mIndex = ((int) ((mBaseAngle) / DEGREES_90));
+                itemLayout(mIndex);
+            }
 
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    int mIndex = ((int) ((mBaseAngle) / DEGREES_90));
-                    itemLayout(mIndex);
-                    isAnimatorComplete = false;
-                }
+            @Override
+            public void onAnimationCancel(Animator animation) {
 
-                @Override
-                public void onAnimationCancel(Animator animation) {
+            }
 
-                }
+            @Override
+            public void onAnimationRepeat(Animator animation) {
 
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            });
-            mAngleAnimator.start();
-        }
-
+            }
+        });
+        mAngleAnimator.start();
 
     }
 
-    /**
-     * 正在执行旋转动画
-     *
-     * @return
-     */
-    public boolean isAnimatorComplete() {
-        return isAnimatorComplete;
-    }
 
     /**
      * 转动时候随时可以获取到的的转动角度
@@ -577,6 +539,5 @@ public class AngleView extends ViewGroup {
     public int getNextViewsIndex(int index) {
         return index == 2 ? 0 : (index + 1);
     }
-
-
+    
 }

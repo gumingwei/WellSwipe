@@ -13,7 +13,7 @@ import com.well.swipe.R;
  * Created by mingwei on 3/4/16.
  * AngleLayout的指示器
  */
-public class IndicatorView extends View {
+public class AngleIndicatorView extends View {
 
     private Paint mPaint0 = new Paint();
 
@@ -39,15 +39,15 @@ public class IndicatorView extends View {
     private int mWidth;
 
 
-    public IndicatorView(Context context) {
+    public AngleIndicatorView(Context context) {
         this(context, null);
     }
 
-    public IndicatorView(Context context, AttributeSet attrs) {
+    public AngleIndicatorView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public IndicatorView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AngleIndicatorView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mPaint0.setColor(Color.parseColor(mColors[9]));
         mPaint0.setTextSize(30);
@@ -70,10 +70,10 @@ public class IndicatorView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        int degree = 90 / 3;
+        int degree = 90 / 4;
         if (STATE == STATE_LEFT) {
             canvas.save();
-            canvas.rotate(degree * 0.5f, 0, 0);
+            canvas.rotate(degree, 0, 0);
             canvas.drawText(getResources().getString(R.string.recent), LEFT_OFFSET_X, OFFSET_Y, mPaint0);
             canvas.rotate(degree, 0, 0);
             canvas.drawText(getResources().getString(R.string.toolbox), LEFT_OFFSET_X, OFFSET_Y, mPaint1);
@@ -82,7 +82,7 @@ public class IndicatorView extends View {
             canvas.restore();
         } else if (STATE == STATE_RIGHT) {
             canvas.save();
-            canvas.rotate(-degree * 0.5f, mWidth, 0);
+            canvas.rotate(-degree, mWidth, 0);
             canvas.drawText(getResources().getString(R.string.recent), RIGHT_OFFSET_X, OFFSET_Y, mPaint0);
             canvas.rotate(-degree, mWidth, 0);
             canvas.drawText(getResources().getString(R.string.toolbox), RIGHT_OFFSET_X, OFFSET_Y, mPaint1);

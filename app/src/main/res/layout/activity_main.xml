@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.well.swipe.view.IndicatorView
+        <com.well.swipe.view.AngleIndicatorView
             android:id="@id/indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
