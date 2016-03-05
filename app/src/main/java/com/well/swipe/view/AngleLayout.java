@@ -7,18 +7,19 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 
-
 import com.well.swipe.R;
 import com.well.swipe.utils.Utils;
 
 /**
  * Created by mingwei on 2/26/16.
  */
-public class AngleLayout extends FrameLayout {
+public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeListener {
     /**
      * 旋转View
      */
     private AngleView mAngleView;
+
+    private IndicatorView mIndicator;
     /**
      * 当前的旋转状态
      */
@@ -90,7 +91,11 @@ public class AngleLayout extends FrameLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mAngleView = (AngleView) findViewById(R.id.angleview);
-        setRotationY();
+        mAngleView.setOnAngleChangeListener(this);
+        mIndicator = (IndicatorView) findViewById(R.id.indicator);
+        mIndicator.setCurrent(0);
+
+        //setRotationY();
     }
 
     @Override
@@ -98,11 +103,19 @@ public class AngleLayout extends FrameLayout {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         mWidth = getMeasuredWidth();
         mHeight = getMeasuredHeight();
-
+        /**
+         * AngleView的大小
+         */
         int offset = Utils.dp2px(getContext(), mFanMumOffset);
         int fanSize = mWidth - offset;
         LayoutParams params = new LayoutParams(fanSize, fanSize);
         mAngleView.setLayoutParams(params);
+        /**
+         * IndicatorView的大小
+         */
+        float indicatorSize = mWidth / 2.5f;
+        LayoutParams indicatorParams = new LayoutParams((int) indicatorSize, (int) indicatorSize);
+        mIndicator.setLayoutParams(indicatorParams);
     }
 
     @Override
@@ -111,12 +124,16 @@ public class AngleLayout extends FrameLayout {
         int offset = Utils.dp2px(getContext(), mFanMumOffset);
         int fanSize = mWidth - offset;
         mAngleView.layout(0, mHeight - fanSize, fanSize, mHeight);
+        /**
+         * IndicatorView的大小
+         */
+        float indicatorSize = mWidth / 2.5f;
+        mIndicator.layout(0, mHeight - (int) indicatorSize, (int) indicatorSize, mHeight);
     }
 
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
         if (getChildCount() <= 0) {
             return super.onTouchEvent(event);
         }
@@ -145,7 +162,7 @@ public class AngleLayout extends FrameLayout {
                     mTouchState = TOUCH_STATE_WHIRLING;
                 }
 
-                if (mTouchState == TOUCH_STATE_WHIRLING) {
+                if (mTouchState == TOUCH_STATE_WHIRLING && !mAngleView.isAnimatorComplete() && newY < mHeight) {
                     mAngleView.changeAngle(newX, mHeight - newY);
                 }
 
@@ -161,8 +178,17 @@ public class AngleLayout extends FrameLayout {
                 recyleVelocityTracker();
                 break;
         }
-
         return true;
+    }
+
+    @Override
+    public void forward(int cur, float pre) {
+        mIndicator.onForward(cur, (int) (pre * 10));
+    }
+
+    @Override
+    public void reverse(int cur, float pre) {
+        mIndicator.onReverse(cur, (int) (pre * 10));
     }
 
     /**
@@ -171,6 +197,7 @@ public class AngleLayout extends FrameLayout {
      */
     private void setRotationY() {
         setRotationY(180);
+        mIndicator.setSTATE(IndicatorView.STATE_RIGHT);
         mAngleView.POSITION_STATE = AngleView.RIGHT;
     }
 

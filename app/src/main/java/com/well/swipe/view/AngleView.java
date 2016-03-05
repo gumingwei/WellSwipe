@@ -4,10 +4,7 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +18,9 @@ import java.util.Map;
 
 /**
  * Created by mingwei on 2/25/16.
+ * 旋转的扇形View
+ * 1.扇形可以放在左边或者右边
+ * 2.根据手指在上一层容器的touch事件来处理AngleView的转动，松开手指转动到指定位置
  */
 public class AngleView extends ViewGroup {
     /**
@@ -82,20 +82,38 @@ public class AngleView extends ViewGroup {
      * 判定Fling动作的域
      */
     private static final int ALLOW_FLING = 2500;
-    /**
-     * 当前的限象
-     */
-    //private int mIndex = 0;
 
     private static final int COUNT_4 = 4;
 
-    private int mCurrentIndex = 0;
+    private int mCurrentIndex;
+
+    private ValueAnimator mAngleAnimator;
+
+    private boolean isAnimatorComplete = false;
 
     private Map<Integer, ArrayList<View>> mMap = new HashMap<>();
-    /**
-     * 三部分数据的分割点值的数组，这在布局的时候用来根据此值来求索引
-     */
-    private int mIndexArray[] = new int[4];
+
+
+    OnAngleChangeListener mAngleListener;
+
+    public interface OnAngleChangeListener {
+        /**
+         * AngleView顺时针旋转
+         *
+         * @param cur 当前
+         * @param pre 百分比
+         */
+        void forward(int cur, float pre);
+
+        /**
+         * AngleView逆时针旋转
+         *
+         * @param cur 当前
+         * @param pre 百分比
+         */
+        void reverse(int cur, float pre);
+
+    }
 
     public AngleView(Context context) {
         this(context, null);
@@ -117,7 +135,7 @@ public class AngleView extends ViewGroup {
         mMap.put(0, list0);
 
         ArrayList<View> list1 = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 9; i++) {
             TextView view = new TextView(context);
             view.setGravity(Gravity.CENTER);
             view.setText("B=" + i);
@@ -126,7 +144,7 @@ public class AngleView extends ViewGroup {
         mMap.put(1, list1);
 
         ArrayList<View> list2 = new ArrayList<>();
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 9; i++) {
             TextView view = new TextView(context);
             view.setGravity(Gravity.CENTER);
             view.setText("C=" + i);
@@ -135,19 +153,15 @@ public class AngleView extends ViewGroup {
         mMap.put(2, list2);
 
         Iterator<Map.Entry<Integer, ArrayList<View>>> it = mMap.entrySet().iterator();
-        int count = 0;
-        int index = 0;
+
         while (it.hasNext()) {
             Map.Entry<Integer, ArrayList<View>> arraylist = it.next();
             ArrayList<View> views = arraylist.getValue();
-            mIndexArray[count] = index;
             for (View view : views) {
                 addView(view);
-                index++;
             }
-            count++;
         }
-        mIndexArray[mIndexArray.length - 1] = getChildCount();
+
 
     }
 
@@ -162,9 +176,20 @@ public class AngleView extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        itemLayout(mMap.get(getPreViews(getViews(0))), getPreIndex(getIndex(0)));
-        itemLayout(mMap.get(getViews(0)), getIndex(0));
-        itemLayout(mMap.get(getNextViews(getViews(0))), getNextIndex(getIndex(0)));
+        itemLayout(0);
+    }
+
+    /**
+     * 布局子控件
+     * 通过一个当前值，计算上一个，下一个值
+     *
+     * @param index
+     */
+    private void itemLayout(int index) {
+        mCurrentIndex = index;
+        itemLayout(mMap.get(getPreViewsIndex(getViewsIndex(index))), getQuaPreIndex(getQuaIndex(index)));
+        itemLayout(mMap.get(getViewsIndex(index)), getQuaIndex(index));
+        itemLayout(mMap.get(getNextViewsIndex(getViewsIndex(index))), getQuaNextIndex(getQuaIndex(index)));
     }
 
     /**
@@ -174,7 +199,6 @@ public class AngleView extends ViewGroup {
      * @param qua   限象
      */
     private void itemLayout(ArrayList<View> views, int qua) {
-        Log.i("Gmw", "position=" + POSITION_STATE);
         for (int index = 0; index < views.size(); index++) {
             /**
              * size按照当前views的总数，以4为区分，分别计算出<4,=4,超出4的部分剪掉4即从1，2，3重新开始计数
@@ -236,31 +260,25 @@ public class AngleView extends ViewGroup {
             if (qua == 0) {
                 x = Math.sin(Math.toRadians(newdegree)) * radius;
                 y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
-
             } else if (qua == 1) {
                 x = Math.cos(Math.toRadians(newdegree)) * radius;
                 y = mHeight + Math.sin(Math.toRadians(newdegree)) * radius;
-                /**
-                 * 当POSITION_STATE==RIGHT时，根据不同的情况对子view做反转
-                 */
-
             } else if (qua == 2) {
                 x = -Math.sin(Math.toRadians(newdegree)) * radius;
                 y = mHeight + Math.cos(Math.toRadians(newdegree)) * radius;
-
             } else if (qua == 3) {
                 x = -Math.cos(Math.toRadians(newdegree)) * radius;
                 y = mHeight - Math.sin(Math.toRadians(newdegree)) * radius;
-
             }
             /**
+             * 矫正子view
              * 旋转一定的角度,以保证旋转至第0限象时方向是正的
              */
             if (POSITION_STATE == LEFT) {
                 views.get(index).setRotation(DEGREES_90 * qua);
             }
             /**
-             * 翻转容器之后在内部翻转子控件
+             * 翻转容器之后在内部翻转子控件矫正
              */
             if (POSITION_STATE == RIGHT) {
                 views.get(index).setRotationY(DEGREES_90 * 2);
@@ -279,32 +297,25 @@ public class AngleView extends ViewGroup {
              */
             views.get(index).layout((int) (x - 60), (int) (y - 60), (int) (x + 60), (int) (y + 60));
         }
-
-
     }
 
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-
     }
 
 
-    Paint mPain = new Paint();
-
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        mPain.setTextSize(20);
-
         canvas.save();
         canvas.rotate(mBaseAngle + mChangeAngle, 0, mPivotY);
-        canvas.drawText("0", 300, 300, mPain);
-        canvas.drawText("1", 300, 900, mPain);
-        canvas.drawText("2", -300, 900, mPain);
-        canvas.drawText("3", -300, 300, mPain);
         super.dispatchDraw(canvas);
         canvas.restore();
+    }
+
+    public void setOnAngleChangeListener(OnAngleChangeListener listener) {
+        mAngleListener = listener;
     }
 
     /**
@@ -312,7 +323,6 @@ public class AngleView extends ViewGroup {
      */
     public void downAngle(float x, float y) {
         mDownAngle = Math.toDegrees(Math.atan(x / y));
-        ANGLE_STATE = ANGLE_STATE_REST;
     }
 
     /**
@@ -329,10 +339,14 @@ public class AngleView extends ViewGroup {
         diffAngle = angle - mDownAngle;
         if (diffAngle > 0) {
             ANGLE_STATE = AngleView.ANGLE_STATE_ALONG;
+            mAngleListener.forward(getViewsIndex(mCurrentIndex), (mChangeAngle) / DEGREES_90);
         } else {
             ANGLE_STATE = AngleView.ANGLE_STATE_INVERSE;
+            mAngleListener.reverse(getViewsIndex(mCurrentIndex), (mChangeAngle / 90));
+
         }
         changeAngle(diffAngle);
+
     }
 
     /**
@@ -350,9 +364,9 @@ public class AngleView extends ViewGroup {
      */
     private void upAngle() {
         if (ANGLE_STATE == AngleView.ANGLE_STATE_ALONG) {
-            along();
+            forward();
         } else {
-            recover();
+            reverse();
         }
     }
 
@@ -375,7 +389,7 @@ public class AngleView extends ViewGroup {
     /**
      * 顺时针旋转
      */
-    private void along() {
+    private void forward() {
         float diff = getAngleValues() % AngleView.DEGREES_90;
         if (diff > 0 && diff < AngleView.DEGREES_OFFSET) {
             flingCurrnet();
@@ -390,7 +404,7 @@ public class AngleView extends ViewGroup {
     /**
      * 逆时针旋转
      */
-    private void recover() {
+    private void reverse() {
         float diff = (DEGREES_1080 - getAngleValues()) % AngleView.DEGREES_90;
         if (diff > 0 && diff < AngleView.DEGREES_OFFSET) {
             flingNext();
@@ -416,45 +430,78 @@ public class AngleView extends ViewGroup {
         autoWhirling(getAngleValues(), ((int) (getAngleValues() / AngleView.DEGREES_90)) * AngleView.DEGREES_90);
     }
 
+    /**
+     * 自动旋转
+     *
+     * @param start 起始位置
+     * @param end   结束为止
+     */
     private void autoWhirling(float start, float end) {
-        mChangeAngle = 0;
-        ValueAnimator animator = ValueAnimator.ofFloat(start, end);
-        animator.setDuration(400);
-        animator.setInterpolator(new DecelerateInterpolator());
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float value = (float) animation.getAnimatedValue();
-                mBaseAngle = value;
-                mBaseAngle = mBaseAngle % DEGREES_1080;
-                invalidate();
-            }
-        });
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
+        if (!isAnimatorComplete) {
+            isAnimatorComplete = true;
+            mChangeAngle = 0;
+            mAngleAnimator = ValueAnimator.ofFloat(start, end);
+            mAngleAnimator.setDuration(400);
+            mAngleAnimator.setInterpolator(new DecelerateInterpolator());
+            mAngleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float value = (float) animation.getAnimatedValue();
+                    mBaseAngle = value;
+                    mBaseAngle = mBaseAngle % DEGREES_1080;
+                    /**
+                     * 回传参数
+                     */
+                    if (ANGLE_STATE == AngleView.ANGLE_STATE_ALONG) {
+                        if ((getAngleValues() % DEGREES_90) != 0) {
+                            mAngleListener.forward(getViewsIndex(mCurrentIndex), (getAngleValues() % DEGREES_90) / DEGREES_90);
+                        }
+                    } else if (ANGLE_STATE == AngleView.ANGLE_STATE_INVERSE) {
+                        if ((getAngleValues() % DEGREES_90) != 0) {
+                            mAngleListener.reverse(getViewsIndex(mCurrentIndex), (((getAngleValues() % DEGREES_90) - 90)) / 90);
+                        }
 
-            }
+                    }
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                int mIndex = ((int) ((mBaseAngle) / DEGREES_90));
-                itemLayout(mMap.get(getPreViews(getViews(mIndex))), getPreIndex(getIndex(mIndex)));
-                itemLayout(mMap.get(getViews(mIndex)), getIndex(mIndex));
-                itemLayout(mMap.get(getNextViews(getViews(mIndex))), getNextIndex(getIndex(mIndex)));
-            }
+                    invalidate();
+                }
+            });
+            mAngleAnimator.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
 
-            @Override
-            public void onAnimationCancel(Animator animation) {
+                }
 
-            }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    int mIndex = ((int) ((mBaseAngle) / DEGREES_90));
+                    itemLayout(mIndex);
+                    isAnimatorComplete = false;
+                }
 
-            @Override
-            public void onAnimationRepeat(Animator animation) {
+                @Override
+                public void onAnimationCancel(Animator animation) {
 
-            }
-        });
-        animator.start();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            mAngleAnimator.start();
+        }
+
+
+    }
+
+    /**
+     * 正在执行旋转动画
+     *
+     * @return
+     */
+    public boolean isAnimatorComplete() {
+        return isAnimatorComplete;
     }
 
     /**
@@ -469,13 +516,13 @@ public class AngleView extends ViewGroup {
 
     /**
      * 根据当前的index获取当前显示限象index
-     * 比如11->1,10->2,9->38->0
+     * 比如11->1,10->2,9->3,8->0
      *
      * @param index 转动结束后根据BaseAngle的值除以90得出的范围0-11
      *              3,4的最小公倍数的是12
      * @return
      */
-    public int getIndex(int index) {
+    public int getQuaIndex(int index) {
         return index == 0 ? 0 : (12 - index) % COUNT_4;
     }
 
@@ -485,7 +532,7 @@ public class AngleView extends ViewGroup {
      * @param index 传入的是getIndex()的返回值
      * @return 得到上一个index
      */
-    public int getPreIndex(int index) {
+    public int getQuaPreIndex(int index) {
         return index == 0 ? 3 : (index - 1);
     }
 
@@ -495,19 +542,19 @@ public class AngleView extends ViewGroup {
      * @param index 传入的是getIndex()的返回值
      * @return 得到下一个index
      */
-    private int getNextIndex(int index) {
+    private int getQuaNextIndex(int index) {
         return index == 3 ? 0 : (index + 1);
     }
 
     /**
      * 根据index获取当先index所需要的数据索引
-     * 比如: 11->1,10->2,9->0,8->1,7->2,6->0
+     * 比如: 11->1,10->2,9->0,8->1,7->2,6->0  像这样一直循环
      *
      * @param index 转动结束后根据BaseAngle的值除以90得出的范围0-11
      *              3,4的最小公倍数的是12
      * @return
      */
-    private int getViews(int index) {
+    private int getViewsIndex(int index) {
         return (12 - index) % 3;
     }
 
@@ -517,7 +564,7 @@ public class AngleView extends ViewGroup {
      * @param index 传入的是getViews()的返回值
      * @return
      */
-    public int getPreViews(int index) {
+    public int getPreViewsIndex(int index) {
         return index == 0 ? 2 : (index - 1);
     }
 
@@ -527,8 +574,9 @@ public class AngleView extends ViewGroup {
      * @param index 传入的是getViews()的返回值
      * @return
      */
-    public int getNextViews(int index) {
+    public int getNextViewsIndex(int index) {
         return index == 2 ? 0 : (index + 1);
     }
+
 
 }

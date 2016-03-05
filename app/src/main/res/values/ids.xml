@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="angleview" type="id">angleview</item>
+    <item name="indicator" type="id">indicator</item>
 </resources>

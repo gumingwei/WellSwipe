@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Well切</string>
+    <string name="recent">最近使用</string>
+    <string name="frequent">常用应用</string>
+    <string name="toolbox">快捷开关</string>
+</resources>
