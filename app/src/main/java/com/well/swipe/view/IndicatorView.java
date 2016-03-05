@@ -126,16 +126,17 @@ public class IndicatorView extends View {
      * @param cur
      * @param pre
      */
-    public void onForward(int cur, int pre) {
+    public void onForward(int cur, float pre) {
+        int index = (int) (pre * 10);
         if (cur == 0) {
-            mPaint0.setColor(Color.parseColor(mColors[pre]));
-            mPaint2.setColor(Color.parseColor(mColors[9 - pre]));
+            mPaint0.setColor(Color.parseColor(mColors[index]));
+            mPaint2.setColor(Color.parseColor(mColors[9 - index]));
         } else if (cur == 1) {
-            mPaint1.setColor(Color.parseColor(mColors[pre]));
-            mPaint0.setColor(Color.parseColor(mColors[9 - pre]));
+            mPaint1.setColor(Color.parseColor(mColors[index]));
+            mPaint0.setColor(Color.parseColor(mColors[9 - index]));
         } else if (cur == 2) {
-            mPaint2.setColor(Color.parseColor(mColors[pre]));
-            mPaint1.setColor(Color.parseColor(mColors[9 - pre]));
+            mPaint2.setColor(Color.parseColor(mColors[index]));
+            mPaint1.setColor(Color.parseColor(mColors[9 - index]));
         }
         invalidate();
     }
@@ -146,16 +147,17 @@ public class IndicatorView extends View {
      * @param cur
      * @param pre
      */
-    public void onReverse(int cur, int pre) {
+    public void onReverse(int cur, float pre) {
+        int index = Math.abs((int) (pre * 10));
         if (cur == 0) {
-            mPaint0.setColor(Color.parseColor(mColors[Math.abs(pre)]));
-            mPaint1.setColor(Color.parseColor(mColors[9 - Math.abs(pre)]));
+            mPaint0.setColor(Color.parseColor(mColors[index]));
+            mPaint1.setColor(Color.parseColor(mColors[9 - index]));
         } else if (cur == 1) {
-            mPaint1.setColor(Color.parseColor(mColors[Math.abs(pre)]));
-            mPaint2.setColor(Color.parseColor(mColors[9 - Math.abs(pre)]));
+            mPaint1.setColor(Color.parseColor(mColors[index]));
+            mPaint2.setColor(Color.parseColor(mColors[9 - index]));
         } else if (cur == 2) {
-            mPaint2.setColor(Color.parseColor(mColors[Math.abs(pre)]));
-            mPaint0.setColor(Color.parseColor(mColors[9 - Math.abs(pre)]));
+            mPaint2.setColor(Color.parseColor(mColors[index]));
+            mPaint0.setColor(Color.parseColor(mColors[9 - index]));
         }
         invalidate();
     }

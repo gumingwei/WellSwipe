@@ -183,12 +183,12 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
     @Override
     public void forward(int cur, float pre) {
-        mIndicator.onForward(cur, (int) (pre * 10));
+        mIndicator.onForward(cur, pre);
     }
 
     @Override
     public void reverse(int cur, float pre) {
-        mIndicator.onReverse(cur, (int) (pre * 10));
+        mIndicator.onReverse(cur, pre);
     }
 
     /**
