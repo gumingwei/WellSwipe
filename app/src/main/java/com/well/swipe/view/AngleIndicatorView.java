@@ -5,7 +5,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 
 import com.well.swipe.R;
 
@@ -30,13 +33,34 @@ public class AngleIndicatorView extends View {
 
     private int OFFSET_Y = 10;
 
-    private int STATE = STATE_LEFT;
+    private int mState = STATE_LEFT;
 
     public static final int STATE_LEFT = 1;
 
     public static final int STATE_RIGHT = 2;
 
     private int mWidth;
+
+    private int mHeight;
+
+    private float mLastX;
+
+    private float mLastY;
+
+    private int mTouchSlop;
+
+    private int DEGREES_U = 90 / 8;
+
+    OnIndexChangedLitener mListener;
+
+    public interface OnIndexChangedLitener {
+        /**
+         * 状态选中时
+         *
+         * @param index
+         */
+        void onIndexChanged(int index);
+    }
 
 
     public AngleIndicatorView(Context context) {
@@ -61,9 +85,12 @@ public class AngleIndicatorView extends View {
         mPaint2.setTextSize(30);
         mPaint2.setAntiAlias(true);
 
-        if (STATE == STATE_LEFT) {
+        if (mState == STATE_LEFT) {
             setRotation(-90);
         }
+
+        ViewConfiguration configuration = ViewConfiguration.get(context);
+        mTouchSlop = configuration.getScaledTouchSlop();
 
     }
 
@@ -71,7 +98,7 @@ public class AngleIndicatorView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         int degree = 90 / 4;
-        if (STATE == STATE_LEFT) {
+        if (mState == STATE_LEFT) {
             canvas.save();
             canvas.rotate(degree, 0, 0);
             canvas.drawText(getResources().getString(R.string.recent), LEFT_OFFSET_X, OFFSET_Y, mPaint0);
@@ -80,7 +107,7 @@ public class AngleIndicatorView extends View {
             canvas.rotate(degree, 0, 0);
             canvas.drawText(getResources().getString(R.string.frequent), LEFT_OFFSET_X, OFFSET_Y, mPaint2);
             canvas.restore();
-        } else if (STATE == STATE_RIGHT) {
+        } else if (mState == STATE_RIGHT) {
             canvas.save();
             canvas.rotate(-degree, mWidth, 0);
             canvas.drawText(getResources().getString(R.string.recent), RIGHT_OFFSET_X, OFFSET_Y, mPaint0);
@@ -96,9 +123,24 @@ public class AngleIndicatorView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         mWidth = getMeasuredWidth();
+        mHeight = getMeasuredHeight();
 
     }
 
+    /**
+     * 设置当前索引的变化监听
+     *
+     * @param listener
+     */
+    public void setOnChangeListener(OnIndexChangedLitener listener) {
+        mListener = listener;
+    }
+
+    /**
+     * 初始化当前选中的画笔的颜色
+     *
+     * @param current 当前高亮的画笔颜色
+     */
     public void setCurrent(int current) {
         if (current == 0) {
             mPaint0.setColor(Color.parseColor(mColors[0]));
@@ -110,14 +152,53 @@ public class AngleIndicatorView extends View {
         invalidate();
     }
 
-
-    public void setSTATE(int STATE) {
-        this.STATE = STATE;
-        if (STATE == STATE_RIGHT) {
+    /**
+     * 设置是左还是右
+     *
+     * @param state
+     */
+    public void setState(int state) {
+        this.mState = state;
+        if (state == STATE_RIGHT) {
             setRotationY(180);
             setRotation(90);
         }
         invalidate();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        int action = event.getAction();
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                mLastX = event.getX();
+                mLastY = event.getY();
+                Log.i("Gmw", "mLastX=" + mLastX + ",mLastY" + mLastY);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                break;
+            case MotionEvent.ACTION_UP:
+                float newx = event.getX();
+                float newy = event.getY();
+                if (Math.abs(newx - mLastX) < mTouchSlop || Math.abs(newy - mLastY) < mTouchSlop) {
+                    double degree = 0;
+                    if (mState == STATE_LEFT) {
+                        degree = Math.toDegrees(Math.atan(newy / newx));
+                    } else if (mState == STATE_RIGHT) {
+                        degree = Math.toDegrees(Math.atan(newy / (mWidth - newx)));
+                    }
+                    if (degree > 0 && degree < DEGREES_U * 3) {
+                        mListener.onIndexChanged(0);
+                    } else if (degree > DEGREES_U * 3 && degree < DEGREES_U * 5) {
+                        mListener.onIndexChanged(1);
+                    } else if (degree > DEGREES_U * 5 && degree < DEGREES_U * 8) {
+                        mListener.onIndexChanged(2);
+                    }
+                }
+                break;
+        }
+        return true;
     }
 
     /**
@@ -126,7 +207,7 @@ public class AngleIndicatorView extends View {
      * @param cur
      * @param pre
      */
-    public void onForward(int cur, float pre) {
+    public void onAngleChanged(int cur, float pre) {
         int index = (int) (pre * 10);
         if (cur == 0) {
             mPaint0.setColor(Color.parseColor(mColors[index]));
@@ -141,25 +222,5 @@ public class AngleIndicatorView extends View {
         invalidate();
     }
 
-    /**
-     * 逆时针时刷新颜色
-     *
-     * @param cur
-     * @param pre
-     */
-    public void onReverse(int cur, float pre) {
-        int index = Math.abs((int) (pre * 10));
-        if (cur == 0) {
-            mPaint0.setColor(Color.parseColor(mColors[index]));
-            mPaint1.setColor(Color.parseColor(mColors[9 - index]));
-        } else if (cur == 1) {
-            mPaint1.setColor(Color.parseColor(mColors[index]));
-            mPaint2.setColor(Color.parseColor(mColors[9 - index]));
-        } else if (cur == 2) {
-            mPaint2.setColor(Color.parseColor(mColors[index]));
-            mPaint0.setColor(Color.parseColor(mColors[9 - index]));
-        }
-        invalidate();
-    }
 
 }

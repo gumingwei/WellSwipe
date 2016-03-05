@@ -13,7 +13,7 @@ import com.well.swipe.utils.Utils;
 /**
  * Created by mingwei on 2/26/16.
  */
-public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeListener {
+public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeListener, AngleIndicatorView.OnIndexChangedLitener {
     /**
      * 旋转View
      */
@@ -93,8 +93,8 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         mAngleView = (AngleView) findViewById(R.id.angleview);
         mAngleView.setOnAngleChangeListener(this);
         mIndicator = (AngleIndicatorView) findViewById(R.id.indicator);
+        mIndicator.setOnChangeListener(this);
         mIndicator.setCurrent(0);
-
         //setRotationY();
     }
 
@@ -171,7 +171,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                 mVelocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
                 float vx = mVelocityTracker.getXVelocity();
                 float vy = mVelocityTracker.getYVelocity();
-                mAngleView.flingAngle(vx, vy);
+                mAngleView.fling(vx, vy);
                 recyleVelocityTracker();
                 break;
             case MotionEvent.ACTION_CANCEL:
@@ -183,7 +183,12 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
     @Override
     public void onAngleChanged(int cur, float p) {
-        mIndicator.onForward(cur, p);
+        mIndicator.onAngleChanged(cur, p);
+    }
+
+    @Override
+    public void onIndexChanged(int index) {
+        mAngleView.setViewsIndex(index);
     }
 
     /**
@@ -192,7 +197,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
      */
     private void setRotationY() {
         setRotationY(180);
-        mIndicator.setSTATE(AngleIndicatorView.STATE_RIGHT);
+        mIndicator.setState(AngleIndicatorView.STATE_RIGHT);
         mAngleView.POSITION_STATE = AngleView.RIGHT;
     }
 

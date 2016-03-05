@@ -5,7 +5,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,11 +85,7 @@ public class AngleView extends ViewGroup {
 
     private static final int COUNT_4 = 4;
 
-    private int mCurrentIndex;
-
     private ValueAnimator mAngleAnimator;
-
-    //private boolean isAnimatorComplete = false;
 
     private Map<Integer, ArrayList<View>> mMap = new HashMap<>();
 
@@ -180,7 +175,6 @@ public class AngleView extends ViewGroup {
      * @param index
      */
     private void itemLayout(int index) {
-        mCurrentIndex = index;
         itemLayout(mMap.get(getPreViewsIndex(getViewsIndex(index))), getQuaPreIndex(getQuaIndex(index)));
         itemLayout(mMap.get(getViewsIndex(index)), getQuaIndex(index));
         itemLayout(mMap.get(getNextViewsIndex(getViewsIndex(index))), getQuaNextIndex(getQuaIndex(index)));
@@ -303,8 +297,7 @@ public class AngleView extends ViewGroup {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         canvas.save();
-        Log.i("Gmw", "canvas=" + getViewsIndex((int) (getAngleValues() / 90)));
-        mAngleListener.onAngleChanged(getViewsIndex((int) (getAngleValues() / 90)), ((getAngleValues() % 90) / 90));
+        mAngleListener.onAngleChanged(getViewsIndex((int) (getAngleValues() / DEGREES_90)), ((getAngleValues() % DEGREES_90) / DEGREES_90));
         canvas.rotate(mBaseAngle + mChangeAngle, 0, mPivotY);
         super.dispatchDraw(canvas);
         canvas.restore();
@@ -333,8 +326,12 @@ public class AngleView extends ViewGroup {
         double angle;
         angle = Math.toDegrees(Math.atan(x / y));
         diffAngle = angle - mDownAngle;
+        if (diffAngle > 0) {
+            ANGLE_STATE = AngleView.ANGLE_STATE_ALONG;
+        } else {
+            ANGLE_STATE = AngleView.ANGLE_STATE_INVERSE;
+        }
         changeAngle(diffAngle);
-
     }
 
     /**
@@ -364,9 +361,9 @@ public class AngleView extends ViewGroup {
      * @param vx
      * @param vy
      */
-    public void flingAngle(float vx, float vy) {
+    public void fling(float vx, float vy) {
         if (vy > ALLOW_FLING || vx > ALLOW_FLING) {
-            flingNext();
+            flingForward();
         } else if (vx < -ALLOW_FLING || vy < -ALLOW_FLING) {
             flingCurrnet();
         } else {
@@ -385,7 +382,7 @@ public class AngleView extends ViewGroup {
             /**
              * 转到下一个
              */
-            flingNext();
+            flingForward();
         }
     }
 
@@ -395,7 +392,7 @@ public class AngleView extends ViewGroup {
     private void reverse() {
         float diff = (DEGREES_1080 - getAngleValues()) % AngleView.DEGREES_90;
         if (diff > 0 && diff < AngleView.DEGREES_OFFSET) {
-            flingNext();
+            flingForward();
         } else if (diff > AngleView.DEGREES_OFFSET && diff < DEGREES_90) {
             /**
              * 转到下一个
@@ -407,7 +404,7 @@ public class AngleView extends ViewGroup {
     /**
      * 顺时针到下一个90度
      */
-    private void flingNext() {
+    private void flingForward() {
         autoWhirling(getAngleValues(), ((int) (getAngleValues() / AngleView.DEGREES_90) + 1) * AngleView.DEGREES_90);
     }
 
@@ -416,6 +413,42 @@ public class AngleView extends ViewGroup {
      */
     private void flingCurrnet() {
         autoWhirling(getAngleValues(), ((int) (getAngleValues() / AngleView.DEGREES_90)) * AngleView.DEGREES_90);
+    }
+
+    /**
+     * 顺时针到上一个90度
+     */
+    private void flingReveser() {
+        autoWhirling(getAngleValues(), ((int) (getAngleValues() / AngleView.DEGREES_90) - 1) * AngleView.DEGREES_90);
+    }
+
+    /**
+     * 根据当前的数据组和点击情况来切换AngleIndicator
+     *
+     * @param cur 当前被点击的指示器索引
+     */
+    public void setViewsIndex(int cur) {
+        int index = getViewsIndex((int) (getAngleValues() / DEGREES_90));
+        if (index == 0) {
+            if (cur == 1) {
+                flingReveser();
+            } else if (cur == 2) {
+                flingForward();
+            }
+        } else if (index == 1) {
+            if (cur == 0) {
+                flingForward();
+            } else if (cur == 2) {
+                flingReveser();
+            }
+        } else if (index == 2) {
+            if (cur == 0) {
+                flingReveser();
+            } else if (cur == 1) {
+                flingForward();
+            }
+        }
+
     }
 
     /**
@@ -435,7 +468,6 @@ public class AngleView extends ViewGroup {
                 float value = (float) animation.getAnimatedValue();
                 mBaseAngle = value;
                 mBaseAngle = mBaseAngle % DEGREES_1080;
-
                 invalidate();
             }
         });
@@ -539,5 +571,5 @@ public class AngleView extends ViewGroup {
     public int getNextViewsIndex(int index) {
         return index == 2 ? 0 : (index + 1);
     }
-    
+
 }
