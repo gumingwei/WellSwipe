@@ -174,7 +174,6 @@ public class AngleIndicatorView extends View {
             case MotionEvent.ACTION_DOWN:
                 mLastX = event.getX();
                 mLastY = event.getY();
-                Log.i("Gmw", "mLastX=" + mLastX + ",mLastY" + mLastY);
                 break;
             case MotionEvent.ACTION_MOVE:
                 break;

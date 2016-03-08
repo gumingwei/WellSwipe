@@ -287,16 +287,12 @@ public class AngleView extends ViewGroup {
         }
     }
 
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-    }
-
-
     @Override
     protected void dispatchDraw(Canvas canvas) {
         canvas.save();
+        /**
+         * 转动的时候回传当前角度
+         */
         mAngleListener.onAngleChanged(getViewsIndex((int) (getAngleValues() / DEGREES_90)), ((getAngleValues() % DEGREES_90) / DEGREES_90));
         canvas.rotate(mBaseAngle + mChangeAngle, 0, mPivotY);
         super.dispatchDraw(canvas);
@@ -327,9 +323,9 @@ public class AngleView extends ViewGroup {
         angle = Math.toDegrees(Math.atan(x / y));
         diffAngle = angle - mDownAngle;
         if (diffAngle > 0) {
-            ANGLE_STATE = AngleView.ANGLE_STATE_ALONG;
+            ANGLE_STATE = ANGLE_STATE_ALONG;
         } else {
-            ANGLE_STATE = AngleView.ANGLE_STATE_INVERSE;
+            ANGLE_STATE = ANGLE_STATE_INVERSE;
         }
         changeAngle(diffAngle);
     }
@@ -348,7 +344,7 @@ public class AngleView extends ViewGroup {
      * 松手后根据当前已经旋转的角，POSITION，顺逆时针来判定是留在当前限象还是旋转到上一个或者下一个限象
      */
     private void upAngle() {
-        if (ANGLE_STATE == AngleView.ANGLE_STATE_ALONG) {
+        if (ANGLE_STATE == ANGLE_STATE_ALONG) {
             forward();
         } else {
             reverse();
@@ -375,10 +371,10 @@ public class AngleView extends ViewGroup {
      * 顺时针旋转
      */
     private void forward() {
-        float diff = getAngleValues() % AngleView.DEGREES_90;
-        if (diff > 0 && diff < AngleView.DEGREES_OFFSET) {
+        float diff = getAngleValues() % DEGREES_90;
+        if (diff > 0 && diff < DEGREES_OFFSET) {
             flingCurrnet();
-        } else if (diff > AngleView.DEGREES_OFFSET && diff < DEGREES_90) {
+        } else if (diff > DEGREES_OFFSET && diff < DEGREES_90) {
             /**
              * 转到下一个
              */
@@ -390,10 +386,10 @@ public class AngleView extends ViewGroup {
      * 逆时针旋转
      */
     private void reverse() {
-        float diff = (DEGREES_1080 - getAngleValues()) % AngleView.DEGREES_90;
-        if (diff > 0 && diff < AngleView.DEGREES_OFFSET) {
+        float diff = (DEGREES_1080 - getAngleValues()) % DEGREES_90;
+        if (diff > 0 && diff < DEGREES_OFFSET) {
             flingForward();
-        } else if (diff > AngleView.DEGREES_OFFSET && diff < DEGREES_90) {
+        } else if (diff > DEGREES_OFFSET && diff < DEGREES_90) {
             /**
              * 转到下一个
              */
@@ -405,21 +401,21 @@ public class AngleView extends ViewGroup {
      * 顺时针到下一个90度
      */
     private void flingForward() {
-        autoWhirling(getAngleValues(), ((int) (getAngleValues() / AngleView.DEGREES_90) + 1) * AngleView.DEGREES_90);
+        autoWhirling(getAngleValues(), ((int) (getAngleValues() / DEGREES_90) + 1) * DEGREES_90);
     }
 
     /**
      * 回到当前的角度
      */
     private void flingCurrnet() {
-        autoWhirling(getAngleValues(), ((int) (getAngleValues() / AngleView.DEGREES_90)) * AngleView.DEGREES_90);
+        autoWhirling(getAngleValues(), ((int) (getAngleValues() / DEGREES_90)) * DEGREES_90);
     }
 
     /**
-     * 顺时针到上一个90度
+     * 逆时针到上一个90度
      */
     private void flingReveser() {
-        autoWhirling(getAngleValues(), ((int) (getAngleValues() / AngleView.DEGREES_90) - 1) * AngleView.DEGREES_90);
+        autoWhirling(getAngleValues(), ((int) (getAngleValues() / DEGREES_90) - 1) * DEGREES_90);
     }
 
     /**

@@ -18,7 +18,9 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
      * 旋转View
      */
     private AngleView mAngleView;
-
+    /**
+     * 底部的指示器
+     */
     private AngleIndicatorView mIndicator;
     /**
      * 当前的旋转状态
