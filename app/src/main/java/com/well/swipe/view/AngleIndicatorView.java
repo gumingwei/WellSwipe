@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -33,11 +32,11 @@ public class AngleIndicatorView extends View {
 
     private int OFFSET_Y = 10;
 
-    private int mState = STATE_LEFT;
+    private int mPositionState = POSITION_STATE_LEFT;
 
-    public static final int STATE_LEFT = 1;
+    public static final int POSITION_STATE_LEFT = 1;
 
-    public static final int STATE_RIGHT = 2;
+    public static final int POSITION_STATE_RIGHT = 2;
 
     private int mWidth;
 
@@ -49,9 +48,11 @@ public class AngleIndicatorView extends View {
 
     private int mTouchSlop;
 
-    private int DEGREES_U = 90 / 8;
+    public static final int DEGREE_90 = 90;
 
-    OnIndexChangedLitener mListener;
+    private int DEGREES_U = DEGREE_90 / 8;
+
+    private OnIndexChangedLitener mListener;
 
     public interface OnIndexChangedLitener {
         /**
@@ -61,7 +62,6 @@ public class AngleIndicatorView extends View {
          */
         void onIndexChanged(int index);
     }
-
 
     public AngleIndicatorView(Context context) {
         this(context, null);
@@ -85,7 +85,7 @@ public class AngleIndicatorView extends View {
         mPaint2.setTextSize(30);
         mPaint2.setAntiAlias(true);
 
-        if (mState == STATE_LEFT) {
+        if (mPositionState == POSITION_STATE_LEFT) {
             setRotation(-90);
         }
 
@@ -97,8 +97,8 @@ public class AngleIndicatorView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        int degree = 90 / 4;
-        if (mState == STATE_LEFT) {
+        int degree = DEGREE_90 / 4;
+        if (mPositionState == POSITION_STATE_LEFT) {
             canvas.save();
             canvas.rotate(degree, 0, 0);
             canvas.drawText(getResources().getString(R.string.recent), LEFT_OFFSET_X, OFFSET_Y, mPaint0);
@@ -107,7 +107,7 @@ public class AngleIndicatorView extends View {
             canvas.rotate(degree, 0, 0);
             canvas.drawText(getResources().getString(R.string.frequent), LEFT_OFFSET_X, OFFSET_Y, mPaint2);
             canvas.restore();
-        } else if (mState == STATE_RIGHT) {
+        } else if (mPositionState == POSITION_STATE_RIGHT) {
             canvas.save();
             canvas.rotate(-degree, mWidth, 0);
             canvas.drawText(getResources().getString(R.string.recent), RIGHT_OFFSET_X, OFFSET_Y, mPaint0);
@@ -158,17 +158,19 @@ public class AngleIndicatorView extends View {
      * @param state
      */
     public void setState(int state) {
-        this.mState = state;
-        if (state == STATE_RIGHT) {
-            setRotationY(180);
-            setRotation(90);
+        this.mPositionState = state;
+        if (state == POSITION_STATE_LEFT) {
+            setRotation(-90);
+            setRotationY(0);
+        } else if (state == POSITION_STATE_RIGHT) {
+            setRotationY(DEGREE_90 * 2);
+            setRotation(DEGREE_90);
         }
         invalidate();
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
         int action = event.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
@@ -182,9 +184,9 @@ public class AngleIndicatorView extends View {
                 float newy = event.getY();
                 if (Math.abs(newx - mLastX) < mTouchSlop || Math.abs(newy - mLastY) < mTouchSlop) {
                     double degree = 0;
-                    if (mState == STATE_LEFT) {
+                    if (mPositionState == POSITION_STATE_LEFT) {
                         degree = Math.toDegrees(Math.atan(newy / newx));
-                    } else if (mState == STATE_RIGHT) {
+                    } else if (mPositionState == POSITION_STATE_RIGHT) {
                         degree = Math.toDegrees(Math.atan(newy / (mWidth - newx)));
                     }
                     if (degree > 0 && degree < DEGREES_U * 3) {

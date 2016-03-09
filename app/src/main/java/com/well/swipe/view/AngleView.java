@@ -48,13 +48,13 @@ public class AngleView extends ViewGroup {
 
     private int mWidth;
 
-    static int LEFT = 1;
+    static int POSITION_STATE_LEFT = 1;
 
-    static int RIGHT = 2;
+    static int POSITION_STATE_RIGHT = 2;
     /**
      * 容器在做右下角区分
      */
-    public int POSITION_STATE = LEFT;
+    private int mPositionState = POSITION_STATE_LEFT;
     /**
      * 顺时针/逆时针
      */
@@ -79,7 +79,7 @@ public class AngleView extends ViewGroup {
      */
     public static final int DEGREES_OFFSET = 20;
     /**
-     * 判定Fling动作的域
+     * 判定Fling动作的速度范围
      */
     private static final int ALLOW_FLING = 2500;
 
@@ -262,13 +262,14 @@ public class AngleView extends ViewGroup {
              * 矫正子view
              * 旋转一定的角度,以保证旋转至第0限象时方向是正的
              */
-            if (POSITION_STATE == LEFT) {
+            if (mPositionState == POSITION_STATE_LEFT) {
                 views.get(index).setRotation(DEGREES_90 * qua);
+                views.get(index).setRotationY(0);
             }
             /**
              * 翻转容器之后在内部翻转子控件矫正
              */
-            if (POSITION_STATE == RIGHT) {
+            if (mPositionState == POSITION_STATE_RIGHT) {
                 views.get(index).setRotationY(DEGREES_90 * 2);
                 if (qua == 0) {
                     views.get(index).setRotation(-DEGREES_90 * qua);
@@ -444,7 +445,6 @@ public class AngleView extends ViewGroup {
                 flingForward();
             }
         }
-
     }
 
     /**
@@ -456,7 +456,7 @@ public class AngleView extends ViewGroup {
     private void autoWhirling(float start, float end) {
         mChangeAngle = 0;
         mAngleAnimator = ValueAnimator.ofFloat(start, end);
-        mAngleAnimator.setDuration(400);
+        mAngleAnimator.setDuration(500);
         mAngleAnimator.setInterpolator(new DecelerateInterpolator());
         mAngleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -491,6 +491,10 @@ public class AngleView extends ViewGroup {
         });
         mAngleAnimator.start();
 
+    }
+
+    public void setPositionState(int position) {
+        mPositionState = position;
     }
 
 

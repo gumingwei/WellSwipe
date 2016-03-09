@@ -193,14 +193,20 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         mAngleView.setViewsIndex(index);
     }
 
+    public void setPositionLeft() {
+        setRotationY(0);
+        mIndicator.setState(AngleIndicatorView.POSITION_STATE_LEFT);
+        mAngleView.setPositionState(AngleView.POSITION_STATE_LEFT);
+    }
+
     /**
      * 重要方法:反转AngleLayout
      * 反转之后根据不同情况对子控件做反转
      */
-    private void setRotationY() {
+    public void setPositionRight() {
         setRotationY(180);
-        mIndicator.setState(AngleIndicatorView.STATE_RIGHT);
-        mAngleView.POSITION_STATE = AngleView.RIGHT;
+        mIndicator.setState(AngleIndicatorView.POSITION_STATE_RIGHT);
+        mAngleView.setPositionState(AngleView.POSITION_STATE_RIGHT);
     }
 
     /**

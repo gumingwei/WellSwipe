@@ -7,9 +7,10 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
 import com.well.swipe.utils.Utils;
@@ -22,40 +23,72 @@ public class CatchView extends View {
 
     private Paint mPaint;
 
-    private int mDefaultWidth = 115;
-
     private Rect mRect = new Rect();
 
-    private int mState = 0;
+    private int mPosition = POSITION_STATE_LEFT;
 
-    public static final int STATE_LEFT = 0;
+    public static final int POSITION_STATE_LEFT = 0;
 
-    public static final int STATE_RIGHT = 1;
+    public static final int POSITION_STATE_RIGHT = 1;
 
-    public static final int STATE_LEFT_RIGHT = 2;
+    public int mTouchSlop;
 
-    private int mPivotX;
+    private int mDisplayWidth;
 
-    private int mPivotY;
+    private int mDisplayHeight;
 
-    private int mRectRangeX;
+    private int mRectLeft;
 
-    private int mRectRangeY;
+    private int mRectTop;
 
-    private int mRectWidth;
+    private int mRectRight;
+
+    private int mRectBottom;
 
     private int mWidth;
 
     private int mHeight;
 
+    private float mLastX;
+
+    private float mLastY;
+
+    //private int mState;
+
+    private int mTouchState = 2;
+
+    public static final int TOUCH_STATE_REST = 0;
+
+    public static final int TOUCH_STATE_SLIDE = 1;
+
     private WindowManager.LayoutParams mParams;
 
     private WindowManager mManager;
 
-    public CatchView(Context context, int width, int height) {
+    private OnEdgeSlidingListener mListener;
+
+    public interface OnEdgeSlidingListener {
+        /**
+         * 打开
+         */
+        void openLeft();
+
+        void openRight();
+
+        /**
+         * 打开的百分比
+         *
+         * @param precent
+         */
+        void change(float precent);
+    }
+
+    public CatchView(Context context, int left, int top, int width, int height) {
         this(context, null);
-        mWidth = width;
-        mHeight = height;
+        mRectLeft = left;
+        mRectTop = top;
+        mRectRight = mWidth = width;
+        mRectBottom = mHeight = height;
     }
 
     public CatchView(Context context, AttributeSet attrs) {
@@ -67,11 +100,10 @@ public class CatchView extends View {
         super(context, attrs, defStyleAttr);
         mPaint = new Paint();
         mPaint.setColor(Color.BLUE);
-        mPivotX = context.getResources().getDisplayMetrics().widthPixels;
-        mPivotY = context.getResources().getDisplayMetrics().heightPixels + Utils.getStatusBarHeight(context);
-        //Log.i("Gmw", "w=" + mWidth + ",h=" + mHeight);
-
-        //initRect();
+        mDisplayWidth = context.getResources().getDisplayMetrics().widthPixels;
+        mDisplayHeight = context.getResources().getDisplayMetrics().heightPixels + Utils.getStatusBarHeight(context);
+        ViewConfiguration configuration = ViewConfiguration.get(context);
+        mTouchSlop = configuration.getScaledTouchSlop();
     }
 
     @Override
@@ -83,9 +115,40 @@ public class CatchView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         canvas.drawRect(mRect, mPaint);
+    }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int action = event.getAction();
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                mLastX = event.getX();
+                mLastY = event.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float newx = event.getX();
+                float newy = event.getY();
+                if (mPosition == POSITION_STATE_LEFT) {
+                    if (newx - mLastX > mTouchSlop && Math.abs(newy - mLastY) > mTouchSlop) {
+                        mTouchState = TOUCH_STATE_SLIDE;
+                        mListener.openLeft();
+                    }
+                } else if (mPosition == POSITION_STATE_RIGHT) {
+                    if (Math.abs(newx - mLastX) > mTouchSlop && Math.abs(newy - mLastY) > mTouchSlop) {
+                        mTouchState = TOUCH_STATE_SLIDE;
+                        mListener.openRight();
+                    }
+                }
+                if (mTouchState == TOUCH_STATE_SLIDE) {
+                    mListener.change(Math.abs(newx / mDisplayWidth));
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                mTouchState = TOUCH_STATE_REST;
+                break;
+        }
+        return true;
     }
 
     private void initManager(int x, int y) {
@@ -96,28 +159,31 @@ public class CatchView extends View {
         mParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                 | WindowManager.LayoutParams.FLAG_FULLSCREEN;
         mParams.gravity = Gravity.LEFT | Gravity.TOP;
-        if (mState == STATE_LEFT) {
+        if (mPosition == POSITION_STATE_LEFT) {
             mParams.x = 0;
-        } else {
+        } else if (mPosition == POSITION_STATE_RIGHT) {
             mParams.x = x;
         }
+
         mParams.y = y;
         mParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
         mParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
     }
 
     public void setState(int state) {
-        mState = state;
-        mRectRangeX = mWidth;
-        mRectRangeY = mHeight;
-        initManager(mPivotX, mPivotY);
+        mPosition = state;
+        initManager(mDisplayWidth, mDisplayHeight);
         initRect();
         invalidate();
 
     }
 
+    /**
+     * 初始化范围
+     */
     private void initRect() {
-        mRect.set(0, 0, mRectRangeX, mRectRangeY);
+
+        mRect.set(mRectLeft, mRectTop, mRectRight, mRectBottom);
     }
 
     public boolean isManager() {
@@ -138,5 +204,9 @@ public class CatchView extends View {
                 mManager.removeView(this);
             }
         }
+    }
+
+    public void setOnEdgeSlidingListener(OnEdgeSlidingListener listener) {
+        mListener = listener;
     }
 }
