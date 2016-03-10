@@ -188,7 +188,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     @Override
     public void change(float precent) {
-
+        mSwipeLayout.setScale(precent);
     }
 
     private native void swipeDaemon(String serviceName, int sdkVersion);

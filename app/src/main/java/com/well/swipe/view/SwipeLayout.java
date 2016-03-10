@@ -23,6 +23,10 @@ public class SwipeLayout extends RelativeLayout {
 
     private AngleLayout mAngleLayout;
 
+    private int mWidth;
+
+    private int mHeight;
+
     public SwipeLayout(Context context) {
         this(context, null);
     }
@@ -39,8 +43,14 @@ public class SwipeLayout extends RelativeLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mAngleLayout = (AngleLayout) findViewById(R.id.anglelayout);
-
         initManager(0, 0);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        mWidth = getMeasuredWidth();
+        mHeight = getMeasuredHeight();
     }
 
     private void initManager(int x, int y) {
@@ -56,6 +66,8 @@ public class SwipeLayout extends RelativeLayout {
         mParams.y = y;
         mParams.width = WindowManager.LayoutParams.MATCH_PARENT;
         mParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+
+
     }
 
     public boolean isManager() {
@@ -64,19 +76,23 @@ public class SwipeLayout extends RelativeLayout {
 
     public void setR() {
         mAngleLayout.setPositionRight();
+        mAngleLayout.setPivotX(mWidth);
+        mAngleLayout.setPivotY(mHeight);
+
     }
+
 
     public void setL() {
         mAngleLayout.setPositionLeft();
+        mAngleLayout.setPivotX(0);
+        mAngleLayout.setPivotY(mHeight);
+        
     }
 
-//    public void setPositionLeft() {
-//        mAngleLayout.setPositionLeft();
-//    }
-//
-//    public void setPositionRight() {
-//        mAngleLayout.setPositionRight();
-//    }
+    public void setScale(float scale) {
+        mAngleLayout.setScaleX(scale);
+        mAngleLayout.setScaleY(scale);
+    }
 
     public void show() {
         if (isManager()) {

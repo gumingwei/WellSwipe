@@ -2,6 +2,7 @@ package com.well.swipe.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
@@ -13,7 +14,8 @@ import com.well.swipe.utils.Utils;
 /**
  * Created by mingwei on 2/26/16.
  */
-public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeListener, AngleIndicatorView.OnIndexChangedLitener {
+public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeListener,
+        AngleIndicatorView.OnIndexChangedLitener {
     /**
      * 旋转View
      */
@@ -45,8 +47,13 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
     private static final int TOUCH_STATE_AUTO = 4;
 
-    private boolean isAllowAngle = true;
+//    private int mPositionState = POSITION_STATE_LEFT;
+//
+//    private static final int POSITION_STATE_LEFT = 0;
+//
+//    private static final int POSITION_STATE_RIGHT = 1;
 
+    private boolean isAllowAngle = true;
 
     private float mDownMotionX;
 
@@ -97,7 +104,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         mIndicator = (AngleIndicatorView) findViewById(R.id.indicator);
         mIndicator.setOnChangeListener(this);
         mIndicator.setCurrent(0);
-        //setRotationY();
+        setPositionRight();
     }
 
     @Override
@@ -125,12 +132,18 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         super.onLayout(changed, left, top, right, bottom);
         int offset = Utils.dp2px(getContext(), mFanMumOffset);
         int fanSize = mWidth - offset;
-        mAngleView.layout(0, mHeight - fanSize, fanSize, mHeight);
         /**
-         * IndicatorView的大小
+         * AngleView,IndicatorView的大小
          */
-        float indicatorSize = mWidth / 2.5f;
-        mIndicator.layout(0, mHeight - (int) indicatorSize, (int) indicatorSize, mHeight);
+        int indicatorSize = (int) (mWidth / 2.5f);
+        if (mAngleView.getPositionState() == AngleView.POSITION_STATE_LEFT) {
+            mAngleView.layout(0, mHeight - fanSize, fanSize, mHeight);
+            mIndicator.layout(0, mHeight - indicatorSize, indicatorSize, mHeight);
+        } else if (mAngleView.getPositionState() == AngleView.POSITION_STATE_RIGHT) {
+            mAngleView.layout(mWidth - fanSize, mHeight - fanSize, mWidth, mHeight);
+            mIndicator.layout(mWidth - indicatorSize, mHeight - indicatorSize, mWidth, mHeight);
+        }
+
     }
 
 
@@ -153,7 +166,12 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                 if (mTouchState == TOUCH_STATE_WHIRLING) {
                     //正在滚动的时候
                 }
-                mAngleView.downAngle(mLastMotionX, mHeight - mLastMotionY);
+                if (mAngleView.getPositionState() == AngleView.POSITION_STATE_LEFT) {
+                    mAngleView.downAngle(mLastMotionX, mHeight - mLastMotionY);
+                } else if (mAngleView.getPositionState() == AngleView.POSITION_STATE_RIGHT) {
+                    mAngleView.downAngle(mWidth - mLastMotionX, mHeight - mLastMotionY);
+                }
+
                 break;
             case MotionEvent.ACTION_MOVE:
                 float newX = event.getX();
@@ -163,9 +181,15 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                 if ((Math.abs(diffX) > mTouchSlop || Math.abs(diffY) > mTouchSlop) && isAllowAngle) {
                     mTouchState = TOUCH_STATE_WHIRLING;
                 }
-
+                /**
+                 *
+                 */
                 if (mTouchState == TOUCH_STATE_WHIRLING && newY < mHeight) {
-                    mAngleView.changeAngle(newX, mHeight - newY);
+                    if (mAngleView.getPositionState() == AngleView.POSITION_STATE_LEFT) {
+                        mAngleView.changeAngle(newX, mHeight - newY);
+                    } else if (mAngleView.getPositionState() == AngleView.POSITION_STATE_RIGHT) {
+                        mAngleView.changeAngle(mWidth - newX, mHeight - newY);
+                    }
                 }
 
                 break;
@@ -193,9 +217,12 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         mAngleView.setViewsIndex(index);
     }
 
+    /**
+     * 重要方法:反转AngleLayout
+     * 反转之后根据不同情况对子控件做反转
+     */
     public void setPositionLeft() {
-        setRotationY(0);
-        mIndicator.setState(AngleIndicatorView.POSITION_STATE_LEFT);
+        mIndicator.setPositionState(AngleIndicatorView.POSITION_STATE_LEFT);
         mAngleView.setPositionState(AngleView.POSITION_STATE_LEFT);
     }
 
@@ -204,10 +231,14 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
      * 反转之后根据不同情况对子控件做反转
      */
     public void setPositionRight() {
-        setRotationY(180);
-        mIndicator.setState(AngleIndicatorView.POSITION_STATE_RIGHT);
+        mIndicator.setPositionState(AngleIndicatorView.POSITION_STATE_RIGHT);
         mAngleView.setPositionState(AngleView.POSITION_STATE_RIGHT);
     }
+
+    public int getPositionState() {
+        return mAngleView.getPositionState();
+    }
+
 
     /**
      * 初始化VelocityTracker

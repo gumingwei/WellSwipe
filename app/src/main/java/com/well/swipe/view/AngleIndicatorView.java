@@ -157,13 +157,13 @@ public class AngleIndicatorView extends View {
      *
      * @param state
      */
-    public void setState(int state) {
+    public void setPositionState(int state) {
         this.mPositionState = state;
         if (state == POSITION_STATE_LEFT) {
             setRotation(-90);
             setRotationY(0);
         } else if (state == POSITION_STATE_RIGHT) {
-            setRotationY(DEGREE_90 * 2);
+            //setRotationY(DEGREE_90 * 2);
             setRotation(DEGREE_90);
         }
         invalidate();
@@ -210,16 +210,30 @@ public class AngleIndicatorView extends View {
      */
     public void onAngleChanged(int cur, float pre) {
         int index = (int) (pre * 10);
-        if (cur == 0) {
-            mPaint0.setColor(Color.parseColor(mColors[index]));
-            mPaint2.setColor(Color.parseColor(mColors[9 - index]));
-        } else if (cur == 1) {
-            mPaint1.setColor(Color.parseColor(mColors[index]));
-            mPaint0.setColor(Color.parseColor(mColors[9 - index]));
-        } else if (cur == 2) {
-            mPaint2.setColor(Color.parseColor(mColors[index]));
-            mPaint1.setColor(Color.parseColor(mColors[9 - index]));
+        if (mPositionState == POSITION_STATE_LEFT) {
+            if (cur == 0) {
+                mPaint0.setColor(Color.parseColor(mColors[index]));
+                mPaint2.setColor(Color.parseColor(mColors[9 - index]));
+            } else if (cur == 1) {
+                mPaint1.setColor(Color.parseColor(mColors[index]));
+                mPaint0.setColor(Color.parseColor(mColors[9 - index]));
+            } else if (cur == 2) {
+                mPaint2.setColor(Color.parseColor(mColors[index]));
+                mPaint1.setColor(Color.parseColor(mColors[9 - index]));
+            }
+        } else if (mPositionState == POSITION_STATE_RIGHT) {
+            if (cur == 0) {
+                mPaint0.setColor(Color.parseColor(mColors[index]));
+                mPaint1.setColor(Color.parseColor(mColors[9 - index]));
+            } else if (cur == 1) {
+                mPaint2.setColor(Color.parseColor(mColors[index]));
+                mPaint0.setColor(Color.parseColor(mColors[9 - index]));
+            } else if (cur == 2) {
+                mPaint1.setColor(Color.parseColor(mColors[index]));
+                mPaint2.setColor(Color.parseColor(mColors[9 - index]));
+            }
         }
+
         invalidate();
     }
 
