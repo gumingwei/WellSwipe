@@ -88,6 +88,8 @@ public class AngleView extends ViewGroup {
 
     private static final int COUNT_4 = 4;
 
+    private int mCurrentIndex;
+
     private ValueAnimator mAngleAnimator;
 
     private Map<Integer, ArrayList<View>> mMap = new HashMap<>();
@@ -164,16 +166,17 @@ public class AngleView extends ViewGroup {
         mPivotY = getMeasuredHeight();
         mHeight = getMeasuredHeight();
         mWidth = getMeasuredWidth();
+        //setBaseAngle(90);
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        int index = (int) ((mBaseAngle) / DEGREES_90);
         if (mPositionState == POSITION_STATE_LEFT) {
-            itemLayout(0);
+            itemLayout(index);
         } else if (mPositionState == POSITION_STATE_RIGHT) {
-            itemLayout2(0);
+            itemLayout2(index);
         }
-
     }
 
     /**
@@ -183,6 +186,8 @@ public class AngleView extends ViewGroup {
      * @param index
      */
     private void itemLayout(int index) {
+        mCurrentIndex = gettest(index);
+        Log.i("Gmw", "itemLayout_index=" + gettest(index) + ",d=" + mBaseAngle);
         itemLayout(mMap.get(getPreViewsIndex(getViewsIndex(index))), getPreQuaIndex(getQuaIndex(index)));
         itemLayout(mMap.get(getViewsIndex(index)), getQuaIndex(index));
         itemLayout(mMap.get(getNextViewsIndex(getViewsIndex(index))), getNextQuaIndex(getQuaIndex(index)));
@@ -194,6 +199,8 @@ public class AngleView extends ViewGroup {
      * @param index
      */
     private void itemLayout2(int index) {
+        mCurrentIndex = index;
+        Log.i("Gmw", "itemLayout2_index=" + mCurrentIndex + ",d=" + mBaseAngle);
         itemLayout(mMap.get(getPreViewsIndex(getViewsIndex2(index))), getPreQuaIndex(getQuaIndex2(index)));
         itemLayout(mMap.get(getViewsIndex2(index)), getQuaIndex2(index));
         itemLayout(mMap.get(getNextViewsIndex(getViewsIndex2(index))), getNextQuaIndex(getQuaIndex2(index)));
@@ -315,7 +322,7 @@ public class AngleView extends ViewGroup {
     protected void dispatchDraw(Canvas canvas) {
         canvas.save();
         /**
-         * 转动的时候回传当前角度
+         * 转动的时候回传当前限象
          */
         mAngleListener.onAngleChanged(getViewsIndex((int) (getAngleValues() / DEGREES_90)), ((getAngleValues() % DEGREES_90) / DEGREES_90));
 
@@ -495,26 +502,50 @@ public class AngleView extends ViewGroup {
      * @param cur 当前被点击的指示器索引
      */
     public void setViewsIndex(int cur) {
-        int index = getViewsIndex((int) (getAngleValues() / DEGREES_90));
-        if (index == 0) {
-            if (cur == 1) {
-                flingReveser();
-            } else if (cur == 2) {
-                flingForward();
+        if (mPositionState == POSITION_STATE_LEFT) {
+            int index = getViewsIndex((int) (getAngleValues() / DEGREES_90));
+            if (index == 0) {
+                if (cur == 1) {
+                    flingReveser();
+                } else if (cur == 2) {
+                    flingForward();
+                }
+            } else if (index == 1) {
+                if (cur == 0) {
+                    flingForward();
+                } else if (cur == 2) {
+                    flingReveser();
+                }
+            } else if (index == 2) {
+                if (cur == 0) {
+                    flingReveser();
+                } else if (cur == 1) {
+                    flingForward();
+                }
             }
-        } else if (index == 1) {
-            if (cur == 0) {
-                flingForward();
-            } else if (cur == 2) {
-                flingReveser();
-            }
-        } else if (index == 2) {
-            if (cur == 0) {
-                flingReveser();
-            } else if (cur == 1) {
-                flingForward();
+        } else if (mPositionState == POSITION_STATE_RIGHT) {
+            int index = getViewsIndex2((int) (getAngleValues() / DEGREES_90));
+            if (index == 0) {
+                if (cur == 1) {
+                    flingForward();
+                } else if (cur == 2) {
+                    flingReveser();
+                }
+            } else if (index == 1) {
+                if (cur == 2) {
+                    flingForward();
+                } else if (cur == 0) {
+                    flingReveser();
+                }
+            } else if (index == 2) {
+                if (cur == 0) {
+                    flingForward();
+                } else if (cur == 1) {
+                    flingReveser();
+                }
             }
         }
+
     }
 
     /**
@@ -550,7 +581,9 @@ public class AngleView extends ViewGroup {
                     /**
                      * getQuaIndex()
                      */
+
                     itemLayout(mIndex);
+
                 } else if (mPositionState == POSITION_STATE_RIGHT) {
                     itemLayout2(mIndex);
                 }
@@ -589,6 +622,19 @@ public class AngleView extends ViewGroup {
         return newrotation < 0 ? DEGREES_1080 + (newrotation) : (newrotation);
     }
 
+    public float getBaseAngle() {
+        return mBaseAngle;
+    }
+
+    public void setBaseAngle(float angle) {
+        mBaseAngle = angle;
+        invalidate();
+    }
+
+    public int getCurrentIndex() {
+        return mCurrentIndex;
+    }
+
     /**
      * 根据当前的index获取当前显示限象index
      * 比如11->1,10->2,9->3,8->0
@@ -601,6 +647,10 @@ public class AngleView extends ViewGroup {
         return index == 0 ? 0 : (12 - index) % COUNT_4;
     }
 
+    public int gettest(int index) {
+        return index == 0 ? 0 : (12 - index);
+    }
+
     /**
      * STATE=RIGHT时
      *
@@ -608,7 +658,7 @@ public class AngleView extends ViewGroup {
      * @return
      */
     public int getQuaIndex2(int index) {
-        return index % COUNT_4;
+        return index < 0 ? COUNT_4 + index : index % COUNT_4;
     }
 
     /**
@@ -651,7 +701,7 @@ public class AngleView extends ViewGroup {
      * @return
      */
     private int getViewsIndex2(int index) {
-        return index % 3;
+        return index < 0 ? 3 + index : index % 3;
     }
 
     /**

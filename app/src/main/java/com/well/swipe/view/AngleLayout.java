@@ -16,6 +16,7 @@ import com.well.swipe.utils.Utils;
  */
 public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeListener,
         AngleIndicatorView.OnIndexChangedLitener {
+    Context mContext;
     /**
      * 旋转View
      */
@@ -46,12 +47,6 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     private static final int TOUCH_STATE_NEXT = 3;
 
     private static final int TOUCH_STATE_AUTO = 4;
-
-//    private int mPositionState = POSITION_STATE_LEFT;
-//
-//    private static final int POSITION_STATE_LEFT = 0;
-//
-//    private static final int POSITION_STATE_RIGHT = 1;
 
     private boolean isAllowAngle = true;
 
@@ -90,6 +85,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
     public AngleLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mContext = context;
         ViewConfiguration mConfig = ViewConfiguration.get(context);
         mTouchSlop = mConfig.getScaledTouchSlop();
         mMaximumVelocity = ViewConfiguration.get(context).getScaledMaximumFlingVelocity();
@@ -125,6 +121,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         float indicatorSize = mWidth / 2.5f;
         LayoutParams indicatorParams = new LayoutParams((int) indicatorSize, (int) indicatorSize);
         mIndicator.setLayoutParams(indicatorParams);
+
     }
 
     @Override
@@ -222,8 +219,16 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
      * 反转之后根据不同情况对子控件做反转
      */
     public void setPositionLeft() {
+        setPivotX(0);
+        setPivotY(mContext.getResources().getDisplayMetrics().heightPixels - Utils.getStatusBarHeight(mContext));
         mIndicator.setPositionState(AngleIndicatorView.POSITION_STATE_LEFT);
         mAngleView.setPositionState(AngleView.POSITION_STATE_LEFT);
+        /**
+         * 左右两百年的角度一样，但是显示的限象不一样，通过一个公倍数12来换算成限象一样
+         */
+        if (mAngleView.getCurrentIndex() != 0) {
+            mAngleView.setBaseAngle((12 - mAngleView.getCurrentIndex()) * AngleView.DEGREES_90);
+        }
     }
 
     /**
@@ -231,8 +236,16 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
      * 反转之后根据不同情况对子控件做反转
      */
     public void setPositionRight() {
+        setPivotX(mContext.getResources().getDisplayMetrics().widthPixels);
+        setPivotY(mContext.getResources().getDisplayMetrics().heightPixels);
         mIndicator.setPositionState(AngleIndicatorView.POSITION_STATE_RIGHT);
         mAngleView.setPositionState(AngleView.POSITION_STATE_RIGHT);
+        /**
+         * 左右两百年的角度一样，但是显示的限象不一样，通过一个公倍数12来换算成限象一样
+         */
+        if (mAngleView.getCurrentIndex() != 0) {
+            mAngleView.setBaseAngle(mAngleView.getCurrentIndex() * AngleView.DEGREES_90);
+        }
     }
 
     public int getPositionState() {

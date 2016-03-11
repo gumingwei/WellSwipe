@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,11 +18,11 @@ import com.well.swipe.R;
  */
 public class AngleIndicatorView extends View {
 
-    private Paint mPaint0 = new Paint();
+    private TextPaint mPaint0 = new TextPaint();
 
-    private Paint mPaint1 = new Paint();
+    private TextPaint mPaint1 = new TextPaint();
 
-    private Paint mPaint2 = new Paint();
+    private TextPaint mPaint2 = new TextPaint();
 
     private String mColors[] = new String[]{"#ffff00", "#ffcc00", "#ff9900", "#ff6600", "#ff3300",
             "#ff0000", "#cc3300", "#cc0000", "#993300", "#990000"};
@@ -48,9 +49,9 @@ public class AngleIndicatorView extends View {
 
     private int mTouchSlop;
 
-    public static final int DEGREE_90 = 90;
+    public static final int DEGREES_90 = 90;
 
-    private int DEGREES_U = DEGREE_90 / 8;
+    private int DEGREES_U = DEGREES_90 / 8;
 
     private OnIndexChangedLitener mListener;
 
@@ -74,15 +75,15 @@ public class AngleIndicatorView extends View {
     public AngleIndicatorView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mPaint0.setColor(Color.parseColor(mColors[9]));
-        mPaint0.setTextSize(30);
+        mPaint0.setTextSize(35);
         mPaint0.setAntiAlias(true);
 
         mPaint1.setColor(Color.parseColor(mColors[9]));
-        mPaint1.setTextSize(30);
+        mPaint1.setTextSize(35);
         mPaint1.setAntiAlias(true);
 
         mPaint2.setColor(Color.parseColor(mColors[9]));
-        mPaint2.setTextSize(30);
+        mPaint2.setTextSize(35);
         mPaint2.setAntiAlias(true);
 
         if (mPositionState == POSITION_STATE_LEFT) {
@@ -97,7 +98,7 @@ public class AngleIndicatorView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        int degree = DEGREE_90 / 4;
+        int degree = DEGREES_90 / 4;
         if (mPositionState == POSITION_STATE_LEFT) {
             canvas.save();
             canvas.rotate(degree, 0, 0);
@@ -160,11 +161,10 @@ public class AngleIndicatorView extends View {
     public void setPositionState(int state) {
         this.mPositionState = state;
         if (state == POSITION_STATE_LEFT) {
-            setRotation(-90);
-            setRotationY(0);
+            setRotation(-DEGREES_90);
         } else if (state == POSITION_STATE_RIGHT) {
             //setRotationY(DEGREE_90 * 2);
-            setRotation(DEGREE_90);
+            setRotation(DEGREES_90);
         }
         invalidate();
     }

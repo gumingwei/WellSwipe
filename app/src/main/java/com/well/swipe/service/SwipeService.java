@@ -28,8 +28,16 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     private BubbleView mBubble;
 
     private CatchView mView;
+    /**
+     * Swipe的布局
+     */
+    private SwipeLayout mSwipeLayoutLeft;
 
-    private SwipeLayout mSwipeLayout;
+    private int mType = TYPE_LEFT;
+
+    static final int TYPE_LEFT = 0;
+
+    static final int TYPE_RIGHT = 1;
 
     public NotificationManager mNotificationManager;
 
@@ -76,10 +84,8 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         mView.setOnEdgeSlidingListener(this);
         mView.show();
 
-        mSwipeLayout = (SwipeLayout) LayoutInflater.from(getBaseContext()).inflate(R.layout.swipe_layout, null);
-        mSwipeLayout.setR();
-        mSwipeLayout.setL();
-        mSwipeLayout.setR();
+        mSwipeLayoutLeft = (SwipeLayout) LayoutInflater.from(getBaseContext()).inflate(R.layout.swipe_layout, null);
+        mSwipeLayoutLeft.toggle2Left();
 
 
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -176,19 +182,21 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     @Override
     public void openLeft() {
-        mSwipeLayout.setL();
-        mSwipeLayout.show();
+        mSwipeLayoutLeft.show();
+        mSwipeLayoutLeft.toggle2Left();
     }
 
     @Override
     public void openRight() {
-        mSwipeLayout.setR();
-        mSwipeLayout.show();
+        mSwipeLayoutLeft.show();
+        mSwipeLayoutLeft.toggle2Right();
+
     }
 
     @Override
-    public void change(float precent) {
-        mSwipeLayout.setScale(precent);
+    public void change(double precent) {
+        mSwipeLayoutLeft.setScale((float) precent);
+
     }
 
     private native void swipeDaemon(String serviceName, int sdkVersion);

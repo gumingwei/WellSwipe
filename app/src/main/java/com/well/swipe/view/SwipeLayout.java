@@ -3,7 +3,6 @@ package com.well.swipe.view;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.WindowManager;
@@ -15,7 +14,6 @@ import com.well.swipe.R;
  * Created by mingwei on 3/9/16.
  */
 public class SwipeLayout extends RelativeLayout {
-
 
     private WindowManager.LayoutParams mParams;
 
@@ -74,21 +72,18 @@ public class SwipeLayout extends RelativeLayout {
         return mManager != null;
     }
 
-    public void setR() {
-        mAngleLayout.setPositionRight();
-        mAngleLayout.setPivotX(mWidth);
-        mAngleLayout.setPivotY(mHeight);
 
-    }
-
-
-    public void setL() {
+    public void toggle2Left() {
         mAngleLayout.setPositionLeft();
-        mAngleLayout.setPivotX(0);
-        mAngleLayout.setPivotY(mHeight);
-        
     }
 
+    public void toggle2Right() {
+        mAngleLayout.setPositionRight();
+    }
+
+    /**
+     * @param scale
+     */
     public void setScale(float scale) {
         mAngleLayout.setScaleX(scale);
         mAngleLayout.setScaleY(scale);

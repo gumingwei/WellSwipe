@@ -80,7 +80,7 @@ public class CatchView extends View {
          *
          * @param precent
          */
-        void change(float precent);
+        void change(double precent);
     }
 
     public CatchView(Context context, int left, int top, int width, int height) {
@@ -130,18 +130,19 @@ public class CatchView extends View {
                 float newx = event.getX();
                 float newy = event.getY();
                 if (mPosition == POSITION_STATE_LEFT) {
-                    if (newx - mLastX > mTouchSlop && Math.abs(newy - mLastY) > mTouchSlop) {
+                    if (newx - mLastX > mTouchSlop && Math.abs(newy - mLastY) > mTouchSlop && mTouchState != TOUCH_STATE_SLIDE) {
                         mTouchState = TOUCH_STATE_SLIDE;
                         mListener.openLeft();
                     }
                 } else if (mPosition == POSITION_STATE_RIGHT) {
-                    if (Math.abs(newx - mLastX) > mTouchSlop && Math.abs(newy - mLastY) > mTouchSlop) {
+                    if (Math.abs(newx - mLastX) > mTouchSlop && Math.abs(newy - mLastY) > mTouchSlop && mTouchState != TOUCH_STATE_SLIDE) {
                         mTouchState = TOUCH_STATE_SLIDE;
                         mListener.openRight();
                     }
                 }
                 if (mTouchState == TOUCH_STATE_SLIDE) {
-                    mListener.change(Math.abs(newx / mDisplayWidth));
+                    double ble = Math.abs(newx / mDisplayWidth);
+                    mListener.change(ble);
                 }
                 break;
             case MotionEvent.ACTION_UP:
