@@ -2,4 +2,5 @@
 <resources>
     <item name="angleview" type="id">angleview</item>
     <item name="indicator" type="id">indicator</item>
+
 </resources>

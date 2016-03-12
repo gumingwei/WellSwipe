@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.well.swipe.R;
@@ -13,7 +14,7 @@ import com.well.swipe.R;
 /**
  * Created by mingwei on 3/9/16.
  */
-public class SwipeLayout extends RelativeLayout {
+public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffListener {
 
     private WindowManager.LayoutParams mParams;
 
@@ -21,9 +22,12 @@ public class SwipeLayout extends RelativeLayout {
 
     private AngleLayout mAngleLayout;
 
+    private LinearLayout mBgLayout;
+
     private int mWidth;
 
     private int mHeight;
+
 
     public SwipeLayout(Context context) {
         this(context, null);
@@ -41,6 +45,8 @@ public class SwipeLayout extends RelativeLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mAngleLayout = (AngleLayout) findViewById(R.id.anglelayout);
+        mAngleLayout.setOnOffListener(this);
+        mBgLayout = (LinearLayout) findViewById(R.id.swipe_bg_layout);
         initManager(0, 0);
     }
 
@@ -73,20 +79,14 @@ public class SwipeLayout extends RelativeLayout {
     }
 
 
-    public void toggle2Left() {
+    public void switchLeft() {
+        show();
         mAngleLayout.setPositionLeft();
     }
 
-    public void toggle2Right() {
+    public void switchRight() {
+        show();
         mAngleLayout.setPositionRight();
-    }
-
-    /**
-     * @param scale
-     */
-    public void setScale(float scale) {
-        mAngleLayout.setScaleX(scale);
-        mAngleLayout.setScaleY(scale);
     }
 
     public void show() {
@@ -108,9 +108,42 @@ public class SwipeLayout extends RelativeLayout {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-            dismiss();
+            mAngleLayout.off(mAngleLayout.getAngleLayoutScale());
         }
         return super.dispatchKeyEvent(event);
     }
 
+    /**
+     * AngleLayout的大小变化
+     *
+     * @param scale
+     */
+    public void setScale(float scale) {
+        mAngleLayout.setAngleLayoutScale(scale);
+    }
+
+    /**
+     * 切换AngleLayout
+     */
+    public void switchAngleLayout() {
+        mAngleLayout.switchAngleLayout();
+    }
+
+    public void on() {
+        mAngleLayout.on();
+    }
+
+    @Override
+    public void off() {
+        dismiss();
+    }
+
+    @Override
+    public void change(float alpha) {
+        setSwipeBackgroundViewAlpha(alpha);
+    }
+
+    public void setSwipeBackgroundViewAlpha(float a) {
+        mBgLayout.setAlpha(a);
+    }
 }

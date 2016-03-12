@@ -5,7 +5,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -187,7 +186,6 @@ public class AngleView extends ViewGroup {
      */
     private void itemLayout(int index) {
         mCurrentIndex = gettest(index);
-        Log.i("Gmw", "itemLayout_index=" + gettest(index) + ",d=" + mBaseAngle);
         itemLayout(mMap.get(getPreViewsIndex(getViewsIndex(index))), getPreQuaIndex(getQuaIndex(index)));
         itemLayout(mMap.get(getViewsIndex(index)), getQuaIndex(index));
         itemLayout(mMap.get(getNextViewsIndex(getViewsIndex(index))), getNextQuaIndex(getQuaIndex(index)));
@@ -200,7 +198,6 @@ public class AngleView extends ViewGroup {
      */
     private void itemLayout2(int index) {
         mCurrentIndex = index;
-        Log.i("Gmw", "itemLayout2_index=" + mCurrentIndex + ",d=" + mBaseAngle);
         itemLayout(mMap.get(getPreViewsIndex(getViewsIndex2(index))), getPreQuaIndex(getQuaIndex2(index)));
         itemLayout(mMap.get(getViewsIndex2(index)), getQuaIndex2(index));
         itemLayout(mMap.get(getNextViewsIndex(getViewsIndex2(index))), getNextQuaIndex(getQuaIndex2(index)));
@@ -322,7 +319,7 @@ public class AngleView extends ViewGroup {
     protected void dispatchDraw(Canvas canvas) {
         canvas.save();
         /**
-         * 转动的时候回传当前限象
+         * 转动的时候回传当前限象index
          */
         mAngleListener.onAngleChanged(getViewsIndex((int) (getAngleValues() / DEGREES_90)), ((getAngleValues() % DEGREES_90) / DEGREES_90));
 

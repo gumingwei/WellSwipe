@@ -1,11 +1,14 @@
 package com.well.swipe.view;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
 import com.well.swipe.R;
@@ -71,9 +74,29 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
      * 容器的宽高
      */
     private int mWidth;
+
     private int mHeight;
 
     private int mFanMumOffset = 25;
+
+    private float mAngleLayoutScale;
+
+    private int mSwitchType = SWITCH_TYPE_ON;
+
+    private static final int SWITCH_TYPE_ON = 0;
+
+    private static final int SWITCH_TYPE_OFF = 1;
+
+    private ValueAnimator mAnimator;
+
+    public OnOffListener mOffListener;
+
+    public interface OnOffListener extends OnScaleChangeListener {
+        /**
+         * 当Angle关闭的时候回调,目的是通知SwipeLayout去dissmis
+         */
+        void off();
+    }
 
     public AngleLayout(Context context) {
         this(context, null);
@@ -252,6 +275,9 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         return mAngleView.getPositionState();
     }
 
+    public void setOnOffListener(OnOffListener listener) {
+        mOffListener = listener;
+    }
 
     /**
      * 初始化VelocityTracker
@@ -273,6 +299,79 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
             mVelocityTracker.recycle();
             mVelocityTracker = null;
         }
+    }
+
+    /**
+     * @param scale
+     */
+    public void setAngleLayoutScale(float scale) {
+        mAngleLayoutScale = scale;
+        setScaleX(mAngleLayoutScale);
+        setScaleY(mAngleLayoutScale);
+    }
+
+    public void switchAngleLayout() {
+        if (mAngleLayoutScale < 0.3) {
+            off(mAngleLayoutScale);
+        } else if (mAngleLayoutScale >= 0.3) {
+            on(mAngleLayoutScale);
+        }
+    }
+
+    public float getAngleLayoutScale() {
+        return mAngleLayoutScale;
+    }
+
+    public void on() {
+        on(mAngleLayoutScale);
+    }
+
+    public void on(float start) {
+        mSwitchType = SWITCH_TYPE_ON;
+        animator(start, 1.0f);
+    }
+
+    public void off(float start) {
+        mSwitchType = SWITCH_TYPE_OFF;
+        animator(start, 0f);
+    }
+
+    public void animator(float start, float end) {
+        mAnimator = ValueAnimator.ofFloat(start, end);
+        mAnimator.setDuration(300);
+        mAnimator.setInterpolator(new DecelerateInterpolator());
+        mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float v = (float) animation.getAnimatedValue();
+                mOffListener.change(v);
+                setAngleLayoutScale(v);
+            }
+        });
+        mAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (mSwitchType == SWITCH_TYPE_OFF) {
+                    mOffListener.off();
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        mAnimator.start();
     }
 
 

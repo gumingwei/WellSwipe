@@ -3,7 +3,7 @@
     android:id="@+id/anglelayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fee322">
+    >
 
     <com.well.swipe.view.AngleView
         android:id="@id/angleview"

@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 
 import com.well.swipe.R;
 import com.well.swipe.view.BubbleView;
@@ -85,7 +86,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         mView.show();
 
         mSwipeLayoutLeft = (SwipeLayout) LayoutInflater.from(getBaseContext()).inflate(R.layout.swipe_layout, null);
-        mSwipeLayoutLeft.toggle2Left();
+        mSwipeLayoutLeft.switchLeft();
 
 
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -182,20 +183,34 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     @Override
     public void openLeft() {
-        mSwipeLayoutLeft.show();
-        mSwipeLayoutLeft.toggle2Left();
+        mSwipeLayoutLeft.switchLeft();
     }
 
     @Override
     public void openRight() {
-        mSwipeLayoutLeft.show();
-        mSwipeLayoutLeft.toggle2Right();
+        mSwipeLayoutLeft.switchRight();
 
     }
 
     @Override
-    public void change(double precent) {
-        mSwipeLayoutLeft.setScale((float) precent);
+    public void change(float scale) {
+        mSwipeLayoutLeft.setScale(scale);
+        mSwipeLayoutLeft.setSwipeBackgroundViewAlpha(scale);
+    }
+
+    @Override
+    public void cancel(View view, boolean flag) {
+        int state = ((CatchView) view).getState();
+        if (state == CatchView.POSITION_STATE_LEFT) {
+            mSwipeLayoutLeft.switchLeft();
+        } else if (state == CatchView.POSITION_STATE_RIGHT) {
+            mSwipeLayoutLeft.switchRight();
+        }
+        if (flag) {
+            mSwipeLayoutLeft.on();
+        } else {
+            mSwipeLayoutLeft.switchAngleLayout();
+        }
 
     }
 

@@ -7,8 +7,10 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
@@ -61,13 +63,22 @@ public class CatchView extends View {
 
     public static final int TOUCH_STATE_SLIDE = 1;
 
+    public static final int VELOCITY_2500 = 2500;
+
     private WindowManager.LayoutParams mParams;
 
     private WindowManager mManager;
 
     private OnEdgeSlidingListener mListener;
 
-    public interface OnEdgeSlidingListener {
+    /**
+     * 速度检测
+     */
+    private VelocityTracker mVelocityTracker;
+
+    private int mMaximumVelocity, mMinmumVelocity;
+
+    public interface OnEdgeSlidingListener extends OnScaleChangeListener {
         /**
          * 打开
          */
@@ -76,11 +87,14 @@ public class CatchView extends View {
         void openRight();
 
         /**
-         * 打开的百分比
+         * true速度满足自动打开
+         * false速度不满足根据抬手时的状态来判断是否打开
          *
-         * @param precent
+         * @param view
+         * @param flag
          */
-        void change(double precent);
+        void cancel(View view, boolean flag);
+
     }
 
     public CatchView(Context context, int left, int top, int width, int height) {
@@ -104,6 +118,8 @@ public class CatchView extends View {
         mDisplayHeight = context.getResources().getDisplayMetrics().heightPixels + Utils.getStatusBarHeight(context);
         ViewConfiguration configuration = ViewConfiguration.get(context);
         mTouchSlop = configuration.getScaledTouchSlop();
+        mMaximumVelocity = ViewConfiguration.get(context).getScaledMaximumFlingVelocity();
+        mMinmumVelocity = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
     }
 
     @Override
@@ -121,6 +137,7 @@ public class CatchView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getAction();
+        initVeloCityTracker(event);
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 mLastX = event.getX();
@@ -141,12 +158,31 @@ public class CatchView extends View {
                     }
                 }
                 if (mTouchState == TOUCH_STATE_SLIDE) {
-                    double ble = Math.abs(newx / mDisplayWidth);
-                    mListener.change(ble);
+                    float perX = Math.abs(newx / mDisplayWidth);
+                    float preY = (float) Math.sqrt(Math.pow((newx - mLastX), 2) + Math.pow((newy - mLastY), 2)) / mDisplayHeight;
+                    /**
+                     * 根据手指的滑动回传一个百分比，用于计算scale
+                     */
+                    mListener.change(perX > preY ? perX : preY);
                 }
                 break;
             case MotionEvent.ACTION_UP:
                 mTouchState = TOUCH_STATE_REST;
+                mVelocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
+                float vx = mVelocityTracker.getXVelocity();
+                float vy = mVelocityTracker.getYVelocity();
+                //Log.i("Gmw", "xv=" + vx);
+                Log.i("Gmw", "yv=" + vy);
+                if (vx > VELOCITY_2500 || vy < -VELOCITY_2500 || vx < -VELOCITY_2500) {
+                    mListener.cancel(this, true);
+                } else {
+                    mListener.cancel(this, false);
+                }
+                recyleVelocityTracker();
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                mListener.cancel(this, false);
+                recyleVelocityTracker();
                 break;
         }
         return true;
@@ -179,6 +215,10 @@ public class CatchView extends View {
 
     }
 
+    public int getState() {
+        return mPosition;
+    }
+
     /**
      * 初始化范围
      */
@@ -209,5 +249,31 @@ public class CatchView extends View {
 
     public void setOnEdgeSlidingListener(OnEdgeSlidingListener listener) {
         mListener = listener;
+    }
+
+    public void setPositionType(int type) {
+
+    }
+
+    /**
+     * 初始化VelocityTracker
+     *
+     * @param event
+     */
+    private void initVeloCityTracker(MotionEvent event) {
+        if (mVelocityTracker == null) {
+            mVelocityTracker = VelocityTracker.obtain();
+        }
+        mVelocityTracker.addMovement(event);
+    }
+
+    /**
+     * 回收VelocityTracker
+     */
+    private void recyleVelocityTracker() {
+        if (mVelocityTracker != null) {
+            mVelocityTracker.recycle();
+            mVelocityTracker = null;
+        }
     }
 }

@@ -3,7 +3,6 @@ package com.well.swipe.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -27,7 +26,7 @@ public class AngleIndicatorView extends View {
     private String mColors[] = new String[]{"#ffff00", "#ffcc00", "#ff9900", "#ff6600", "#ff3300",
             "#ff0000", "#cc3300", "#cc0000", "#993300", "#990000"};
 
-    private int LEFT_OFFSET_X = 125;
+    private int LEFT_OFFSET_X = 150;
 
     private int RIGHT_OFFSET_X = 25;
 
@@ -75,15 +74,15 @@ public class AngleIndicatorView extends View {
     public AngleIndicatorView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mPaint0.setColor(Color.parseColor(mColors[9]));
-        mPaint0.setTextSize(35);
+        mPaint0.setTextSize(32);
         mPaint0.setAntiAlias(true);
 
         mPaint1.setColor(Color.parseColor(mColors[9]));
-        mPaint1.setTextSize(35);
+        mPaint1.setTextSize(32);
         mPaint1.setAntiAlias(true);
 
         mPaint2.setColor(Color.parseColor(mColors[9]));
-        mPaint2.setTextSize(35);
+        mPaint2.setTextSize(32);
         mPaint2.setAntiAlias(true);
 
         if (mPositionState == POSITION_STATE_LEFT) {
@@ -163,7 +162,6 @@ public class AngleIndicatorView extends View {
         if (state == POSITION_STATE_LEFT) {
             setRotation(-DEGREES_90);
         } else if (state == POSITION_STATE_RIGHT) {
-            //setRotationY(DEGREE_90 * 2);
             setRotation(DEGREES_90);
         }
         invalidate();
