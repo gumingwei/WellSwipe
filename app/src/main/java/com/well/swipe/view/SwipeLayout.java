@@ -60,6 +60,7 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
     private void initManager(int x, int y) {
         mParams = new WindowManager.LayoutParams();
         mManager = (WindowManager) getContext().getSystemService(getContext().WINDOW_SERVICE);
+        //mParams.type = WindowManager.LayoutParams.TYPE_PHONE;
         mParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
         mParams.format = PixelFormat.RGBA_8888;
         //mParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
@@ -77,7 +78,6 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
     public boolean isManager() {
         return mManager != null;
     }
-
 
     public void switchLeft() {
         show();

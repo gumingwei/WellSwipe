@@ -3,6 +3,8 @@ package com.well.swipe.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -23,14 +25,18 @@ public class AngleIndicatorView extends View {
 
     private TextPaint mPaint2 = new TextPaint();
 
-    private String mColors[] = new String[]{"#ffff00", "#ffcc00", "#ff9900", "#ff6600", "#ff3300",
-            "#ff0000", "#cc3300", "#cc0000", "#993300", "#990000"};
+    private String mColors[] = new String[]{"#f0f0f0", "#eaeaea", "#e1e1e1", "#d6d6d6", "#cac9c9",
+            "#bfbebe", "#b6b5b5", "#aeadad", "#a5a4a4", "#9c9c9c"};
 
-    private int LEFT_OFFSET_X = 150;
+    private Paint mPaint;
 
-    private int RIGHT_OFFSET_X = 25;
+    private Paint mInnerPaint;
 
-    private int OFFSET_Y = 10;
+    private int LEFT_OFFSET_X = 145;
+
+    private int RIGHT_OFFSET_X = 15;
+
+    private int OFFSET_Y = 15;
 
     private int mPositionState = POSITION_STATE_LEFT;
 
@@ -51,6 +57,18 @@ public class AngleIndicatorView extends View {
     public static final int DEGREES_90 = 90;
 
     private int DEGREES_U = DEGREES_90 / 8;
+
+    private float mLeftArcStart = START_ANGLE;
+
+    private float mRightArcStart = DEGREES_90 + START_ANGLE * 5;
+
+    private float mArcSweep = START_ANGLE * 2;
+
+    public static final float START_ANGLE = 11.25f;
+
+    private int mIndicatorWidth = 150;
+
+    public int mRect = 210;
 
     private OnIndexChangedLitener mListener;
 
@@ -85,20 +103,35 @@ public class AngleIndicatorView extends View {
         mPaint2.setTextSize(32);
         mPaint2.setAntiAlias(true);
 
+        mPaint = new Paint();
+        mPaint.setColor(getResources().getColor(R.color.indicator_theme_purple));
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setAntiAlias(true);
+        mPaint.setStrokeWidth(mIndicatorWidth);
+
+        mInnerPaint = new Paint();
+        mInnerPaint.setColor(getResources().getColor(R.color.indicator_theme_purple));
+        mInnerPaint.setStyle(Paint.Style.STROKE);
+        mInnerPaint.setAntiAlias(true);
+        mInnerPaint.setStrokeWidth(5);
+
         if (mPositionState == POSITION_STATE_LEFT) {
             setRotation(-90);
         }
-
         ViewConfiguration configuration = ViewConfiguration.get(context);
         mTouchSlop = configuration.getScaledTouchSlop();
-
     }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         int degree = DEGREES_90 / 4;
         if (mPositionState == POSITION_STATE_LEFT) {
+            RectF f = new RectF(-mRect, -mRect, mRect, mRect);
+            canvas.drawArc(f, mLeftArcStart, mArcSweep, false, mPaint);
+            canvas.drawCircle(0, 0, mRect - mIndicatorWidth / 2, mInnerPaint);
+            canvas.drawCircle(0, 0, mRect + mIndicatorWidth / 2, mInnerPaint);
             canvas.save();
             canvas.rotate(degree, 0, 0);
             canvas.drawText(getResources().getString(R.string.recent), LEFT_OFFSET_X, OFFSET_Y, mPaint0);
@@ -108,6 +141,10 @@ public class AngleIndicatorView extends View {
             canvas.drawText(getResources().getString(R.string.frequent), LEFT_OFFSET_X, OFFSET_Y, mPaint2);
             canvas.restore();
         } else if (mPositionState == POSITION_STATE_RIGHT) {
+            RectF f = new RectF(mWidth - mRect, -mRect, mWidth + mRect, mRect);
+            canvas.drawArc(f, mRightArcStart, mArcSweep, false, mPaint);
+            canvas.drawCircle(mWidth, 0, mRect - mIndicatorWidth / 2, mInnerPaint);
+            canvas.drawCircle(mWidth, 0, mRect + mIndicatorWidth / 2, mInnerPaint);
             canvas.save();
             canvas.rotate(-degree, mWidth, 0);
             canvas.drawText(getResources().getString(R.string.recent), RIGHT_OFFSET_X, OFFSET_Y, mPaint0);
@@ -124,7 +161,7 @@ public class AngleIndicatorView extends View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         mWidth = getMeasuredWidth();
         mHeight = getMeasuredHeight();
-
+        //Log.i("Gmw", "mWidt2=" + mWidth + ",mHeight2=" + mHeight);
     }
 
     /**
@@ -203,30 +240,40 @@ public class AngleIndicatorView extends View {
     /**
      * 顺时针时刷新颜色
      *
-     * @param cur
+     * @param cur 当前的限象值index
      * @param pre
      */
     public void onAngleChanged(int cur, float pre) {
         int index = (int) (pre * 10);
         if (mPositionState == POSITION_STATE_LEFT) {
             if (cur == 0) {
+                mLeftArcStart = 5 * START_ANGLE + 28 * START_ANGLE * (1 - pre);
                 mPaint0.setColor(Color.parseColor(mColors[index]));
                 mPaint2.setColor(Color.parseColor(mColors[9 - index]));
             } else if (cur == 1) {
+                mLeftArcStart = START_ANGLE + 2 * START_ANGLE * (1 - pre);
                 mPaint1.setColor(Color.parseColor(mColors[index]));
                 mPaint0.setColor(Color.parseColor(mColors[9 - index]));
             } else if (cur == 2) {
+                mLeftArcStart = 3 * START_ANGLE + 2 * START_ANGLE * (1 - pre);
                 mPaint2.setColor(Color.parseColor(mColors[index]));
                 mPaint1.setColor(Color.parseColor(mColors[9 - index]));
             }
         } else if (mPositionState == POSITION_STATE_RIGHT) {
             if (cur == 0) {
+                mRightArcStart = DEGREES_90 + 3 * START_ANGLE + 2 * START_ANGLE * (1 - pre);
                 mPaint0.setColor(Color.parseColor(mColors[index]));
                 mPaint1.setColor(Color.parseColor(mColors[9 - index]));
             } else if (cur == 1) {
+                if (pre < 0.5) {
+                    mRightArcStart = DEGREES_90 - START_ANGLE + 2 * START_ANGLE * (1 - pre) - DEGREES_90 * 2 * pre;
+                } else {
+                    mRightArcStart = DEGREES_90 + 5 * START_ANGLE + 2 * START_ANGLE * (1 - pre) + DEGREES_90 * 2 * (1 - pre);
+                }
                 mPaint2.setColor(Color.parseColor(mColors[index]));
                 mPaint0.setColor(Color.parseColor(mColors[9 - index]));
             } else if (cur == 2) {
+                mRightArcStart = DEGREES_90 + START_ANGLE + 2 * START_ANGLE * (1 - pre);
                 mPaint1.setColor(Color.parseColor(mColors[index]));
                 mPaint2.setColor(Color.parseColor(mColors[9 - index]));
             }

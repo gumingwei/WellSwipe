@@ -3,13 +3,14 @@
     android:id="@+id/swipelayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/swipe_bg_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ffffff"
+        android:background="#d3000000"
         android:orientation="vertical"></LinearLayout>
 
     <include layout="@layout/angle_layout" />

@@ -4,12 +4,16 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.text.Layout;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
+
+import com.well.swipe.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -120,38 +124,46 @@ public class AngleView extends ViewGroup {
         super(context, attrs, defStyleAttr);
         ArrayList<View> list0 = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
-            TextView view = new TextView(context);
-            view.setGravity(Gravity.CENTER);
-            view.setText("A=" + i);
-            list0.add(view);
+//            AngleLayout view = (AngleLayout) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
+//            TextView view = new TextView(context);
+//            view.setGravity(Gravity.CENTER);
+//            view.setText("A=" + i);
+//            view.setCompoundDrawablesRelativeWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_launcher), null, null);
+//            list0.add(view);
+            AngleItem item = (AngleItem) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
+            list0.add(item);
         }
         mMap.put(0, list0);
 
         ArrayList<View> list1 = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
+            //AngleLayout view = (AngleLayout) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
             TextView view = new TextView(context);
             view.setGravity(Gravity.CENTER);
             view.setText("B=" + i);
+            view.setCompoundDrawablesRelativeWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_launcher), null, null);
             list1.add(view);
         }
         mMap.put(1, list1);
 
         ArrayList<View> list2 = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
+            //AngleLayout view = (AngleLayout) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
             TextView view = new TextView(context);
             view.setGravity(Gravity.CENTER);
             view.setText("C=" + i);
+            view.setCompoundDrawablesRelativeWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_launcher), null, null);
             list2.add(view);
         }
         mMap.put(2, list2);
 
         Iterator<Map.Entry<Integer, ArrayList<View>>> it = mMap.entrySet().iterator();
-
+        LayoutParams params = new LayoutParams(120, 120);
         while (it.hasNext()) {
             Map.Entry<Integer, ArrayList<View>> arraylist = it.next();
             ArrayList<View> views = arraylist.getValue();
             for (View view : views) {
-                addView(view);
+                addView(view, params);
             }
         }
 
@@ -166,6 +178,9 @@ public class AngleView extends ViewGroup {
         mHeight = getMeasuredHeight();
         mWidth = getMeasuredWidth();
         //setBaseAngle(90);
+        for (int i = 0; i < getChildCount(); i++) {
+            getChildAt(i).measure(120, 120);
+        }
     }
 
     @Override
@@ -228,7 +243,7 @@ public class AngleView extends ViewGroup {
             if (views.size() <= COUNT_4) {
                 size = views.size();
                 group = index;
-                radius = 370;
+                radius = 420;
             } else {
                 if (index < COUNT_4) {
                     /**
@@ -236,7 +251,7 @@ public class AngleView extends ViewGroup {
                      */
                     size = COUNT_4;
                     group = index;
-                    radius = 370;
+                    radius = 420;
                 } else {
                     /**
                      * 总数大于4时外环
@@ -245,7 +260,7 @@ public class AngleView extends ViewGroup {
                      */
                     size = views.size() - COUNT_4;
                     group = index - COUNT_4;
-                    radius = 540;
+                    radius = 600;
                 }
             }
             /**

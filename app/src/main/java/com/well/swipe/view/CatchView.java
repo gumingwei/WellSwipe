@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -161,7 +160,7 @@ public class CatchView extends View {
                     float perX = Math.abs(newx / mDisplayWidth);
                     float preY = (float) Math.sqrt(Math.pow((newx - mLastX), 2) + Math.pow((newy - mLastY), 2)) / mDisplayHeight;
                     /**
-                     * 根据手指的滑动回传一个百分比，用于计算scale
+                     * 根据手指的滑动回传一个百分比，用于计算scale，取较大的值
                      */
                     mListener.change(perX > preY ? perX : preY);
                 }
@@ -171,8 +170,6 @@ public class CatchView extends View {
                 mVelocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
                 float vx = mVelocityTracker.getXVelocity();
                 float vy = mVelocityTracker.getYVelocity();
-                //Log.i("Gmw", "xv=" + vx);
-                Log.i("Gmw", "yv=" + vy);
                 if (vx > VELOCITY_2500 || vy < -VELOCITY_2500 || vx < -VELOCITY_2500) {
                     mListener.cancel(this, true);
                 } else {
@@ -191,6 +188,7 @@ public class CatchView extends View {
     private void initManager(int x, int y) {
         mParams = new WindowManager.LayoutParams();
         mManager = (WindowManager) getContext().getSystemService(getContext().WINDOW_SERVICE);
+        //mParams.type = WindowManager.LayoutParams.TYPE_PHONE;
         mParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
         mParams.format = PixelFormat.RGBA_8888;
         mParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL

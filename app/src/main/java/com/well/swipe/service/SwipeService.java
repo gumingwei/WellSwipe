@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -86,7 +85,6 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         mView.show();
 
         mSwipeLayoutLeft = (SwipeLayout) LayoutInflater.from(getBaseContext()).inflate(R.layout.swipe_layout, null);
-        mSwipeLayoutLeft.switchLeft();
 
 
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -206,6 +204,10 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         } else if (state == CatchView.POSITION_STATE_RIGHT) {
             mSwipeLayoutLeft.switchRight();
         }
+        /**
+         * flag==true  自动打开
+         * flag==flase 根据当前的sacle判断是否打开
+         */
         if (flag) {
             mSwipeLayoutLeft.on();
         } else {

@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
@@ -123,7 +122,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         mIndicator = (AngleIndicatorView) findViewById(R.id.indicator);
         mIndicator.setOnChangeListener(this);
         mIndicator.setCurrent(0);
-        setPositionRight();
+        //setPositionRight();
     }
 
     @Override
@@ -202,7 +201,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                     mTouchState = TOUCH_STATE_WHIRLING;
                 }
                 /**
-                 *
+                 *转动AngleView
                  */
                 if (mTouchState == TOUCH_STATE_WHIRLING && newY < mHeight) {
                     if (mAngleView.getPositionState() == AngleView.POSITION_STATE_LEFT) {
@@ -260,7 +259,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
      */
     public void setPositionRight() {
         setPivotX(mContext.getResources().getDisplayMetrics().widthPixels);
-        setPivotY(mContext.getResources().getDisplayMetrics().heightPixels);
+        setPivotY(mContext.getResources().getDisplayMetrics().heightPixels - Utils.getStatusBarHeight(mContext));
         mIndicator.setPositionState(AngleIndicatorView.POSITION_STATE_RIGHT);
         mAngleView.setPositionState(AngleView.POSITION_STATE_RIGHT);
         /**
