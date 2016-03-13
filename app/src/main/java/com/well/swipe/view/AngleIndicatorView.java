@@ -129,8 +129,7 @@ public class AngleIndicatorView extends View {
         ViewConfiguration configuration = ViewConfiguration.get(context);
         mTouchSlop = configuration.getScaledTouchSlop();
     }
-
-
+    
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);

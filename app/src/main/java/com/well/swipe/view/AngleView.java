@@ -5,7 +5,9 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
@@ -16,6 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.security.auth.login.LoginException;
 
 /**
  * Created by mingwei on 2/25/16.
@@ -73,6 +77,9 @@ public class AngleView extends ViewGroup {
 
     public static final int DEGREES_1080 = DEGREES_360 * 3;
 
+    public int RADIUS_INNNER = 410;
+
+    public int RADIUS_OUTER = 590;
     /**
      * 单位度数
      */
@@ -127,12 +134,12 @@ public class AngleView extends ViewGroup {
 
             item = (AngleItem) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
             item.setTitle("A" + i);
-            item.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //Log.i("Gmw", "A=");
-                }
-            });
+            //item.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    //Log.i("Gmw", "A=");
+//                }
+//            });
             list0.add(item);
         }
         mMap.put(0, list0);
@@ -142,27 +149,27 @@ public class AngleView extends ViewGroup {
 
             item = (AngleItem) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
             item.setTitle("B" + i);
-            item.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //Log.i("Gmw", "B=");
-                }
-            });
+//            item.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    //Log.i("Gmw", "B=");
+//                }
+//            });
             list1.add(item);
         }
         mMap.put(1, list1);
 
         ArrayList<View> list2 = new ArrayList<>();
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 4; i++) {
 
             item = (AngleItem) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
             item.setTitle("C" + i);
-            item.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //Log.i("Gmw", "C=" + v.getTag());
-                }
-            });
+//            item.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    //Log.i("Gmw", "C=" + v.getTag());
+//                }
+//            });
             list2.add(item);
         }
         mMap.put(2, list2);
@@ -253,7 +260,7 @@ public class AngleView extends ViewGroup {
             if (views.size() <= COUNT_4) {
                 size = views.size();
                 group = index;
-                radius = 420;
+                radius = RADIUS_INNNER;
             } else {
                 if (index < COUNT_4) {
                     /**
@@ -261,7 +268,7 @@ public class AngleView extends ViewGroup {
                      */
                     size = COUNT_4;
                     group = index;
-                    radius = 420;
+                    radius = RADIUS_INNNER;
                 } else {
                     /**
                      * 总数大于4时外环
@@ -270,7 +277,7 @@ public class AngleView extends ViewGroup {
                      */
                     size = views.size() - COUNT_4;
                     group = index - COUNT_4;
-                    radius = 600;
+                    radius = RADIUS_OUTER;
                 }
             }
             /**
@@ -348,9 +355,109 @@ public class AngleView extends ViewGroup {
         } else if (mPositionState == POSITION_STATE_RIGHT) {
             canvas.rotate(mBaseAngle + mChangeAngle, mPivotX, mPivotY);
         }
-
         super.dispatchDraw(canvas);
         canvas.restore();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int action = event.getAction();
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                //Log.i("Gmw", "当前的点击的坐标＝" + event.getX() + ",y=" + event.getY());
+                //Log.i("Gmw", "当前的Index＝" + getQuaIndexOut());
+                //Log.i("Gmw", "第几组数据＝" + getViewsIndexOut());
+                float newx = event.getX();
+                float newy = event.getY();
+                ArrayList<View> views = getData();
+                for (int index = 0; index < views.size(); index++) {
+                    AngleItem item = (AngleItem) views.get(index);
+                    //Log.i("Gmw", "t=" + item.getTitle() + "X=" + view.get(i).getX() + ",Y=" + view.get(i).getY());
+                    /**
+                     * size按照当前views的总数，以4为区分，分别计算出<4,=4,超出4的部分剪掉4即从1，2，3重新开始计数
+                     */
+                    int size = 0;
+                    /**
+                     * group可认为是跟随环数而变化的一个值，用来计算index非0时的子控件的角度增长
+                     * 角度增为只有一个子控件的时候：90/1=45；
+                     * index非0的时候：(group＋0.5)*newdegree(按照当前环中子控件的总数平分90的值)
+                     */
+                    int group = 0;
+                    /**
+                     * 半径变化，环数增加，半径增加
+                     */
+                    int radius = 0;
+                    if (views.size() <= COUNT_4) {
+                        size = views.size();
+                        group = index;
+                        radius = RADIUS_INNNER;
+                    } else {
+                        if (index < COUNT_4) {
+                            /**
+                             * 总数大于4时内环正好是4
+                             */
+                            size = COUNT_4;
+                            group = index;
+                            radius = RADIUS_INNNER;
+                        } else {
+                            /**
+                             * 总数大于4时外环
+                             * size＝总数－4
+                             * group＝views(index)-4
+                             */
+                            size = views.size() - COUNT_4;
+                            group = index - COUNT_4;
+                            radius = RADIUS_OUTER;
+                        }
+                    }
+                    /**
+                     * 按照views(index)所在的当前环的个数平分90度
+                     */
+                    float degree = (float) DEGREES_90 / (float) (size);
+                    /**
+                     * 得出一个新的递增的角度，用来后面按照三角函数计算子控的位置
+                     */
+                    float newdegree;
+                    if (index == 0) {
+                        newdegree = degree / 2;
+                    } else {
+                        newdegree = (int) ((group + 0.5) * degree);
+                    }
+                    /**
+                     * 1.按照限象使用不同的三角函数计算所得x,y坐标
+                     * 2.子控件根据不同的呃限象旋转位置满足在第0限象的正常显示效果
+                     * 3.当整个控件的容器反转之后，为保证显示效果，要做一定的反转
+                     */
+                    double x = 0l;
+                    double y = 0l;
+                    if (mPositionState == POSITION_STATE_LEFT) {
+                        x = Math.sin(Math.toRadians(newdegree)) * radius;
+                        y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
+                    } else if (mPositionState == POSITION_STATE_RIGHT) {
+                        x = mWidth - Math.sin(Math.toRadians(newdegree)) * radius;
+                        y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
+                    }
+
+                    float newleft = (float) (x - 60);
+                    float newtop = (float) (y - 60);
+                    float newright = (float) (x + 60);
+                    float newbottom = (float) (y + 60);
+                    if (newx > newleft && newx < newright && newy > newtop && newy < newbottom) {
+                        Log.i("Gmw", "点击到范围了＝" + ((AngleItem) views.get(index)).getTitle());
+                    }
+                    //Log.i("Gmw", "rect=" + newleft + "," + newtop + "," + newright + "," + newbottom);
+                }
+
+
+                break;
+            case MotionEvent.ACTION_MOVE:
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                break;
+        }
+
+        return super.onTouchEvent(event);
     }
 
     public void setOnAngleChangeListener(OnAngleChangeListener listener) {
@@ -398,7 +505,6 @@ public class AngleView extends ViewGroup {
     private void changeAngle(double rotation) {
         mChangeAngle = (float) rotation;
         change();
-
     }
 
     private void change() {
@@ -657,7 +763,7 @@ public class AngleView extends ViewGroup {
 
     public void setBaseAngle(float angle) {
         mBaseAngle = angle;
-        invalidate();
+        change();
     }
 
     public int getCurrentIndex() {
@@ -674,6 +780,10 @@ public class AngleView extends ViewGroup {
      */
     public int getQuaIndex(int index) {
         return index == 0 ? 0 : (12 - index) % COUNT_4;
+    }
+
+    public int getQuaIndexOut() {
+        return getQuaIndex(((int) ((mBaseAngle) / DEGREES_90)));
     }
 
     public int getRealIndex(int index) {
@@ -721,6 +831,14 @@ public class AngleView extends ViewGroup {
      */
     private int getViewsIndex(int index) {
         return (12 - index) % 3;
+    }
+
+    public int getViewsIndexOut() {
+        return getViewsIndex(((int) ((mBaseAngle) / DEGREES_90)));
+    }
+
+    public ArrayList<View> getData() {
+        return mMap.get(getViewsIndexOut());
     }
 
     /**

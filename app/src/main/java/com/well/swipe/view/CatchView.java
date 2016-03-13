@@ -113,7 +113,8 @@ public class CatchView extends View {
     public CatchView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mPaint = new Paint();
-        mPaint.setColor(getResources().getColor(R.color.indicator_theme_purple));
+        mPaint.setColor(Color.TRANSPARENT);
+        //mPaint.setColor(getResources().getColor(R.color.indicator_theme_purple));
         mDisplayWidth = context.getResources().getDisplayMetrics().widthPixels;
         mDisplayHeight = context.getResources().getDisplayMetrics().heightPixels + Utils.getStatusBarHeight(context);
         ViewConfiguration configuration = ViewConfiguration.get(context);

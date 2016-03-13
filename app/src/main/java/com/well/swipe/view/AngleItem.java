@@ -41,7 +41,7 @@ public class AngleItem extends RelativeLayout {
         int action = event.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                Log.i("Gmw", "AngleItem-onTouchEvent-down=" + mText.getText().toString());
+                //og.i("Gmw", "AngleItem-onTouchEvent-down=" + mText.getText().toString());
                 break;
             case MotionEvent.ACTION_MOVE:
                 //requestDisallowInterceptTouchEvent(false);
@@ -54,5 +54,9 @@ public class AngleItem extends RelativeLayout {
 
     public void setTitle(String title) {
         mText.setText(title);
+    }
+
+    public String getTitle() {
+        return mText.getText().toString();
     }
 }

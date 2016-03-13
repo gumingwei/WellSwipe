@@ -4,14 +4,18 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
+import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
 import com.well.swipe.R;
 import com.well.swipe.utils.Utils;
+
+import java.util.ArrayList;
 
 /**
  * Created by mingwei on 2/26/16.
@@ -50,8 +54,6 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     private static final int TOUCH_STATE_AUTO = 4;
 
     private boolean isAllowAngle = true;
-
-    //private float mDownMotionX;
 
     private float mLastMotionX;
 
@@ -173,6 +175,16 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         final int action = ev.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+
+//                Log.i("Gmw", "当前的Index＝" + mAngleView.getQuaIndexOut());
+//                Log.i("Gmw", "第几组数据＝" + mAngleView.getViewsIndexOut());
+//                ArrayList<View> view = mAngleView.getData();
+//                for (int i = 0; i < view.size(); i++) {
+//                    AngleItem item = (AngleItem) view.get(i);
+//                    Log.i("Gmw", "t=" + item.getTitle() + "X=" + view.get(i).getX() + ",Y=" + view.get(i).getY());
+//                }
+
+
                 mTouchState = TOUCH_STATE_REST;
                 //mDownMotionX = ev.getX();
                 mLastMotionX = ev.getX();

@@ -6,6 +6,7 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.LinearLayout;
 
 import com.well.swipe.R;
 import com.well.swipe.service.SwipeService;
@@ -27,6 +28,11 @@ public class MainActivity extends AppCompatActivity {
         //b.show();
         //Log.i("Gmw", "hello=" + Hello.hello(2));
         startService(new Intent(MainActivity.this, SwipeService.class));
+
+        //LinearLayout linearLayout = (LinearLayout) findViewById(R.id.testlayout);
+
+        //linearLayout.
+
     }
 
 
