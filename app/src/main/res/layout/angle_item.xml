@@ -7,8 +7,6 @@
         android:id="@+id/angle_item_icon"
         android:layout_width="@dimen/angle_item_icon_size"
         android:layout_height="@dimen/angle_item_icon_size"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:src="@drawable/ic_launcher" />
 
     <TextView
@@ -16,15 +14,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/angle_item_icon"
-        android:layout_centerHorizontal="true"
         android:text="Test" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/button"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
 </com.well.swipe.view.AngleItem>

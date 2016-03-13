@@ -2,6 +2,7 @@ package com.well.swipe.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.widget.RelativeLayout;
 
 /**
@@ -24,5 +25,23 @@ public class AngleItem extends RelativeLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+    }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        requestFocus();
+
+        int action = event.getAction();
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                break;
+            case MotionEvent.ACTION_MOVE:
+                //requestDisallowInterceptTouchEvent(false);
+                break;
+            case MotionEvent.ACTION_UP:
+                break;
+        }
+        return super.onTouchEvent(event);
     }
 }

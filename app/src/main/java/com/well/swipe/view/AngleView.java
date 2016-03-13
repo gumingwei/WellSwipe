@@ -4,14 +4,12 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.text.Layout;
 import android.util.AttributeSet;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.TextView;
 
 import com.well.swipe.R;
 
@@ -124,36 +122,59 @@ public class AngleView extends ViewGroup {
         super(context, attrs, defStyleAttr);
         ArrayList<View> list0 = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
-//            AngleLayout view = (AngleLayout) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
 //            TextView view = new TextView(context);
 //            view.setGravity(Gravity.CENTER);
 //            view.setText("A=" + i);
 //            view.setCompoundDrawablesRelativeWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_launcher), null, null);
 //            list0.add(view);
             AngleItem item = (AngleItem) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
+            item.setTag(i);
+            item.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i("Gmw", "A=" + v.getTag());
+                }
+            });
             list0.add(item);
         }
         mMap.put(0, list0);
 
         ArrayList<View> list1 = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
-            //AngleLayout view = (AngleLayout) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
-            TextView view = new TextView(context);
-            view.setGravity(Gravity.CENTER);
-            view.setText("B=" + i);
-            view.setCompoundDrawablesRelativeWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_launcher), null, null);
-            list1.add(view);
+//            TextView view = new TextView(context);
+//            view.setGravity(Gravity.CENTER);
+//            view.setText("B=" + i);
+//            view.setCompoundDrawablesRelativeWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_launcher), null, null);
+//            list1.add(view);
+            AngleItem item = (AngleItem) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
+            item.setTag(i);
+            item.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i("Gmw", "A=" + v.getTag());
+                }
+            });
+            list1.add(item);
         }
         mMap.put(1, list1);
 
         ArrayList<View> list2 = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
             //AngleLayout view = (AngleLayout) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
-            TextView view = new TextView(context);
-            view.setGravity(Gravity.CENTER);
-            view.setText("C=" + i);
-            view.setCompoundDrawablesRelativeWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_launcher), null, null);
-            list2.add(view);
+//            TextView view = new TextView(context);
+//            view.setGravity(Gravity.CENTER);
+//            view.setText("C=" + i);
+//            view.setCompoundDrawablesRelativeWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_launcher), null, null);
+//            list2.add(view);
+            AngleItem item = (AngleItem) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
+            item.setTag(i);
+            item.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i("Gmw", "A=" + v.getTag());
+                }
+            });
+            list2.add(item);
         }
         mMap.put(2, list2);
 
@@ -200,7 +221,7 @@ public class AngleView extends ViewGroup {
      * @param index
      */
     private void itemLayout(int index) {
-        mCurrentIndex = gettest(index);
+        mCurrentIndex = getRealIndex(index);
         itemLayout(mMap.get(getPreViewsIndex(getViewsIndex(index))), getPreQuaIndex(getQuaIndex(index)));
         itemLayout(mMap.get(getViewsIndex(index)), getQuaIndex(index));
         itemLayout(mMap.get(getNextViewsIndex(getViewsIndex(index))), getNextQuaIndex(getQuaIndex(index)));
@@ -346,6 +367,7 @@ public class AngleView extends ViewGroup {
         super.dispatchDraw(canvas);
         canvas.restore();
     }
+
 
     public void setOnAngleChangeListener(OnAngleChangeListener listener) {
         mAngleListener = listener;
@@ -659,7 +681,7 @@ public class AngleView extends ViewGroup {
         return index == 0 ? 0 : (12 - index) % COUNT_4;
     }
 
-    public int gettest(int index) {
+    public int getRealIndex(int index) {
         return index == 0 ? 0 : (12 - index);
     }
 

@@ -52,7 +52,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
     private boolean isAllowAngle = true;
 
-    private float mDownMotionX;
+    //private float mDownMotionX;
 
     private float mLastMotionX;
 
@@ -167,18 +167,55 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
 
     @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (getChildCount() <= 0) {
+            return super.onInterceptTouchEvent(ev);
+        }
+        final int action = ev.getAction();
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                mTouchState = TOUCH_STATE_REST;
+                //mDownMotionX = ev.getX();
+                mLastMotionX = ev.getX();
+                mLastMotionY = ev.getY();
+                mActivePointId = ev.getPointerId(0);
+                if (mAngleView.getPositionState() == AngleView.POSITION_STATE_LEFT) {
+                    mAngleView.downAngle(mLastMotionX, mHeight - mLastMotionY);
+                } else if (mAngleView.getPositionState() == AngleView.POSITION_STATE_RIGHT) {
+                    mAngleView.downAngle(mWidth - mLastMotionX, mHeight - mLastMotionY);
+                }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float newX = ev.getX();
+                float newY = ev.getY();
+                float diffX = newX - mLastMotionX;
+                float diffY = newY - mLastMotionY;
+                if ((Math.abs(diffX) > mTouchSlop || Math.abs(diffY) > mTouchSlop) && isAllowAngle) {
+                    mTouchState = TOUCH_STATE_WHIRLING;
+                }
+                if (mTouchState == TOUCH_STATE_WHIRLING) {
+                    return true;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                mTouchState = TOUCH_STATE_REST;
+                break;
+        }
+
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (getChildCount() <= 0) {
             return super.onTouchEvent(event);
         }
-
         initVeloCityTracker(event);
         final int action = event.getAction();
-
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
-
-                mDownMotionX = event.getX();
+                mTouchState = TOUCH_STATE_REST;
                 mLastMotionX = event.getX();
                 mLastMotionY = event.getY();
                 mActivePointId = event.getPointerId(0);
@@ -187,12 +224,15 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                 }
                 if (mAngleView.getPositionState() == AngleView.POSITION_STATE_LEFT) {
                     mAngleView.downAngle(mLastMotionX, mHeight - mLastMotionY);
+                    return true;
                 } else if (mAngleView.getPositionState() == AngleView.POSITION_STATE_RIGHT) {
                     mAngleView.downAngle(mWidth - mLastMotionX, mHeight - mLastMotionY);
+                    return true;
                 }
 
                 break;
             case MotionEvent.ACTION_MOVE:
+
                 float newX = event.getX();
                 float newY = event.getY();
                 float diffX = newX - mLastMotionX;
@@ -213,6 +253,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
                 break;
             case MotionEvent.ACTION_UP:
+                mTouchState = TOUCH_STATE_REST;
                 mVelocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
                 float vx = mVelocityTracker.getXVelocity();
                 float vy = mVelocityTracker.getYVelocity();
@@ -223,7 +264,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                 recyleVelocityTracker();
                 break;
         }
-        return true;
+        return super.onTouchEvent(event);
     }
 
     @Override

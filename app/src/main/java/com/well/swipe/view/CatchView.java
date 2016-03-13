@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
+import com.well.swipe.R;
 import com.well.swipe.utils.Utils;
 
 /**
@@ -112,7 +113,7 @@ public class CatchView extends View {
     public CatchView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mPaint = new Paint();
-        mPaint.setColor(Color.BLUE);
+        mPaint.setColor(getResources().getColor(R.color.indicator_theme_purple));
         mDisplayWidth = context.getResources().getDisplayMetrics().widthPixels;
         mDisplayHeight = context.getResources().getDisplayMetrics().heightPixels + Utils.getStatusBarHeight(context);
         ViewConfiguration configuration = ViewConfiguration.get(context);
