@@ -16,8 +16,7 @@ import com.well.swipe.utils.Utils;
 /**
  * Created by mingwei on 2/26/16.
  */
-public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeListener,
-        AngleIndicatorView.OnIndexChangedLitener {
+public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeListener, AngleIndicatorView.OnIndexChangedLitener {
     Context mContext;
     /**
      * 旋转View
@@ -122,6 +121,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         mIndicator = (AngleIndicatorView) findViewById(R.id.indicator);
         mIndicator.setOnChangeListener(this);
         mIndicator.setCurrent(0);
+        //mIndicator.set(mAngleView);
         //setPositionRight();
     }
 
@@ -164,7 +164,6 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         }
 
     }
-
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -269,11 +268,14 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
     @Override
     public void onAngleChanged(int cur, float p) {
-        mIndicator.onAngleChanged(cur, p);
+        mIndicator.onAngleChanged2(cur, p);
     }
 
     @Override
     public void onIndexChanged(int index) {
+        /**
+         * flag==true手动旋转
+         */
         mAngleView.setViewsIndex(index);
     }
 
@@ -287,7 +289,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         mIndicator.setPositionState(AngleIndicatorView.POSITION_STATE_LEFT);
         mAngleView.setPositionState(AngleView.POSITION_STATE_LEFT);
         /**
-         * 左右两百年的角度一样，但是显示的限象不一样，通过一个公倍数12来换算成限象一样
+         * 左右两边的的角度一样，但是显示的限象不一样，通过一个公倍数12来换算成限象一样
          */
         if (mAngleView.getCurrentIndex() != 0) {
             mAngleView.setBaseAngle((12 - mAngleView.getCurrentIndex()) * AngleView.DEGREES_90);

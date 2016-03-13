@@ -1,5 +1,6 @@
 package com.well.swipe.view;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.animation.DecelerateInterpolator;
 
 import com.well.swipe.R;
 
@@ -24,6 +26,8 @@ public class AngleIndicatorView extends View {
     private TextPaint mPaint1 = new TextPaint();
 
     private TextPaint mPaint2 = new TextPaint();
+
+    private Paint[] mPaintArray = new Paint[]{mPaint0, mPaint1, mPaint2};
 
     private String mColors[] = new String[]{"#f0f0f0", "#eaeaea", "#e1e1e1", "#d6d6d6", "#cac9c9",
             "#bfbebe", "#b6b5b5", "#aeadad", "#a5a4a4", "#9c9c9c"};
@@ -69,6 +73,10 @@ public class AngleIndicatorView extends View {
     private int mIndicatorWidth = 150;
 
     public int mRect = 210;
+
+    public int mCurrent = 0;
+
+    //public AngleView mAngleview;
 
     private OnIndexChangedLitener mListener;
 
@@ -161,7 +169,6 @@ public class AngleIndicatorView extends View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         mWidth = getMeasuredWidth();
         mHeight = getMeasuredHeight();
-        //Log.i("Gmw", "mWidt2=" + mWidth + ",mHeight2=" + mHeight);
     }
 
     /**
@@ -225,10 +232,13 @@ public class AngleIndicatorView extends View {
                         degree = Math.toDegrees(Math.atan(newy / (mWidth - newx)));
                     }
                     if (degree > 0 && degree < DEGREES_U * 3) {
+                        //setCurrentIndex(0);
                         mListener.onIndexChanged(0);
                     } else if (degree > DEGREES_U * 3 && degree < DEGREES_U * 5) {
+                        //setCurrentIndex(1);
                         mListener.onIndexChanged(1);
                     } else if (degree > DEGREES_U * 5 && degree < DEGREES_U * 8) {
+                        //setCurrentIndex(2);
                         mListener.onIndexChanged(2);
                     }
                 }
@@ -237,13 +247,81 @@ public class AngleIndicatorView extends View {
         return true;
     }
 
+    public void setCurrentIndex(int index) {
+        if (mPositionState == POSITION_STATE_LEFT) {
+            if (mLeftArcStart == START_ANGLE) {
+                if (index == 1) {
+                    change(1, 3, 0, 1);
+                } else if (index == 2) {
+                    change(1, 5, 0, 2);
+                }
+            } else if (mLeftArcStart == 3 * START_ANGLE) {
+                if (index == 0) {
+                    change(3, 1, 1, 0);
+                } else if (index == 2) {
+                    change(3, 5, 1, 2);
+                }
+            } else if (mLeftArcStart == 5 * START_ANGLE) {
+                if (index == 1) {
+                    change(5, 3, 2, 1);
+                } else if (index == 0) {
+                    change(5, 1, 2, 0);
+                }
+            }
+        } else if (mPositionState == POSITION_STATE_RIGHT) {
+            if (mRightArcStart == DEGREES_90 + 5 * START_ANGLE) {
+                if (index == 1) {
+                    change(5, 3, 0, 1);
+                } else if (index == 2) {
+                    change(5, 1, 0, 2);
+                }
+            } else if (mRightArcStart == DEGREES_90 + 3 * START_ANGLE) {
+                if (index == 0) {
+                    change(3, 5, 1, 0);
+                } else if (index == 2) {
+                    change(3, 1, 1, 2);
+                }
+            } else if (mRightArcStart == DEGREES_90 + 1 * START_ANGLE) {
+                if (index == 1) {
+                    change(1, 3, 2, 1);
+                } else if (index == 0) {
+                    change(1, 5, 2, 0);
+                }
+            }
+        }
+    }
+
+    public void change(final int start, final int end, final int paint0, final int paint1) {
+        ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
+        va.setDuration(400);
+        va.setInterpolator(new DecelerateInterpolator());
+        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float v = (float) animation.getAnimatedValue();
+                if (mPositionState == POSITION_STATE_LEFT) {
+                    mLeftArcStart = START_ANGLE * start + (end - start) * START_ANGLE * v;
+                } else if (mPositionState == POSITION_STATE_RIGHT) {
+                    mRightArcStart = DEGREES_90 + START_ANGLE * start - (start - end) * START_ANGLE * v;
+                }
+                float p = (v / 1.1f);
+                int np = (int) (p * 10);
+                mPaintArray[paint0].setColor(Color.parseColor(mColors[np]));
+                mPaintArray[paint1].setColor(Color.parseColor(mColors[9 - np]));
+                invalidate();
+            }
+        });
+        va.start();
+
+    }
+
     /**
-     * 顺时针时刷新颜色
+     * 点击时改变指示器的颜色
      *
      * @param cur 当前的限象值index
      * @param pre
      */
-    public void onAngleChanged(int cur, float pre) {
+    public void onAngleChanged2(int cur, float pre) {
         int index = (int) (pre * 10);
         if (mPositionState == POSITION_STATE_LEFT) {
             if (cur == 0) {
@@ -278,7 +356,6 @@ public class AngleIndicatorView extends View {
                 mPaint2.setColor(Color.parseColor(mColors[9 - index]));
             }
         }
-
         invalidate();
     }
 

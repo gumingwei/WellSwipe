@@ -5,7 +5,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,6 +88,8 @@ public class AngleView extends ViewGroup {
 
     private static final int COUNT_4 = 4;
 
+    private boolean isDrag;
+
     private int mCurrentIndex;
 
     private ValueAnimator mAngleAnimator;
@@ -121,18 +122,15 @@ public class AngleView extends ViewGroup {
     public AngleView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         ArrayList<View> list0 = new ArrayList<>();
+        AngleItem item;
         for (int i = 0; i < 9; i++) {
-//            TextView view = new TextView(context);
-//            view.setGravity(Gravity.CENTER);
-//            view.setText("A=" + i);
-//            view.setCompoundDrawablesRelativeWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_launcher), null, null);
-//            list0.add(view);
-            AngleItem item = (AngleItem) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
-            item.setTag(i);
+
+            item = (AngleItem) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
+            item.setTitle("A" + i);
             item.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i("Gmw", "A=" + v.getTag());
+                    //Log.i("Gmw", "A=");
                 }
             });
             list0.add(item);
@@ -140,18 +138,14 @@ public class AngleView extends ViewGroup {
         mMap.put(0, list0);
 
         ArrayList<View> list1 = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
-//            TextView view = new TextView(context);
-//            view.setGravity(Gravity.CENTER);
-//            view.setText("B=" + i);
-//            view.setCompoundDrawablesRelativeWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_launcher), null, null);
-//            list1.add(view);
-            AngleItem item = (AngleItem) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
-            item.setTag(i);
+        for (int i = 0; i < 8; i++) {
+
+            item = (AngleItem) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
+            item.setTitle("B" + i);
             item.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i("Gmw", "A=" + v.getTag());
+                    //Log.i("Gmw", "B=");
                 }
             });
             list1.add(item);
@@ -159,19 +153,14 @@ public class AngleView extends ViewGroup {
         mMap.put(1, list1);
 
         ArrayList<View> list2 = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
-            //AngleLayout view = (AngleLayout) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
-//            TextView view = new TextView(context);
-//            view.setGravity(Gravity.CENTER);
-//            view.setText("C=" + i);
-//            view.setCompoundDrawablesRelativeWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_launcher), null, null);
-//            list2.add(view);
-            AngleItem item = (AngleItem) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
-            item.setTag(i);
+        for (int i = 0; i < 7; i++) {
+
+            item = (AngleItem) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
+            item.setTitle("C" + i);
             item.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i("Gmw", "A=" + v.getTag());
+                    //Log.i("Gmw", "C=" + v.getTag());
                 }
             });
             list2.add(item);
@@ -354,20 +343,15 @@ public class AngleView extends ViewGroup {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         canvas.save();
-        /**
-         * 转动的时候回传当前限象index
-         */
-        mAngleListener.onAngleChanged(getViewsIndex((int) (getAngleValues() / DEGREES_90)), ((getAngleValues() % DEGREES_90) / DEGREES_90));
-
         if (mPositionState == POSITION_STATE_LEFT) {
             canvas.rotate(mBaseAngle + mChangeAngle, 0, mPivotY);
         } else if (mPositionState == POSITION_STATE_RIGHT) {
             canvas.rotate(mBaseAngle + mChangeAngle, mPivotX, mPivotY);
         }
+
         super.dispatchDraw(canvas);
         canvas.restore();
     }
-
 
     public void setOnAngleChangeListener(OnAngleChangeListener listener) {
         mAngleListener = listener;
@@ -388,6 +372,7 @@ public class AngleView extends ViewGroup {
      * @param y
      */
     public void changeAngle(float x, float y) {
+        isDrag = false;
         double diffAngle;
         double angle;
         angle = Math.toDegrees(Math.atan(x / y));
@@ -412,6 +397,15 @@ public class AngleView extends ViewGroup {
      */
     private void changeAngle(double rotation) {
         mChangeAngle = (float) rotation;
+        change();
+
+    }
+
+    private void change() {
+        /**
+         * 转动的时候回传当前限象index
+         */
+        mAngleListener.onAngleChanged(getViewsIndex((int) (getAngleValues() / DEGREES_90)), ((getAngleValues() % DEGREES_90) / DEGREES_90));
         invalidate();
     }
 
@@ -422,6 +416,7 @@ public class AngleView extends ViewGroup {
      * @param vy
      */
     public void fling(float vx, float vy) {
+        isDrag = false;
         if (mPositionState == POSITION_STATE_LEFT) {
             if (vy > ALLOW_FLING || vx > ALLOW_FLING) {
                 flingForward();
@@ -599,7 +594,7 @@ public class AngleView extends ViewGroup {
                 float value = (float) animation.getAnimatedValue();
                 mBaseAngle = value;
                 mBaseAngle = mBaseAngle % DEGREES_1080;
-                invalidate();
+                change();
             }
         });
         mAngleAnimator.addListener(new Animator.AnimatorListener() {

@@ -2,6 +2,7 @@ package com.well.swipe.utils;
 
 import android.content.Context;
 
+
 import java.lang.reflect.Field;
 
 /**
@@ -38,4 +39,6 @@ public class Utils {
         }
         return h;
     }
+
+
 }
