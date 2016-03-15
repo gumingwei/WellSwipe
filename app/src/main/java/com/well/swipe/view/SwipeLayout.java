@@ -109,6 +109,7 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
             mAngleLayout.off(mAngleLayout.getAngleLayoutScale());
+            return false;
         }
         return super.dispatchKeyEvent(event);
     }
@@ -134,7 +135,7 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
     }
 
     @Override
-    public void off() {
+    public void onOff() {
         dismiss();
     }
 
@@ -144,6 +145,6 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
     }
 
     public void setSwipeBackgroundViewAlpha(float a) {
-        mBgLayout.setAlpha(a);
+        mBgLayout.setAlpha(((int) (a * 10) / 10f));
     }
 }

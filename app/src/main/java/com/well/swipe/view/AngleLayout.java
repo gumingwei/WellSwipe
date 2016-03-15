@@ -4,18 +4,15 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
-import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.animation.DecelerateInterpolator;
+import android.view.animation.AnticipateOvershootInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 
 import com.well.swipe.R;
 import com.well.swipe.utils.Utils;
-
-import java.util.ArrayList;
 
 /**
  * Created by mingwei on 2/26/16.
@@ -26,10 +23,14 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
      * 旋转View
      */
     private AngleView mAngleView;
+
+    private int mAngleSize;
     /**
      * 底部的指示器
      */
     private AngleIndicatorView mIndicator;
+
+    private int mIndicatorSize;
     /**
      * 当前的旋转状态
      */
@@ -77,8 +78,6 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
     private int mHeight;
 
-    private int mFanMumOffset = 25;
-
     private float mAngleLayoutScale;
 
     private int mSwitchType = SWITCH_TYPE_ON;
@@ -89,13 +88,15 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
     private ValueAnimator mAnimator;
 
+    private boolean isAnimator = true;
+
     public OnOffListener mOffListener;
 
     public interface OnOffListener extends OnScaleChangeListener {
         /**
          * 当Angle关闭的时候回调,目的是通知SwipeLayout去dissmis
          */
-        void off();
+        void onOff();
     }
 
     public AngleLayout(Context context) {
@@ -135,15 +136,14 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         /**
          * AngleView的大小
          */
-        int offset = Utils.dp2px(getContext(), mFanMumOffset);
-        int fanSize = mWidth - offset;
-        LayoutParams params = new LayoutParams(fanSize, fanSize);
+        mAngleSize = getResources().getDimensionPixelSize(R.dimen.angleview_size);
+        LayoutParams params = new LayoutParams(mAngleSize, mAngleSize);
         mAngleView.setLayoutParams(params);
         /**
          * IndicatorView的大小
          */
-        float indicatorSize = mWidth / 2.5f;
-        LayoutParams indicatorParams = new LayoutParams((int) indicatorSize, (int) indicatorSize);
+        mIndicatorSize = getResources().getDimensionPixelSize(R.dimen.angleindicator_size);
+        LayoutParams indicatorParams = new LayoutParams(mIndicatorSize, mIndicatorSize);
         mIndicator.setLayoutParams(indicatorParams);
 
     }
@@ -151,18 +151,15 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        int offset = Utils.dp2px(getContext(), mFanMumOffset);
-        int fanSize = mWidth - offset;
         /**
          * AngleView,IndicatorView的大小
          */
-        int indicatorSize = (int) (mWidth / 2.5f);
         if (mAngleView.getPositionState() == AngleView.POSITION_STATE_LEFT) {
-            mAngleView.layout(0, mHeight - fanSize, fanSize, mHeight);
-            mIndicator.layout(0, mHeight - indicatorSize, indicatorSize, mHeight);
+            mAngleView.layout(0, mHeight - mAngleSize, mAngleSize, mHeight);
+            mIndicator.layout(0, mHeight - mIndicatorSize, mIndicatorSize, mHeight);
         } else if (mAngleView.getPositionState() == AngleView.POSITION_STATE_RIGHT) {
-            mAngleView.layout(mWidth - fanSize, mHeight - fanSize, mWidth, mHeight);
-            mIndicator.layout(mWidth - indicatorSize, mHeight - indicatorSize, mWidth, mHeight);
+            mAngleView.layout(mWidth - mAngleSize, mHeight - mAngleSize, mWidth, mHeight);
+            mIndicator.layout(mWidth - mIndicatorSize, mHeight - mIndicatorSize, mWidth, mHeight);
         }
 
     }
@@ -175,15 +172,6 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         final int action = ev.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-
-//                Log.i("Gmw", "当前的Index＝" + mAngleView.getQuaIndexOut());
-//                Log.i("Gmw", "第几组数据＝" + mAngleView.getViewsIndexOut());
-//                ArrayList<View> view = mAngleView.getData();
-//                for (int i = 0; i < view.size(); i++) {
-//                    AngleItem item = (AngleItem) view.get(i);
-//                    Log.i("Gmw", "t=" + item.getTitle() + "X=" + view.get(i).getX() + ",Y=" + view.get(i).getY());
-//                }
-
 
                 mTouchState = TOUCH_STATE_REST;
                 //mDownMotionX = ev.getX();
@@ -284,6 +272,11 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     }
 
     @Override
+    public void end(int endIndex) {
+        mIndicator.setCurrent(endIndex);
+    }
+
+    @Override
     public void onIndexChanged(int index) {
         /**
          * flag==true手动旋转
@@ -381,19 +374,29 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     }
 
     public void on(float start) {
-        mSwitchType = SWITCH_TYPE_ON;
-        animator(start, 1.0f);
+
+        if (isAnimator) {
+            mSwitchType = SWITCH_TYPE_ON;
+            animator(start, 1.0f);
+        }
     }
 
     public void off(float start) {
-        mSwitchType = SWITCH_TYPE_OFF;
-        animator(start, 0f);
+        if (isAnimator) {
+            mSwitchType = SWITCH_TYPE_OFF;
+            animator(start, 0f);
+        }
     }
 
     public void animator(float start, float end) {
+        isAnimator = false;
         mAnimator = ValueAnimator.ofFloat(start, end);
-        mAnimator.setDuration(300);
-        mAnimator.setInterpolator(new DecelerateInterpolator());
+        mAnimator.setDuration(500);
+        if (mSwitchType == SWITCH_TYPE_ON) {
+            mAnimator.setInterpolator(new OvershootInterpolator(1.2f));
+        } else if (mSwitchType == SWITCH_TYPE_OFF) {
+            mAnimator.setInterpolator(new AnticipateOvershootInterpolator(0.9f));
+        }
         mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -410,8 +413,9 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
             @Override
             public void onAnimationEnd(Animator animation) {
+                isAnimator = true;
                 if (mSwitchType == SWITCH_TYPE_OFF) {
-                    mOffListener.off();
+                    mOffListener.onOff();
                 }
             }
 
@@ -426,6 +430,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
             }
         });
         mAnimator.start();
+
     }
 
 

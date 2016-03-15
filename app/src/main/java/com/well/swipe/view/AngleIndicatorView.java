@@ -29,16 +29,19 @@ public class AngleIndicatorView extends View {
 
     private Paint[] mPaintArray = new Paint[]{mPaint0, mPaint1, mPaint2};
 
-    private String mColors[] = new String[]{"#f0f0f0", "#eaeaea", "#e1e1e1", "#d6d6d6", "#cac9c9",
+    private String mColors[] = new String[]{"#ffffff", "#eaeaea", "#e1e1e1", "#d6d6d6", "#cac9c9",
             "#bfbebe", "#b6b5b5", "#aeadad", "#a5a4a4", "#9c9c9c"};
 
-    private Paint mPaint;
+//    private String mColors[] = new String[]{"#9c9c9c", "#a5a4a4", "#aeadad", "#b6b5b5", "#bfbebe",
+//            "#cac9c9", "#d6d6d6", "#e1e1e1", "#eaeaea", "#f0f0f0"};
+
+    private Paint mArcPaint;
 
     private Paint mInnerPaint;
 
-    private int LEFT_OFFSET_X = 145;
+    private int mLeftOffset;
 
-    private int RIGHT_OFFSET_X = 15;
+    private int mRightOffset;
 
     private int OFFSET_Y = 15;
 
@@ -72,11 +75,7 @@ public class AngleIndicatorView extends View {
 
     private int mIndicatorWidth = 150;
 
-    public int mRect = 210;
-
-    public int mCurrent = 0;
-
-    //public AngleView mAngleview;
+    public int mRect;
 
     private OnIndexChangedLitener mListener;
 
@@ -111,15 +110,16 @@ public class AngleIndicatorView extends View {
         mPaint2.setTextSize(32);
         mPaint2.setAntiAlias(true);
 
-        mPaint = new Paint();
-        mPaint.setColor(getResources().getColor(R.color.indicator_theme_purple));
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setAntiAlias(true);
-        mPaint.setStrokeWidth(mIndicatorWidth);
+        mArcPaint = new Paint();
+        //mArcPaint.setColor(Color.WHITE);
+        mArcPaint.setColor(getResources().getColor(R.color.indicator_theme_purple_selector));
+        mArcPaint.setStyle(Paint.Style.STROKE);
+        mArcPaint.setAntiAlias(true);
+        mArcPaint.setStrokeWidth(mIndicatorWidth);
 
         mInnerPaint = new Paint();
         mInnerPaint.setColor(getResources().getColor(R.color.indicator_theme_purple));
-        mInnerPaint.setStyle(Paint.Style.STROKE);
+        mInnerPaint.setStyle(Paint.Style.FILL);
         mInnerPaint.setAntiAlias(true);
         mInnerPaint.setStrokeWidth(5);
 
@@ -128,37 +128,48 @@ public class AngleIndicatorView extends View {
         }
         ViewConfiguration configuration = ViewConfiguration.get(context);
         mTouchSlop = configuration.getScaledTouchSlop();
+
+        mLeftOffset = getResources().getDimensionPixelSize(R.dimen.angleindicator_text_paddingleft);
+        mRightOffset = getResources().getDimensionPixelOffset(R.dimen.angleindicator_text_paddingright);
+        mRect = getResources().getDimensionPixelSize(R.dimen.angleindicator_arc_rect);
+
     }
-    
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         int degree = DEGREES_90 / 4;
         if (mPositionState == POSITION_STATE_LEFT) {
             RectF f = new RectF(-mRect, -mRect, mRect, mRect);
-            canvas.drawArc(f, mLeftArcStart, mArcSweep, false, mPaint);
-            canvas.drawCircle(0, 0, mRect - mIndicatorWidth / 2, mInnerPaint);
+
             canvas.drawCircle(0, 0, mRect + mIndicatorWidth / 2, mInnerPaint);
+            canvas.drawArc(f, mLeftArcStart, mArcSweep, false, mArcPaint);
             canvas.save();
             canvas.rotate(degree, 0, 0);
-            canvas.drawText(getResources().getString(R.string.recent), LEFT_OFFSET_X, OFFSET_Y, mPaint0);
+            mPaint0.setTextAlign(Paint.Align.LEFT);
+            mPaint1.setTextAlign(Paint.Align.LEFT);
+            mPaint2.setTextAlign(Paint.Align.LEFT);
+            canvas.drawText(getResources().getString(R.string.recent), mLeftOffset, OFFSET_Y, mPaint0);
             canvas.rotate(degree, 0, 0);
-            canvas.drawText(getResources().getString(R.string.toolbox), LEFT_OFFSET_X, OFFSET_Y, mPaint1);
+            canvas.drawText(getResources().getString(R.string.toolbox), mLeftOffset, OFFSET_Y, mPaint1);
             canvas.rotate(degree, 0, 0);
-            canvas.drawText(getResources().getString(R.string.frequent), LEFT_OFFSET_X, OFFSET_Y, mPaint2);
+            canvas.drawText(getResources().getString(R.string.frequent), mLeftOffset, OFFSET_Y, mPaint2);
             canvas.restore();
         } else if (mPositionState == POSITION_STATE_RIGHT) {
             RectF f = new RectF(mWidth - mRect, -mRect, mWidth + mRect, mRect);
-            canvas.drawArc(f, mRightArcStart, mArcSweep, false, mPaint);
-            canvas.drawCircle(mWidth, 0, mRect - mIndicatorWidth / 2, mInnerPaint);
+
             canvas.drawCircle(mWidth, 0, mRect + mIndicatorWidth / 2, mInnerPaint);
+            canvas.drawArc(f, mRightArcStart, mArcSweep, false, mArcPaint);
             canvas.save();
             canvas.rotate(-degree, mWidth, 0);
-            canvas.drawText(getResources().getString(R.string.recent), RIGHT_OFFSET_X, OFFSET_Y, mPaint0);
+            mPaint0.setTextAlign(Paint.Align.RIGHT);
+            mPaint1.setTextAlign(Paint.Align.RIGHT);
+            mPaint2.setTextAlign(Paint.Align.RIGHT);
+            canvas.drawText(getResources().getString(R.string.recent), mRightOffset, OFFSET_Y, mPaint0);
             canvas.rotate(-degree, mWidth, 0);
-            canvas.drawText(getResources().getString(R.string.toolbox), RIGHT_OFFSET_X, OFFSET_Y, mPaint1);
+            canvas.drawText(getResources().getString(R.string.toolbox), mRightOffset, OFFSET_Y, mPaint1);
             canvas.rotate(-degree, mWidth, 0);
-            canvas.drawText(getResources().getString(R.string.frequent), RIGHT_OFFSET_X, OFFSET_Y, mPaint2);
+            canvas.drawText(getResources().getString(R.string.frequent), mRightOffset, OFFSET_Y, mPaint2);
             canvas.restore();
         }
     }
@@ -185,12 +196,12 @@ public class AngleIndicatorView extends View {
      * @param current 当前高亮的画笔颜色
      */
     public void setCurrent(int current) {
-        if (current == 0) {
-            mPaint0.setColor(Color.parseColor(mColors[0]));
-        } else if (current == 1) {
-            mPaint0.setColor(Color.parseColor(mColors[0]));
-        } else if (current == 2) {
-            mPaint0.setColor(Color.parseColor(mColors[0]));
+        for (int i = 0; i < mPaintArray.length; i++) {
+            if (i == current) {
+                mPaintArray[i].setColor(Color.parseColor(mColors[0]));
+            } else {
+                mPaintArray[i].setColor(Color.parseColor(mColors[9]));
+            }
         }
         invalidate();
     }
@@ -231,13 +242,10 @@ public class AngleIndicatorView extends View {
                         degree = Math.toDegrees(Math.atan(newy / (mWidth - newx)));
                     }
                     if (degree > 0 && degree < DEGREES_U * 3) {
-                        //setCurrentIndex(0);
                         mListener.onIndexChanged(0);
                     } else if (degree > DEGREES_U * 3 && degree < DEGREES_U * 5) {
-                        //setCurrentIndex(1);
                         mListener.onIndexChanged(1);
                     } else if (degree > DEGREES_U * 5 && degree < DEGREES_U * 8) {
-                        //setCurrentIndex(2);
                         mListener.onIndexChanged(2);
                     }
                 }

@@ -1,4 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<favorites xmlns:android="http://schemas.android.com/apk/res/android">
+<favorites xmlns:wellswipe="http://schemas.android.com/apk/res/com.well.swipe">
 
+    <favorite
+        wellswipe:packageName="com.ming.pullzoom"
+        wellswipe:className="com.ming.pullzoom.activity.MainActivity"
+        wellswipe:item_index="1"
+        />
+
+    <favorite
+        wellswipe:packageName="com.android.contacts"
+        wellswipe:className="com.android.contacts.activities.PeopleActivity"
+        wellswipe:item_index="2"
+        />
+
+    <favorite
+        wellswipe:packageName="om.android.mms"
+        wellswipe:className="om.android.mms.ui.ConversationList"
+        wellswipe:item_index="3"
+        />
+
+    <quicksswitch
+        wellswipe:packageName="com.android.contacts"
+        wellswipe:item_index="3"
+        wellswipe:item_action="@string/swipe_item_action_action1"
+        />
+    <quicksswitch
+        wellswipe:packageName="com.android.contacts"
+        wellswipe:item_index="3"
+        wellswipe:item_action="@string/swipe_item_action_action2"
+        />
+    <quicksswitch
+        wellswipe:packageName="com.android.contacts"
+        wellswipe:item_index="3"
+        wellswipe:item_action="@string/swipe_item_action_action3"
+        />
+    <quicksswitch
+        wellswipe:packageName="com.android.contacts"
+        wellswipe:item_index="3"
+        wellswipe:item_action="@string/swipe_item_action_action4"
+        />
+    <quicksswitch
+        wellswipe:packageName="com.android.contacts"
+        wellswipe:item_index="3"
+        wellswipe:item_action="@string/swipe_item_action_action4"
+        />
 </favorites>

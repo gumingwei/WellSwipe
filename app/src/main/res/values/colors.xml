@@ -4,5 +4,6 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="indicator_theme_purple">#673ab7</color>
+    <color name="indicator_theme_purple_selector">#7e57c2</color>
 
 </resources>

@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
-import com.well.swipe.R;
 import com.well.swipe.utils.Utils;
 
 /**
@@ -265,6 +264,7 @@ public class CatchView extends View {
             mVelocityTracker = VelocityTracker.obtain();
         }
         mVelocityTracker.addMovement(event);
+
     }
 
     /**

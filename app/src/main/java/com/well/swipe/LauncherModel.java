@@ -6,31 +6,31 @@ import android.content.Intent;
 import android.os.Looper;
 import android.util.Log;
 
-import com.well.swipe.SwipeApplication;
 
 /**
  * Created by mingwei on 3/14/16.
  */
 public class LauncherModel extends BroadcastReceiver {
 
-    private LoadTask mLoadTask;
+    public LoadTask mLoadTask = new LoadTask();
 
     private SwipeApplication mApplication;
 
-    private android.os.Handler mThreadHandel = new android.os.Handler(Looper.getMainLooper());
+    public android.os.Handler mThreadHandel = new android.os.Handler(Looper.getMainLooper());
 
     public LauncherModel(SwipeApplication app) {
         mApplication = app;
+        mLoadTask.run();
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         Log.i("Gmw", "onReceive=" + action);
+
     }
 
     private class LoadTask implements Runnable {
-
         public LoadTask() {
 
         }
@@ -41,7 +41,7 @@ public class LauncherModel extends BroadcastReceiver {
         }
 
         private void loadWorkspace() {
-            mApplication.getProvider().loadDefaultFavoritesIfNecessary(0);
+            mApplication.getProvider().loadDefaultFavoritesIfNecessary(R.xml.default_workspace);
         }
     }
 }

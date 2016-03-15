@@ -34,6 +34,12 @@ public class AngleItem extends RelativeLayout {
         mText = (TextView) findViewById(R.id.angle_item_title);
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+//        Log.i("Gmw", "w=" + getMeasuredWidth());
+//        Log.i("Gmw", "h=" + getMeasuredHeight());
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {

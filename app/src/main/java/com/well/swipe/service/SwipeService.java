@@ -31,7 +31,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     /**
      * Swipe的布局
      */
-    private SwipeLayout mSwipeLayoutLeft;
+    private SwipeLayout mSwipeLayout;
 
     private int mType = TYPE_LEFT;
 
@@ -84,7 +84,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         mView.setOnEdgeSlidingListener(this);
         mView.show();
 
-        mSwipeLayoutLeft = (SwipeLayout) LayoutInflater.from(getBaseContext()).inflate(R.layout.swipe_layout, null);
+        mSwipeLayout = (SwipeLayout) LayoutInflater.from(getBaseContext()).inflate(R.layout.swipe_layout, null);
 
 
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -181,37 +181,37 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     @Override
     public void openLeft() {
-        mSwipeLayoutLeft.switchLeft();
+        mSwipeLayout.switchLeft();
     }
 
     @Override
     public void openRight() {
-        mSwipeLayoutLeft.switchRight();
+        mSwipeLayout.switchRight();
 
     }
 
     @Override
     public void change(float scale) {
-        mSwipeLayoutLeft.setScale(scale);
-        mSwipeLayoutLeft.setSwipeBackgroundViewAlpha(scale);
+        mSwipeLayout.setScale(scale);
+        mSwipeLayout.setSwipeBackgroundViewAlpha(scale);
     }
 
     @Override
     public void cancel(View view, boolean flag) {
         int state = ((CatchView) view).getState();
         if (state == CatchView.POSITION_STATE_LEFT) {
-            mSwipeLayoutLeft.switchLeft();
+            mSwipeLayout.switchLeft();
         } else if (state == CatchView.POSITION_STATE_RIGHT) {
-            mSwipeLayoutLeft.switchRight();
+            mSwipeLayout.switchRight();
         }
         /**
          * flag==true  自动打开
          * flag==flase 根据当前的sacle判断是否打开
          */
         if (flag) {
-            mSwipeLayoutLeft.on();
+            mSwipeLayout.on();
         } else {
-            mSwipeLayoutLeft.switchAngleLayout();
+            mSwipeLayout.switchAngleLayout();
         }
 
     }

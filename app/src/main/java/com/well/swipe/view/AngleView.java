@@ -19,8 +19,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.security.auth.login.LoginException;
-
 /**
  * Created by mingwei on 2/25/16.
  * 旋转的扇形View
@@ -65,7 +63,7 @@ public class AngleView extends ViewGroup {
     /**
      * 顺时针/逆时针
      */
-    public int ANGLE_STATE = ANGLE_STATE_REST;
+    private int ANGLE_STATE = ANGLE_STATE_REST;
 
     public static final int ANGLE_STATE_REST = 0;
 
@@ -77,9 +75,11 @@ public class AngleView extends ViewGroup {
 
     public static final int DEGREES_1080 = DEGREES_360 * 3;
 
-    public int RADIUS_INNNER = 410;
+    private int mChildHalfSize;
 
-    public int RADIUS_OUTER = 590;
+    public int mInnerRadius = 410;
+
+    public int mOuterRadius = 590;
     /**
      * 单位度数
      */
@@ -95,7 +95,8 @@ public class AngleView extends ViewGroup {
 
     private static final int COUNT_4 = 4;
 
-    private boolean isDrag;
+    private static final int COUNT_12 = COUNT_4 * 3;
+
 
     private int mCurrentIndex;
 
@@ -103,18 +104,28 @@ public class AngleView extends ViewGroup {
 
     private Map<Integer, ArrayList<View>> mMap = new HashMap<>();
 
-
-    OnAngleChangeListener mAngleListener;
+    private OnAngleChangeListener mAngleListener;
 
     public interface OnAngleChangeListener {
 
         /**
          * 角度发生变化时传递当前的所显示的数据索引值&当前的百分比
+         * 用于改变Indicator的选中状态，百分比则用来渲染过渡效果
          *
          * @param cur 正在显示的是数据index
          * @param p   百分比
          */
         void onAngleChanged(int cur, float p);
+
+        /**
+         * 旋转停止时调用
+         * 在快速点击切换Indicator的时候，由于设计机制的原因，比如：在indicator==0时点击了1，当动画还没有完全执行
+         * 完成的时候再点击2，此时执行的是0-2的动画过程，so...刚刚执行了一半的1就停在半路了，此方法的目的是动画执行
+         * 完成时强行校对选中状态
+         *
+         * @param endIndex 结束的当前数据索引Index
+         */
+        void end(int endIndex);
 
     }
 
@@ -128,10 +139,13 @@ public class AngleView extends ViewGroup {
 
     public AngleView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        mChildHalfSize = getResources().getDimensionPixelSize(R.dimen.angleitem_half_size);
+        mInnerRadius = getResources().getDimensionPixelSize(R.dimen.angleview_inner_radius);
+        mOuterRadius = getResources().getDimensionPixelSize(R.dimen.angleview_outer_radius);
         ArrayList<View> list0 = new ArrayList<>();
         AngleItem item;
         for (int i = 0; i < 9; i++) {
-
             item = (AngleItem) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
             item.setTitle("A" + i);
             //item.setOnClickListener(new OnClickListener() {
@@ -184,7 +198,6 @@ public class AngleView extends ViewGroup {
             }
         }
 
-
     }
 
     @Override
@@ -196,7 +209,7 @@ public class AngleView extends ViewGroup {
         mWidth = getMeasuredWidth();
         //setBaseAngle(90);
         for (int i = 0; i < getChildCount(); i++) {
-            getChildAt(i).measure(120, 120);
+            getChildAt(i).measure(mChildHalfSize * 2, mChildHalfSize * 2);
         }
     }
 
@@ -260,7 +273,7 @@ public class AngleView extends ViewGroup {
             if (views.size() <= COUNT_4) {
                 size = views.size();
                 group = index;
-                radius = RADIUS_INNNER;
+                radius = mInnerRadius;
             } else {
                 if (index < COUNT_4) {
                     /**
@@ -268,7 +281,7 @@ public class AngleView extends ViewGroup {
                      */
                     size = COUNT_4;
                     group = index;
-                    radius = RADIUS_INNNER;
+                    radius = mInnerRadius;
                 } else {
                     /**
                      * 总数大于4时外环
@@ -277,7 +290,7 @@ public class AngleView extends ViewGroup {
                      */
                     size = views.size() - COUNT_4;
                     group = index - COUNT_4;
-                    radius = RADIUS_OUTER;
+                    radius = mOuterRadius;
                 }
             }
             /**
@@ -339,11 +352,10 @@ public class AngleView extends ViewGroup {
             } else if (mPositionState == POSITION_STATE_RIGHT) {
                 views.get(index).setRotation(-DEGREES_90 * qua);
             }
-
             /**
              * 指定位置
              */
-            views.get(index).layout((int) (x - 60), (int) (y - 60), (int) (x + 60), (int) (y + 60));
+            views.get(index).layout((int) (x - mChildHalfSize), (int) (y - mChildHalfSize), (int) (x + mChildHalfSize), (int) (y + mChildHalfSize));
         }
     }
 
@@ -364,15 +376,12 @@ public class AngleView extends ViewGroup {
         int action = event.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                //Log.i("Gmw", "当前的点击的坐标＝" + event.getX() + ",y=" + event.getY());
-                //Log.i("Gmw", "当前的Index＝" + getQuaIndexOut());
-                //Log.i("Gmw", "第几组数据＝" + getViewsIndexOut());
+
                 float newx = event.getX();
                 float newy = event.getY();
                 ArrayList<View> views = getData();
+
                 for (int index = 0; index < views.size(); index++) {
-                    AngleItem item = (AngleItem) views.get(index);
-                    //Log.i("Gmw", "t=" + item.getTitle() + "X=" + view.get(i).getX() + ",Y=" + view.get(i).getY());
                     /**
                      * size按照当前views的总数，以4为区分，分别计算出<4,=4,超出4的部分剪掉4即从1，2，3重新开始计数
                      */
@@ -390,7 +399,7 @@ public class AngleView extends ViewGroup {
                     if (views.size() <= COUNT_4) {
                         size = views.size();
                         group = index;
-                        radius = RADIUS_INNNER;
+                        radius = mInnerRadius;
                     } else {
                         if (index < COUNT_4) {
                             /**
@@ -398,7 +407,7 @@ public class AngleView extends ViewGroup {
                              */
                             size = COUNT_4;
                             group = index;
-                            radius = RADIUS_INNNER;
+                            radius = mInnerRadius;
                         } else {
                             /**
                              * 总数大于4时外环
@@ -407,7 +416,7 @@ public class AngleView extends ViewGroup {
                              */
                             size = views.size() - COUNT_4;
                             group = index - COUNT_4;
-                            radius = RADIUS_OUTER;
+                            radius = mOuterRadius;
                         }
                     }
                     /**
@@ -438,16 +447,14 @@ public class AngleView extends ViewGroup {
                         y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
                     }
 
-                    float newleft = (float) (x - 60);
-                    float newtop = (float) (y - 60);
-                    float newright = (float) (x + 60);
-                    float newbottom = (float) (y + 60);
+                    float newleft = (float) (x - mChildHalfSize);
+                    float newtop = (float) (y - mChildHalfSize);
+                    float newright = (float) (x + mChildHalfSize);
+                    float newbottom = (float) (y + mChildHalfSize);
                     if (newx > newleft && newx < newright && newy > newtop && newy < newbottom) {
                         Log.i("Gmw", "点击到范围了＝" + ((AngleItem) views.get(index)).getTitle());
                     }
-                    //Log.i("Gmw", "rect=" + newleft + "," + newtop + "," + newright + "," + newbottom);
                 }
-
 
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -479,7 +486,6 @@ public class AngleView extends ViewGroup {
      * @param y
      */
     public void changeAngle(float x, float y) {
-        isDrag = false;
         double diffAngle;
         double angle;
         angle = Math.toDegrees(Math.atan(x / y));
@@ -494,7 +500,6 @@ public class AngleView extends ViewGroup {
         } else if (mPositionState == POSITION_STATE_RIGHT) {
             changeAngle(-diffAngle);
         }
-
     }
 
     /**
@@ -504,10 +509,10 @@ public class AngleView extends ViewGroup {
      */
     private void changeAngle(double rotation) {
         mChangeAngle = (float) rotation;
-        change();
+        angleChange();
     }
 
-    private void change() {
+    private void angleChange() {
         /**
          * 转动的时候回传当前限象index
          */
@@ -522,7 +527,6 @@ public class AngleView extends ViewGroup {
      * @param vy
      */
     public void fling(float vx, float vy) {
-        isDrag = false;
         if (mPositionState == POSITION_STATE_LEFT) {
             if (vy > ALLOW_FLING || vx > ALLOW_FLING) {
                 flingForward();
@@ -700,7 +704,7 @@ public class AngleView extends ViewGroup {
                 float value = (float) animation.getAnimatedValue();
                 mBaseAngle = value;
                 mBaseAngle = mBaseAngle % DEGREES_1080;
-                change();
+                angleChange();
             }
         });
         mAngleAnimator.addListener(new Animator.AnimatorListener() {
@@ -716,12 +720,13 @@ public class AngleView extends ViewGroup {
                     /**
                      * getQuaIndex()
                      */
-
                     itemLayout(mIndex);
 
                 } else if (mPositionState == POSITION_STATE_RIGHT) {
                     itemLayout2(mIndex);
                 }
+
+                mAngleListener.end(getViewsIndex());
             }
 
             @Override
@@ -746,7 +751,6 @@ public class AngleView extends ViewGroup {
         return mPositionState;
     }
 
-
     /**
      * 转动时候随时可以获取到的的转动角度
      *
@@ -763,7 +767,7 @@ public class AngleView extends ViewGroup {
 
     public void setBaseAngle(float angle) {
         mBaseAngle = angle;
-        change();
+        angleChange();
     }
 
     public int getCurrentIndex() {
@@ -779,15 +783,17 @@ public class AngleView extends ViewGroup {
      * @return
      */
     public int getQuaIndex(int index) {
-        return index == 0 ? 0 : (12 - index) % COUNT_4;
+        return index == 0 ? 0 : (COUNT_12 - index) % COUNT_4;
     }
 
-    public int getQuaIndexOut() {
-        return getQuaIndex(((int) ((mBaseAngle) / DEGREES_90)));
-    }
-
+    /**
+     * 获取真实的限象Index
+     *
+     * @param index
+     * @return
+     */
     public int getRealIndex(int index) {
-        return index == 0 ? 0 : (12 - index);
+        return index == 0 ? 0 : (COUNT_12 - index);
     }
 
     /**
@@ -830,22 +836,36 @@ public class AngleView extends ViewGroup {
      * @return
      */
     private int getViewsIndex(int index) {
-        return (12 - index) % 3;
+        return (COUNT_12 - index) % 3;
     }
 
-    public int getViewsIndexOut() {
-        return getViewsIndex(((int) ((mBaseAngle) / DEGREES_90)));
+    /**
+     * getViewsIndex(int index)重载方法
+     *
+     * @return 直接返回当前显示数据的Index索引值
+     */
+    public int getViewsIndex() {
+        if (mPositionState == POSITION_STATE_LEFT) {
+            return getViewsIndex(((int) ((mBaseAngle) / DEGREES_90)));
+        } else {
+            return getViewsIndex2(((int) ((mBaseAngle) / DEGREES_90)));
+        }
     }
 
+    /**
+     * 根据当前的显示数据的Index来从HashMap中的取出数据
+     *
+     * @return 当前显示在第0限象位置的数据
+     */
     public ArrayList<View> getData() {
-        return mMap.get(getViewsIndexOut());
+        return mMap.get(getViewsIndex());
     }
 
     /**
      * mPositionState=Right
      *
-     * @param index
-     * @return
+     * @param index 根据BaseAngle求出的实际限象数
+     * @return 转换为右侧的实际Index
      */
     private int getViewsIndex2(int index) {
         return index < 0 ? 3 + index : index % 3;

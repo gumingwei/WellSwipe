@@ -2,5 +2,14 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="angle_item_icon_size">30dp</dimen>
+    <dimen name="angleview_size">335dp</dimen>
+    <dimen name="angleview_inner_radius">205dp</dimen>
+    <dimen name="angleview_outer_radius">295dp</dimen>
+    <dimen name="angleindicator_size">144dp</dimen>
+    <dimen name="angleindicator_text_paddingleft">73dp</dimen>
+    <dimen name="angleindicator_text_paddingright">71dp</dimen>
+    <dimen name="angleindicator_arc_rect">105dp</dimen>
+    <dimen name="angleitem_half_size">32dp</dimen>
+    <dimen name="angle_item_icon_size">40dp</dimen>
+
 </resources>
