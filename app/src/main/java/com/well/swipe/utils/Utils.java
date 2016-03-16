@@ -1,7 +1,20 @@
 package com.well.swipe.utils;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BlurMaskFilter;
+import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.PaintDrawable;
+import android.util.DisplayMetrics;
 
+
+import com.well.swipe.R;
 
 import java.lang.reflect.Field;
 
@@ -9,6 +22,7 @@ import java.lang.reflect.Field;
  * Created by mingwei on 2/26/16.
  */
 public class Utils {
+    
 
     public static int dp2px(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
@@ -39,6 +53,5 @@ public class Utils {
         }
         return h;
     }
-
 
 }

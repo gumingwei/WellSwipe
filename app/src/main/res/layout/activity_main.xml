@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:layout_margin="20dip"
     android:orientation="vertical"
-    tools:context=".activitys.MainActivity">
+    tools:context=".activitys.SwipeSettingActivity">
 
     <!--<include layout="@layout/swipe_layout" />-->
     <!--<include layout="@layout/angle_item"></include>-->

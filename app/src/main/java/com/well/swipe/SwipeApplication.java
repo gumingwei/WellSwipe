@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
+import com.well.swipe.service.SwipeService;
+
 import java.lang.ref.WeakReference;
 
 /**
@@ -14,13 +16,16 @@ public class SwipeApplication extends Application {
 
     private LauncherModel mModel;
 
+    private IconCache mIconCache;
+
     private WeakReference<SwipeProvider> mSwipeProvider;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.i("Gmw", "SwipeApplication");
-        mModel = new LauncherModel(this);
+        mIconCache = new IconCache(this);
+        mModel = new LauncherModel(this, mIconCache);
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_PACKAGE_ADDED);
         filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
@@ -43,8 +48,13 @@ public class SwipeApplication extends Application {
         unregisterReceiver(mModel);
     }
 
+    public LauncherModel setLaunchr(SwipeService service) {
+        mModel.initCallBack(service);
+        return mModel;
+    }
+
     public void setProvider(SwipeProvider provider) {
-        mSwipeProvider = new WeakReference<SwipeProvider>(provider);
+        mSwipeProvider = new WeakReference<>(provider);
     }
 
     public SwipeProvider getProvider() {

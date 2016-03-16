@@ -19,10 +19,14 @@ public class SwipeSettings {
 
         static final String ITEM_TYPE = "item_type";
 
-        static final int ITEM_TYPE_FAVORITE = 1;
+        static final int ITEM_TYPE_FAVORITE = 0;
+
+        static final int ITEM_TYPE_APPLICATION = 1;
 
         static final int ITEM_TYPE_SWITCH = 2;
 
         static final String ITEM_ACTION = "item_action";
+
+        static final String ITEM_ICON = "item_icon";
     }
 }

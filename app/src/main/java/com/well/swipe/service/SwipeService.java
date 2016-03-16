@@ -8,22 +8,32 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.well.swipe.ItemApplication;
+import com.well.swipe.LauncherModel;
 import com.well.swipe.R;
+import com.well.swipe.SwipeApplication;
 import com.well.swipe.view.BubbleView;
 import com.well.swipe.view.CatchView;
 import com.well.swipe.view.SwipeLayout;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 
 /**
  * Created by mingwei on 3/6/16.
  */
-public class SwipeService extends Service implements CatchView.OnEdgeSlidingListener {
+public class SwipeService extends Service implements CatchView.OnEdgeSlidingListener, LauncherModel.Callback {
+
+
+    SwipeApplication mSwipeApplication;
+
+    LauncherModel mLauncherModel;
 
     private BubbleView mBubble;
 
@@ -63,7 +73,9 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     @Override
     public void onCreate() {
         super.onCreate();
-//        mBubble = new BubbleView(getBaseContext());
+
+        mSwipeApplication = (SwipeApplication) getApplication();
+        mLauncherModel = mSwipeApplication.setLaunchr(this);
         mView = new CatchView(getBaseContext(), 0, 0, 50, 300);
         mView.setState(CatchView.POSITION_STATE_LEFT);
         mView.setOnEdgeSlidingListener(this);
@@ -93,6 +105,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         mNotification.flags = Notification.FLAG_ONGOING_EVENT;
         initForeground();
         startForegroundCompat(123, new Notification());
+
     }
 
     @Nullable
@@ -103,6 +116,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        mLauncherModel.startLoadTask();
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -214,6 +228,14 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
             mSwipeLayout.switchAngleLayout();
         }
 
+    }
+
+    @Override
+    public void bindAllApps(List<ItemApplication> appslist) {
+        Log.i("Gmw", "SwipeService-bindAllApps=" + appslist.size());
+        for (int i = 0; i < appslist.size(); i++) {
+            Log.i("Gmw", "pack=" + appslist.get(i).mComponentName);
+        }
     }
 
     private native void swipeDaemon(String serviceName, int sdkVersion);

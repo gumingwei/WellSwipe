@@ -13,7 +13,6 @@ import android.content.res.XmlResourceParser;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.SweepGradient;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -25,7 +24,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by mingwei on 3/14/16.
@@ -202,9 +200,9 @@ public class SwipeProvider extends ContentProvider {
                     String item_index = array.getString(R.styleable.Favorite_item_index);
                     values.put(SwipeSettings.Favorites.ITEM_TITLE, item_title);
                     values.put(SwipeSettings.Favorites.ITEM_INTENT, cn.toString());
-                    values.put(SwipeSettings.Favorites.ITEM_INDEX, 1);
+                    values.put(SwipeSettings.Favorites.ITEM_INDEX, item_index);
                     values.put(SwipeSettings.Favorites.ITEM_TYPE, SwipeSettings.Favorites.ITEM_TYPE_FAVORITE);
-                    Log.i("Gmw", "addFavorite-" + item_title);
+                    //Log.i("Gmw", "addFavorite-" + item_title);
                     checkInsert(mDatabaseHelper, database, TAG_FAORITES, values);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -224,30 +222,13 @@ public class SwipeProvider extends ContentProvider {
             String item_title = array.getString(R.styleable.Favorite_item_title);
             String item_index = array.getString(R.styleable.Favorite_item_index);
             values.put(SwipeSettings.Favorites.ITEM_TITLE, item_title);
-            values.put(SwipeSettings.Favorites.ITEM_INDEX, 1);
+            values.put(SwipeSettings.Favorites.ITEM_INDEX, item_index);
             values.put(SwipeSettings.Favorites.ITEM_TYPE, SwipeSettings.Favorites.ITEM_TYPE_SWITCH);
             values.put(SwipeSettings.Favorites.ITEM_ACTION, item_action);
-            Log.i("Gmw", "addQuick-" + item_action);
+            //Log.i("Gmw", "addQuick-" + item_action);
             checkInsert(mDatabaseHelper, database, TAG_FAORITES, values);
 
             return true;
-        }
-
-        private void printAllAppList() {
-
-            List<PackageInfo> packs = mContext.getPackageManager().getInstalledPackages(0);
-            for (int i = 0; i < packs.size(); i++) {
-                PackageInfo p = packs.get(i);
-                if ((p.versionName == null)) {
-                    continue;
-                }
-
-                Log.i("Gmw", "lable=" + p.applicationInfo.loadLabel(mContext.getPackageManager()));
-                Log.i("Gmw", "package=" + p.packageName);
-                Log.i("Gmw", "package_class=" + p.activities);
-
-
-            }
         }
 
         public boolean isApkInstalled(Context context, String packageName) {

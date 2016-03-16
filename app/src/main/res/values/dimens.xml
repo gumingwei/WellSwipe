@@ -11,5 +11,6 @@
     <dimen name="angleindicator_arc_rect">105dp</dimen>
     <dimen name="angleitem_half_size">32dp</dimen>
     <dimen name="angle_item_icon_size">40dp</dimen>
+    <dimen name="app_icon_size">48dp</dimen>
 
 </resources>

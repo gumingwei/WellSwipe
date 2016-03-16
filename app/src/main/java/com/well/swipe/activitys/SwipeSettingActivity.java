@@ -5,13 +5,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.LinearLayout;
 
 import com.well.swipe.R;
 import com.well.swipe.service.SwipeService;
 
-public class MainActivity extends AppCompatActivity {
+public class SwipeSettingActivity extends AppCompatActivity {
 
     Handler handler = new Handler() {
         @Override
@@ -27,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         //BubbleView b = new BubbleView(getBaseContext());
         //b.show();
         //Log.i("Gmw", "hello=" + Hello.hello(2));
-        startService(new Intent(MainActivity.this, SwipeService.class));
+        startService(new Intent(SwipeSettingActivity.this, SwipeService.class));
 
         //LinearLayout linearLayout = (LinearLayout) findViewById(R.id.testlayout);
 
@@ -39,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //stopService(new Intent(MainActivity.this, SwipeService.class));
+        //stopService(new Intent(SwipeSettingActivity.this, SwipeService.class));
     }
 
     @Override

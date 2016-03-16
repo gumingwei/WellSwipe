@@ -2,46 +2,87 @@
 <favorites xmlns:wellswipe="http://schemas.android.com/apk/res/com.well.swipe">
 
     <favorite
-        wellswipe:packageName="com.ming.pullzoom"
-        wellswipe:className="com.ming.pullzoom.activity.MainActivity"
+        wellswipe:className="com.example.android.apis.ApiDemos"
         wellswipe:item_index="1"
-        />
+        wellswipe:packageName="com.example.android.api" />
 
     <favorite
-        wellswipe:packageName="com.android.contacts"
-        wellswipe:className="com.android.contacts.activities.PeopleActivity"
+        wellswipe:className="com.android.browser.BrowserActivity"
+        wellswipe:item_index="1"
+        wellswipe:packageName="com.android.browser" />
+
+    <favorite
+        wellswipe:className="com.android.calculator2.Calculator"
         wellswipe:item_index="2"
-        />
-
+        wellswipe:packageName="com.android.calculator2" />
     <favorite
-        wellswipe:packageName="om.android.mms"
-        wellswipe:className="om.android.mms.ui.ConversationList"
+        wellswipe:className="com.android.camera.Camera"
+        wellswipe:item_index="2"
+        wellswipe:packageName="com.android.camera" />
+    <favorite
+        wellswipe:className="com.android.deskclock.DeskClock"
         wellswipe:item_index="3"
-        />
+        wellswipe:packageName="com.android.deskclock" />
+    <favorite
+        wellswipe:className="com.android.mms.ui.ConversationList"
+        wellswipe:item_index="3"
+        wellswipe:packageName="com.android.mms" />
+    <favorite
+        wellswipe:className="com.android.videoeditor.ProjectsActivity"
+        wellswipe:item_index="4"
+        wellswipe:packageName="com.android.videoeditor" />
+    <favorite
+        wellswipe:className="com.android.music.MusicBrowserActivity"
+        wellswipe:item_index="4"
+        wellswipe:packageName="com.android.music" />
+    <favorite
+        wellswipe:className="com.android.dialer.DialtactsActivity"
+        wellswipe:item_index="5"
+        wellswipe:packageName="com.android.dialer" />
+    <favorite
+        wellswipe:className="com.android.settings.Settings"
+        wellswipe:item_index="5"
+        wellswipe:packageName="com.android.settings" />
+    <favorite
+        wellswipe:className="com.tuxing.app.SplashActivity"
+        wellswipe:item_index="6"
+        wellswipe:packageName="com.tuxing.app.teacher" />
+    <favorite
+        wellswipe:className="com.android.music.MusicBrowserActivity"
+        wellswipe:item_index="6"
+        wellswipe:packageName="com.android.music" />
+    <favorite
+        wellswipe:className="com.android.gallery3d.app.GalleryActivity"
+        wellswipe:item_index="7"
+        wellswipe:packageName="com.android.gallery3d" />
+    <favorite
+        wellswipe:className="com.cyanogenmod.filemanager.activities.NavigationActivity"
+        wellswipe:item_index="7"
+        wellswipe:packageName="com.cyanogenmod.filemanager" />
+    <favorite
+        wellswipe:className="com.android.providers.downloads.ui.DownloadList"
+        wellswipe:item_index="8"
+        wellswipe:packageName="com.android.providers.downloads.ui" />
 
     <quicksswitch
-        wellswipe:packageName="com.android.contacts"
-        wellswipe:item_index="3"
         wellswipe:item_action="@string/swipe_item_action_action1"
-        />
+        wellswipe:item_index="1"
+        wellswipe:packageName="com.android.contacts" />
     <quicksswitch
-        wellswipe:packageName="com.android.contacts"
-        wellswipe:item_index="3"
         wellswipe:item_action="@string/swipe_item_action_action2"
-        />
+        wellswipe:item_index="2"
+        wellswipe:packageName="com.android.contacts" />
     <quicksswitch
-        wellswipe:packageName="com.android.contacts"
-        wellswipe:item_index="3"
         wellswipe:item_action="@string/swipe_item_action_action3"
-        />
-    <quicksswitch
-        wellswipe:packageName="com.android.contacts"
         wellswipe:item_index="3"
-        wellswipe:item_action="@string/swipe_item_action_action4"
-        />
+        wellswipe:packageName="com.android.contacts" />
     <quicksswitch
-        wellswipe:packageName="com.android.contacts"
-        wellswipe:item_index="3"
         wellswipe:item_action="@string/swipe_item_action_action4"
-        />
+        wellswipe:item_index="4"
+        wellswipe:packageName="com.android.contacts" />
+    <quicksswitch
+        wellswipe:item_action="@string/swipe_item_action_action4"
+        wellswipe:item_index="5"
+        wellswipe:packageName="com.android.contacts" />
+
 </favorites>
