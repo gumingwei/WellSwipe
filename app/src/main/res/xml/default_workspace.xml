@@ -2,18 +2,18 @@
 <favorites xmlns:wellswipe="http://schemas.android.com/apk/res/com.well.swipe">
 
     <favorite
-        wellswipe:className="com.example.android.apis.ApiDemos"
-        wellswipe:item_index="1"
-        wellswipe:packageName="com.example.android.api" />
+        wellswipe:className="com.android.browser.BrowserActivity"
+        wellswipe:item_index="0"
+        wellswipe:packageName="com.android.browser" />
 
     <favorite
         wellswipe:className="com.android.browser.BrowserActivity"
-        wellswipe:item_index="1"
+        wellswipe:item_index="0"
         wellswipe:packageName="com.android.browser" />
 
     <favorite
         wellswipe:className="com.android.calculator2.Calculator"
-        wellswipe:item_index="2"
+        wellswipe:item_index="1"
         wellswipe:packageName="com.android.calculator2" />
     <favorite
         wellswipe:className="com.android.camera.Camera"
@@ -67,6 +67,14 @@
     <quicksswitch
         wellswipe:item_action="@string/swipe_item_action_action1"
         wellswipe:item_index="1"
+        wellswipe:packageName="com.android.contacts" />
+    <quicksswitch
+        wellswipe:item_action="@string/swipe_item_action_action1"
+        wellswipe:item_index="1"
+        wellswipe:packageName="com.android.contacts" />
+    <quicksswitch
+        wellswipe:item_action="@string/swipe_item_action_action2"
+        wellswipe:item_index="2"
         wellswipe:packageName="com.android.contacts" />
     <quicksswitch
         wellswipe:item_action="@string/swipe_item_action_action2"

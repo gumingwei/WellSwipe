@@ -1,15 +1,16 @@
 package com.well.swipe;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Looper;
 import android.util.Log;
 
 import java.lang.ref.WeakReference;
@@ -51,7 +52,19 @@ public class LauncherModel extends BroadcastReceiver {
     private WeakReference<Callback> mCallback;
 
     public interface Callback {
-        public void bindAllApps(List<ItemApplication> appslist);
+        /**
+         * 绑定所有的app数据
+         *
+         * @param appslist
+         */
+        void bindAllApps(List<ItemApplication> appslist);
+
+        /**
+         * 绑定要在swipe上显示的app
+         *
+         * @param appslist applist
+         */
+        void bindFavorites(List<ItemApplication> appslist);
     }
 
     public LauncherModel(SwipeApplication app, IconCache iconCache) {
@@ -63,7 +76,6 @@ public class LauncherModel extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        Log.i("Gmw", "onReceive=" + action);
 
     }
 
@@ -97,8 +109,8 @@ public class LauncherModel extends BroadcastReceiver {
 
         @Override
         public void run() {
-            Log.i("Gmw", "LoadTask-run=" + mAllAppsList.data.size());
             loadWorkspace();
+            loadFavorites();
             loadAndBindAllApps();
         }
 
@@ -117,7 +129,6 @@ public class LauncherModel extends BroadcastReceiver {
             for (int i = 0; i < mInfoLists.size(); i++) {
                 mAllAppsList.data.add(new ItemApplication(manager, mInfoLists.get(i), mIconCache, mLabelCache));
             }
-            Log.i("Gmw", "mAllAppsList.data=" + mAllAppsList.data.size());
             ArrayList<ItemApplication> applications = new ArrayList<>();
             if (applications.size() != 0) {
                 applications.clear();
@@ -126,13 +137,20 @@ public class LauncherModel extends BroadcastReceiver {
             mCallback.get().bindAllApps(applications);
 
         }
+
+        private void loadFavorites() {
+            Log.i("Gmw", "loadFavorites");
+            ContentResolver resolver = mContext.getContentResolver();
+            Cursor cursor = resolver.query(SwipeSettings.Favorites.CONTENT_URI, null, null, null, null);
+            Log.i("Gmw", "loadFavorites_count=" + cursor.getCount());
+        }
+
     }
 
     private class PackageUpdataTask implements Runnable {
 
         @Override
         public void run() {
-            Log.i("Gmw", "PackageUpdataTask-run=" + mAllAppsList.data.size());
 
         }
     }

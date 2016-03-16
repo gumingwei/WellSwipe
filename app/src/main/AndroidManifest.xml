@@ -23,7 +23,7 @@
 
         <provider
             android:name="com.well.swipe.SwipeProvider"
-            android:authorities="com.well.swipe.setting"
+            android:authorities="com.well.swipe.favorites"
             android:exported="true" />
     </application>
 

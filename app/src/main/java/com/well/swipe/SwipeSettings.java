@@ -1,5 +1,7 @@
 package com.well.swipe;
 
+import android.net.Uri;
+
 /**
  * Created by mingwei on 3/15/16.
  */
@@ -19,8 +21,6 @@ public class SwipeSettings {
 
         static final String ITEM_TYPE = "item_type";
 
-        static final int ITEM_TYPE_FAVORITE = 0;
-
         static final int ITEM_TYPE_APPLICATION = 1;
 
         static final int ITEM_TYPE_SWITCH = 2;
@@ -28,5 +28,7 @@ public class SwipeSettings {
         static final String ITEM_ACTION = "item_action";
 
         static final String ITEM_ICON = "item_icon";
+
+        static final Uri CONTENT_URI = Uri.parse("content://" + SwipeProvider.AUTHORITY + "/" + SwipeProvider.TABLE_FAVORITES);
     }
 }

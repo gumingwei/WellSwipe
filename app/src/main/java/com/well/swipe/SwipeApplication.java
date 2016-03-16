@@ -1,8 +1,11 @@
 package com.well.swipe;
 
 import android.app.Application;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.os.Handler;
 import android.util.Log;
 
 import com.well.swipe.service.SwipeService;
@@ -23,7 +26,6 @@ public class SwipeApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i("Gmw", "SwipeApplication");
         mIconCache = new IconCache(this);
         mModel = new LauncherModel(this, mIconCache);
         IntentFilter filter = new IntentFilter();
@@ -39,6 +41,9 @@ public class SwipeApplication extends Application {
         filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
         registerReceiver(mModel, filter);
 
+        ContentResolver resolver = getContentResolver();
+        resolver.registerContentObserver(SwipeSettings.Favorites.CONTENT_URI, true,
+                mFavoritesObserver);
 
     }
 
@@ -60,4 +65,15 @@ public class SwipeApplication extends Application {
     public SwipeProvider getProvider() {
         return mSwipeProvider.get();
     }
+
+    private final ContentObserver mFavoritesObserver = new ContentObserver(new Handler()) {
+        @Override
+        public void onChange(boolean selfChange) {
+            // If the database has ever changed, then we really need to force a reload of the
+            // workspace on the next load
+            //mModel.resetLoadedState(false, true);
+            //mModel.startLoaderFromBackground();
+            Log.i("Gmw", "ContentObserver_onChange");
+        }
+    };
 }

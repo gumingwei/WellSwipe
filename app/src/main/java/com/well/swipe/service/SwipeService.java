@@ -232,10 +232,14 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     @Override
     public void bindAllApps(List<ItemApplication> appslist) {
-        Log.i("Gmw", "SwipeService-bindAllApps=" + appslist.size());
         for (int i = 0; i < appslist.size(); i++) {
-            Log.i("Gmw", "pack=" + appslist.get(i).mComponentName);
+            //Log.i("Gmw", "pack=" + appslist.get(i).mComponentName);
         }
+    }
+
+    @Override
+    public void bindFavorites(List<ItemApplication> appslist) {
+
     }
 
     private native void swipeDaemon(String serviceName, int sdkVersion);
