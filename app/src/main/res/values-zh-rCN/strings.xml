@@ -4,4 +4,10 @@
     <string name="recent">最近使用</string>
     <string name="frequent">常用应用</string>
     <string name="toolbox">快捷开关</string>
+
+    <string name="swipe_item_action_flash_title">手电筒</string>
+    <string name="swipe_item_action_data_title">移动数据</string>
+    <string name="swipe_item_action_wifi_title">Wifi</string>
+    <string name="swipe_item_action_action4_title">动作4</string>
+
 </resources>

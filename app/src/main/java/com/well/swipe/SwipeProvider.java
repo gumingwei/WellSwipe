@@ -16,6 +16,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -26,6 +29,7 @@ import android.util.Xml;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -94,7 +98,7 @@ public class SwipeProvider extends ContentProvider {
 
     private static long dbInsertAndCheck(DatabaseHelper helper,
                                          SQLiteDatabase db, String table, String nullColumnHack, ContentValues values) {
-        if (!values.containsKey(SwipeSettings.Favorites.ITEM_TYPE)) {
+        if (!values.containsKey(SwipeSettings.BaseColumns.ITEM_TYPE)) {
             throw new RuntimeException("Error: attempting to add item without specifying an id");
         }
         return db.insert(table, nullColumnHack, values);
@@ -157,8 +161,16 @@ public class SwipeProvider extends ContentProvider {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL("CREATE TABLE favorites (_id INTEGER PRIMARY KEY AUTOINCREMENT,item_title VARCHAR," +
-                    "item_intent VARCHAR,item_type INTEGER,item_index INTEGER,item_action VARCHAR)");
+            db.execSQL("CREATE TABLE favorites (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "item_title VARCHAR," +
+                    "item_intent VARCHAR," +
+                    "item_type INTEGER," +
+                    "item_index INTEGER," +
+                    "item_action VARCHAR," +
+                    "icon_type INTEGER," +
+                    "icon_package VARCHAR," +
+                    "icon_resource VARCHAR," +
+                    "icon_bitmap BLOB)");
         }
 
         @Override
@@ -181,8 +193,6 @@ public class SwipeProvider extends ContentProvider {
                 /**
                  * 用来给app排序的index
                  */
-                int index;
-
                 while (((type = parser.next()) != XmlPullParser.END_TAG ||
                         parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
                     if (type != XmlPullParser.START_TAG) {
@@ -195,7 +205,7 @@ public class SwipeProvider extends ContentProvider {
                     values.clear();
                     String tag = parser.getName();
                     if (tag.equals(TAG_FAORITE)) {
-                        boolean add = addFavorite(db, values, array, packageManager);
+                        boolean add = addFavorite(db, values, array, packageManager, intent);
                     } else if (tag.equals(TAG_QUICKSWITCH)) {
                         boolean add = addQuickSwith(db, values, array, packageManager);
                     }
@@ -227,8 +237,7 @@ public class SwipeProvider extends ContentProvider {
         }
 
         private boolean addFavorite(SQLiteDatabase database, ContentValues values, TypedArray array,
-                                    PackageManager packageManager) throws XmlPullParserException, IOException {
-            //Log.i("Gmw", "addFavorite");
+                                    PackageManager packageManager, Intent intent) throws XmlPullParserException, IOException {
             String packageName = array.getString(R.styleable.Favorite_packageName);
             String className = array.getString(R.styleable.Favorite_className);
 
@@ -238,23 +247,37 @@ public class SwipeProvider extends ContentProvider {
             boolean hasPackage = true;
 
             if (!isApkInstalled(mContext, packageName)) {
-                Log.i("Gmw", "没安装=" + packageName);
+                //Log.i("Gmw", "没安装=" + packageName);
                 hasPackage = false;
             }
             if (hasPackage) {
                 try {
+                    ApplicationInfo appinfo = packageManager.getApplicationInfo(packageName, 0);
+                    Drawable drawable = appinfo.loadIcon(packageManager);
+                    BitmapDrawable bd = (BitmapDrawable) drawable;
+                    //
                     ComponentName cn = new ComponentName(packageName, className);
                     PackageInfo info = packageManager.getPackageInfo(packageName, 0);
                     String item_title = info.applicationInfo.loadLabel(packageManager).toString();
+                    intent.setComponent(cn);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
                     int item_index = array.getInt(R.styleable.Favorite_item_index, 0);
-                    values.put(SwipeSettings.Favorites.ITEM_TITLE, item_title);
-                    values.put(SwipeSettings.Favorites.ITEM_INTENT, cn.toString());
-                    values.put(SwipeSettings.Favorites.ITEM_INDEX, item_index);
-                    values.put(SwipeSettings.Favorites.ITEM_TYPE, SwipeSettings.Favorites.ITEM_TYPE_APPLICATION);
+                    values.put(SwipeSettings.BaseColumns.ITEM_TITLE, item_title);
+                    values.put(SwipeSettings.BaseColumns.ITEM_INTENT, intent.toUri(0));
+                    values.put(SwipeSettings.BaseColumns.ITEM_INDEX, item_index);
+                    values.put(SwipeSettings.BaseColumns.ITEM_TYPE, SwipeSettings.BaseColumns.ITEM_TYPE_APPLICATION);
+                    values.put(SwipeSettings.BaseColumns.ICON_TYPE, SwipeSettings.BaseColumns.ICON_TYPE_BITMAP);
+                    if (bd.getBitmap() == null) {
+                        Log.i("Gmw", "bitmap==null");
+                    } else {
+                        Log.i("Gmw", "bitmap!=null");
+                    }
+                    values.put(SwipeSettings.BaseColumns.ICON_BITMAP, flattenBitmap(bd.getBitmap()));
+                    //ItemInfo.writeBitmap(values, bd.getBitmap());
                     /**
                      * 如果表里已经包含了存在的index，就不在插入了
                      */
-                    if (!hasIndex(database, item_index, SwipeSettings.Favorites.ITEM_TYPE_APPLICATION)) {
+                    if (!hasIndex(database, item_index, SwipeSettings.BaseColumns.ITEM_TYPE_APPLICATION)) {
                         checkInsert(database, TAG_FAORITES, values);
                     }
                 } catch (Exception e) {
@@ -274,12 +297,12 @@ public class SwipeProvider extends ContentProvider {
             }
             String item_title = array.getString(R.styleable.Favorite_item_title);
             int item_index = array.getInt(R.styleable.Favorite_item_index, 0);
-            values.put(SwipeSettings.Favorites.ITEM_TITLE, item_title);
-            values.put(SwipeSettings.Favorites.ITEM_INDEX, item_index);
-            values.put(SwipeSettings.Favorites.ITEM_TYPE, SwipeSettings.Favorites.ITEM_TYPE_SWITCH);
-            values.put(SwipeSettings.Favorites.ITEM_ACTION, item_action);
+            values.put(SwipeSettings.BaseColumns.ITEM_TITLE, item_title);
+            values.put(SwipeSettings.BaseColumns.ITEM_INDEX, item_index);
+            values.put(SwipeSettings.BaseColumns.ITEM_TYPE, SwipeSettings.BaseColumns.ITEM_TYPE_SWITCH);
+            values.put(SwipeSettings.BaseColumns.ITEM_ACTION, item_action);
 
-            if (!hasIndex(database, item_index, SwipeSettings.Favorites.ITEM_TYPE_SWITCH)) {
+            if (!hasIndex(database, item_index, SwipeSettings.BaseColumns.ITEM_TYPE_SWITCH)) {
                 checkInsert(database, TAG_FAORITES, values);
             }
             return true;
@@ -304,7 +327,7 @@ public class SwipeProvider extends ContentProvider {
             if (cursor.getCount() < 9) {
                 if (cursor.getCount() > 0) {
                     for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                        index.add(cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.Favorites.ITEM_INDEX)));
+                        index.add(cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_INDEX)));
                     }
                 } else {
                     return false;
@@ -322,6 +345,20 @@ public class SwipeProvider extends ContentProvider {
 
         public void checkInsert(SQLiteDatabase database, String table, ContentValues values) {
             database.insert(table, null, values);
+        }
+
+        byte[] flattenBitmap(Bitmap bitmap) {
+            int size = bitmap.getWidth() * bitmap.getHeight() * 4;
+            ByteArrayOutputStream out = new ByteArrayOutputStream(size);
+            try {
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                out.flush();
+                out.close();
+                return out.toByteArray();
+            } catch (IOException e) {
+                Log.w("Gmw", "flattenBitmap-Could not write icon");
+                return null;
+            }
         }
     }
 

@@ -1,9 +1,11 @@
 package com.well.swipe.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -15,6 +17,8 @@ import com.well.swipe.R;
 public class AngleItem extends RelativeLayout {
 
     private TextView mText;
+
+    private ImageView mIcon;
 
     public AngleItem(Context context) {
         super(context);
@@ -32,13 +36,12 @@ public class AngleItem extends RelativeLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mText = (TextView) findViewById(R.id.angle_item_title);
+        mIcon = (ImageView) findViewById(R.id.angle_item_icon);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//        Log.i("Gmw", "w=" + getMeasuredWidth());
-//        Log.i("Gmw", "h=" + getMeasuredHeight());
     }
 
     @Override
@@ -64,5 +67,9 @@ public class AngleItem extends RelativeLayout {
 
     public String getTitle() {
         return mText.getText().toString();
+    }
+
+    public void setItemIcon(Bitmap icon) {
+        mIcon.setImageBitmap(icon);
     }
 }

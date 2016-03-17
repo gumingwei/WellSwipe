@@ -20,7 +20,7 @@ public class ItemInfo {
     /**
      * Item的名字
      */
-    CharSequence mTitle;
+    public CharSequence mTitle;
 
     /**
      * Item的顺序索引
@@ -52,9 +52,9 @@ public class ItemInfo {
     }
 
     void onAddToDatabase(ContentValues values) {
-        values.put(SwipeSettings.Favorites.ITEM_TYPE, mType);
-        values.put(SwipeSettings.Favorites.ITEM_TITLE, mTitle.toString());
-        values.put(SwipeSettings.Favorites.ITEM_INDEX, mIndex);
+        values.put(SwipeSettings.BaseColumns.ITEM_TYPE, mType);
+        values.put(SwipeSettings.BaseColumns.ITEM_TITLE, mTitle.toString());
+        values.put(SwipeSettings.BaseColumns.ITEM_INDEX, mIndex);
     }
 
     /**
@@ -72,7 +72,7 @@ public class ItemInfo {
             out.close();
             return out.toByteArray();
         } catch (IOException e) {
-            Log.w("Favorite", "Could not write icon");
+            Log.w("Gmw", "flattenBitmap-Could not write icon");
             return null;
         }
     }
@@ -86,7 +86,7 @@ public class ItemInfo {
     static void writeBitmap(ContentValues values, Bitmap bitmap) {
         if (bitmap != null) {
             byte[] data = flattenBitmap(bitmap);
-            values.put(SwipeSettings.Favorites.ITEM_ICON, data);
+            values.put(SwipeSettings.BaseColumns.ITEM_ICON, data);
         }
     }
 }

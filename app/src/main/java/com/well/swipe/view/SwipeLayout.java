@@ -147,4 +147,8 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
     public void setSwipeBackgroundViewAlpha(float a) {
         mBgLayout.setAlpha(((int) (a * 10) / 10f));
     }
+
+    public AngleLayout getAngleLayout() {
+        return mAngleLayout;
+    }
 }

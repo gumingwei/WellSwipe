@@ -7,15 +7,13 @@ import android.net.Uri;
  */
 public class SwipeSettings {
 
-    static class Favorites {
+    static class BaseColumns {
 
         static final String ITEM_INDEX = "item_index";
 
         static final String ITEM_TITLE = "item_title";
 
         static final String ITEM_URI = "item_uri";
-
-        static final String ITEM_TEST = "item_test";
 
         static final String ITEM_INTENT = "item_intent";
 
@@ -29,6 +27,24 @@ public class SwipeSettings {
 
         static final String ITEM_ICON = "item_icon";
 
+        static final String ICON_TYPE = "icon_type";
+
+        static final String ICON_PACKAGENAME = "icon_package";
+
+        static final String ICON_RESOURCE = "icon_resource";
+
+        static final String ICON_BITMAP = "icon_bitmap";
+
+        static final int ICON_TYPE_RESOURCE = 0;
+
+        static final int ICON_TYPE_BITMAP = 1;
+
+
+    }
+
+    static class Favorites {
+
         static final Uri CONTENT_URI = Uri.parse("content://" + SwipeProvider.AUTHORITY + "/" + SwipeProvider.TABLE_FAVORITES);
+
     }
 }

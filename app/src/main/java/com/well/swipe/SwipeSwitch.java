@@ -10,7 +10,7 @@ public class SwipeSwitch extends ItemInfo {
     String mAction;
 
     SwipeSwitch() {
-        mType = SwipeSettings.Favorites.ITEM_TYPE_SWITCH;
+        mType = SwipeSettings.BaseColumns.ITEM_TYPE_SWITCH;
     }
 
     public SwipeSwitch(SwipeSwitch switchitem) {

@@ -7,13 +7,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
+import com.well.swipe.utils.Utilities;
+
 import java.lang.ref.WeakReference;
+import java.net.URISyntaxException;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,26 +57,47 @@ public class LauncherModel extends BroadcastReceiver {
 
     private WeakReference<Callback> mCallback;
 
+    private Bitmap mDefaultIcon;
+
     public interface Callback {
+        /**
+         * 加载刚开始的时候掉用
+         */
+        void bindStart();
+
         /**
          * 绑定所有的app数据
          *
          * @param appslist
          */
-        void bindAllApps(List<ItemApplication> appslist);
+        void bindAllApps(ArrayList<ItemApplication> appslist);
 
         /**
          * 绑定要在swipe上显示的app
          *
          * @param appslist applist
          */
-        void bindFavorites(List<ItemApplication> appslist);
+        void bindFavorites(ArrayList<ItemApplication> appslist);
+
+        /**
+         * 绑定Switch
+         *
+         * @param switchlist
+         */
+        void bindSwitch(ArrayList<SwipeSwitch> switchlist);
+
+        /**
+         * 加载完成式掉用
+         */
+        void bindFinish();
     }
 
     public LauncherModel(SwipeApplication app, IconCache iconCache) {
         mApplication = app;
         mAllAppsList = new AllAppsList(iconCache);
         mIconCache = iconCache;
+        mDefaultIcon = Utilities.createIconBitmap(
+                mIconCache.getFullResDefaultActivityIcon(), app);
     }
 
     @Override
@@ -109,12 +136,15 @@ public class LauncherModel extends BroadcastReceiver {
 
         @Override
         public void run() {
-            loadWorkspace();
-            loadFavorites();
+            bindStart();
+            loadDefaultWorkspace();
+            bindFavorites();
+            bindSwitch();
+            bindFinish();
             loadAndBindAllApps();
         }
 
-        private void loadWorkspace() {
+        private void loadDefaultWorkspace() {
             mApplication.getProvider().loadDefaultFavoritesIfNecessary(R.xml.default_workspace);
         }
 
@@ -134,15 +164,130 @@ public class LauncherModel extends BroadcastReceiver {
                 applications.clear();
             }
             applications.addAll(mAllAppsList.data);
+
             mCallback.get().bindAllApps(applications);
 
         }
 
-        private void loadFavorites() {
-            Log.i("Gmw", "loadFavorites");
+        /**
+         * 从表中读出数据传到Service
+         */
+        private void bindFavorites() {
             ContentResolver resolver = mContext.getContentResolver();
-            Cursor cursor = resolver.query(SwipeSettings.Favorites.CONTENT_URI, null, null, null, null);
-            Log.i("Gmw", "loadFavorites_count=" + cursor.getCount());
+            Cursor cursor = resolver.query(SwipeSettings.Favorites.CONTENT_URI, null, SwipeSettings.
+                    BaseColumns.ITEM_TYPE + "=?", new String[]{String.valueOf(SwipeSettings.
+                    BaseColumns.ITEM_TYPE_APPLICATION)}, null);
+            ArrayList<ItemApplication> favorites = new ArrayList<>();
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                int type = cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TYPE));
+                String title = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TITLE));
+                String intentStr = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_INTENT));
+                int iconType = cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ICON_TYPE));
+                int packagenameIndex = cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ICON_PACKAGENAME);
+                int resourcenameIndex = cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ICON_RESOURCE);
+                int iconIndex = cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ICON_BITMAP);
+                Intent intent = null;
+                Bitmap icon = null;
+                try {
+                    intent = Intent.parseUri(intentStr, 0);
+                } catch (URISyntaxException e) {
+
+                }
+                ItemApplication application = new ItemApplication();
+                application.mType = type;
+                application.mTitle = title;
+                application.mIntent = intent;
+                switch (iconType) {
+                    case SwipeSettings.BaseColumns.ICON_TYPE_RESOURCE:
+                        String packagename = cursor.getString(packagenameIndex);
+                        String resourcename = cursor.getString(resourcenameIndex);
+                        PackageManager packageManager = mContext.getPackageManager();
+                        try {
+                            Resources resources = packageManager.getResourcesForApplication(packagename);
+                            if (resources != null) {
+                                final int id = resources.getIdentifier(resourcename, null, null);
+                                icon = Utilities.createIconBitmap(
+                                        mIconCache.getFullResIcon(resources, id), mContext);
+                            }
+                        } catch (PackageManager.NameNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        if (icon == null) {
+                            icon = getIconFromCursor(cursor, iconIndex, mContext);
+                        }
+                        if (icon == null) {
+                            icon = getFallbackIcon();
+                            application.isFallbackIcon = true;
+                        }
+                        break;
+                    case SwipeSettings.BaseColumns.ICON_TYPE_BITMAP:
+                        icon = getIconFromCursor(cursor, iconIndex, mContext);
+                        if (icon == null) {
+                            icon = getFallbackIcon();
+                            application.isCustomIcon = false;
+                            application.isFallbackIcon = true;
+                        } else {
+                            application.isCustomIcon = true;
+                        }
+                        break;
+                    default:
+                        icon = getFallbackIcon();
+                        application.isFallbackIcon = true;
+                        application.isCustomIcon = false;
+                        break;
+                }
+
+                application.mIconBitmap = icon;
+
+                favorites.add(application);
+            }
+            mCallback.get().bindFavorites(favorites);
+        }
+
+        private void bindSwitch() {
+            ContentResolver resolver = mContext.getContentResolver();
+            Cursor cursor = resolver.query(SwipeSettings.Favorites.CONTENT_URI, null, SwipeSettings.
+                    BaseColumns.ITEM_TYPE + "=?", new String[]{String.valueOf(SwipeSettings.
+                    BaseColumns.ITEM_TYPE_SWITCH)}, null);
+            ArrayList<SwipeSwitch> switches = new ArrayList<>();
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                SwipeSwitch application = new SwipeSwitch();
+                application.mType = cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TYPE));
+                application.mTitle = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TITLE));
+                application.mAction = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_ACTION));
+                application.mTitle = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TITLE));
+                //#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10200000;component=com.android.camera/.Camera;end
+                //index.add(cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.Favorites.ITEM_INDEX)));
+                switches.add(application);
+            }
+            mCallback.get().bindSwitch(switches);
+        }
+
+        private void bindStart() {
+            mCallback.get().bindStart();
+        }
+
+        private void bindFinish() {
+            mCallback.get().bindFinish();
+        }
+
+        private void matchItomIcon() {
+
+        }
+
+        Bitmap getIconFromCursor(Cursor c, int iconIndex, Context context) {
+            @SuppressWarnings("all") // suppress dead code warning
+            final boolean debug = false;
+            byte[] data = c.getBlob(iconIndex);
+            try {
+                return Utilities.createIconBitmap(BitmapFactory.decodeByteArray(data, 0, data.length), context);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        public Bitmap getFallbackIcon() {
+            return Bitmap.createBitmap(mDefaultIcon);
         }
 
     }

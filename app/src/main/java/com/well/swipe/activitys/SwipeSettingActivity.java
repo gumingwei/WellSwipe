@@ -5,34 +5,29 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.well.swipe.R;
 import com.well.swipe.service.SwipeService;
 
 public class SwipeSettingActivity extends AppCompatActivity {
 
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-        }
-    };
+    TextView test;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //BubbleView b = new BubbleView(getBaseContext());
-        //b.show();
-        //Log.i("Gmw", "hello=" + Hello.hello(2));
-        startService(new Intent(SwipeSettingActivity.this, SwipeService.class));
-
-        //LinearLayout linearLayout = (LinearLayout) findViewById(R.id.testlayout);
-
-        //linearLayout.
-
+        test = (TextView) findViewById(R.id.test_text);
+        test.setText("density=" + this.getResources().getDisplayMetrics().density + ",test=" +
+                getResources().getDimensionPixelSize(R.dimen.test));
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startService(new Intent(SwipeSettingActivity.this, SwipeService.class));
+    }
 
     @Override
     protected void onDestroy() {

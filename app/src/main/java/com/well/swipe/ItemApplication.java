@@ -21,11 +21,15 @@ public class ItemApplication extends ItemInfo {
     /**
      * bitmap
      */
-    Bitmap mIconBitmap;
+    public Bitmap mIconBitmap;
     /**
      * app的ComonentName
      */
     public ComponentName mComponentName;
+
+    public boolean isFallbackIcon;
+
+    public boolean isCustomIcon;
 
     int flags = 0;
 
@@ -36,7 +40,7 @@ public class ItemApplication extends ItemInfo {
     static final int UPDATED_SYSTEM_APP_FLAG = 2;
 
     public ItemApplication() {
-        mType = SwipeSettings.Favorites.ITEM_TYPE_APPLICATION;
+        mType = SwipeSettings.BaseColumns.ITEM_TYPE_APPLICATION;
     }
 
     public ItemApplication(ItemApplication appinfo) {
@@ -75,6 +79,6 @@ public class ItemApplication extends ItemInfo {
         mIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         mIntent.setComponent(clazzName);
         mIntent.setFlags(flag);
-        mType = SwipeSettings.Favorites.ITEM_TYPE_APPLICATION;
+        mType = SwipeSettings.BaseColumns.ITEM_TYPE_APPLICATION;
     }
 }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="angleview_size">450dp</dimen>
+    <dimen name="angleview_inner_radius">290dp</dimen>
+    <dimen name="angleview_outer_radius">400dp</dimen>
+    <dimen name="angleindicator_size">200dp</dimen>
+    <dimen name="angleindicator_text_paddingleft">110dp</dimen>
+    <dimen name="angleindicator_text_paddingright">95dp</dimen>
+    <dimen name="angleindicator_arc_rect">148dp</dimen>
+    <dimen name="angleindicator_arc_width">75dp</dimen>
+    <dimen name="angleindicator_arc_textsize">15sp</dimen>
+    <dimen name="angleitem_half_size">48dp</dimen>
+    <dimen name="angleitem_size">96dp</dimen>
+    <dimen name="angle_item_icon_size">60dp</dimen>
+    <dimen name="app_icon_size">72dp</dimen>
+
+    <dimen name="test">100dp</dimen>
+</resources>

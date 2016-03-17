@@ -12,7 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 
+import com.well.swipe.ItemApplication;
+import com.well.swipe.ItemInfo;
 import com.well.swipe.R;
+import com.well.swipe.SwipeSwitch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -104,6 +107,12 @@ public class AngleView extends ViewGroup {
 
     private Map<Integer, ArrayList<View>> mMap = new HashMap<>();
 
+    private ArrayList<View> mRecentAppList = new ArrayList<>();
+
+    private ArrayList<View> mSwitchList = new ArrayList<>();
+
+    private ArrayList<View> mFavoriteAppList = new ArrayList<>();
+
     private OnAngleChangeListener mAngleListener;
 
     public interface OnAngleChangeListener {
@@ -143,50 +152,12 @@ public class AngleView extends ViewGroup {
         mChildHalfSize = getResources().getDimensionPixelSize(R.dimen.angleitem_half_size);
         mInnerRadius = getResources().getDimensionPixelSize(R.dimen.angleview_inner_radius);
         mOuterRadius = getResources().getDimensionPixelSize(R.dimen.angleview_outer_radius);
-        ArrayList<View> list0 = new ArrayList<>();
-        AngleItem item;
-        for (int i = 0; i < 9; i++) {
-            item = (AngleItem) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
-            item.setTitle("A" + i);
-            //item.setOnClickListener(new OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    //Log.i("Gmw", "A=");
-//                }
-//            });
-            list0.add(item);
-        }
-        mMap.put(0, list0);
+        mMap.put(0, mRecentAppList);
+        mMap.put(1, mSwitchList);
+        mMap.put(2, mFavoriteAppList);
+    }
 
-        ArrayList<View> list1 = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
-
-            item = (AngleItem) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
-            item.setTitle("B" + i);
-//            item.setOnClickListener(new OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    //Log.i("Gmw", "B=");
-//                }
-//            });
-            list1.add(item);
-        }
-        mMap.put(1, list1);
-
-        ArrayList<View> list2 = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-
-            item = (AngleItem) LayoutInflater.from(context).inflate(R.layout.angle_item, null);
-            item.setTitle("C" + i);
-//            item.setOnClickListener(new OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    //Log.i("Gmw", "C=" + v.getTag());
-//                }
-//            });
-            list2.add(item);
-        }
-        mMap.put(2, list2);
+    public void refresh() {
 
         Iterator<Map.Entry<Integer, ArrayList<View>>> it = mMap.entrySet().iterator();
         LayoutParams params = new LayoutParams(120, 120);
@@ -194,10 +165,37 @@ public class AngleView extends ViewGroup {
             Map.Entry<Integer, ArrayList<View>> arraylist = it.next();
             ArrayList<View> views = arraylist.getValue();
             for (View view : views) {
-                addView(view, params);
+                if (view.getParent() == null) {
+                    addView(view, params);
+                }
             }
         }
+        requestLayout();
+    }
 
+    public void putItemApplications(ArrayList<ItemApplication> itemlist) {
+        if (mFavoriteAppList.size() > 0) {
+            mFavoriteAppList.clear();
+        }
+        AngleItem itemview;
+        for (ItemApplication appitem : itemlist) {
+            itemview = (AngleItem) LayoutInflater.from(getContext()).inflate(R.layout.angle_item, null);
+            itemview.setTitle(appitem.mTitle.toString());
+            itemview.setItemIcon(appitem.mIconBitmap);
+            mFavoriteAppList.add(itemview);
+        }
+    }
+
+    public void putItemQuickSwitch(ArrayList<SwipeSwitch> itemlist) {
+        if (mSwitchList.size() > 0) {
+            mSwitchList.clear();
+        }
+        AngleItem itemview;
+        for (SwipeSwitch appitem : itemlist) {
+            itemview = (AngleItem) LayoutInflater.from(getContext()).inflate(R.layout.angle_item, null);
+            itemview.setTitle(appitem.mTitle.toString());
+            mSwitchList.add(itemview);
+        }
     }
 
     @Override

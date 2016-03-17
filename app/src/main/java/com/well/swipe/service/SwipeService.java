@@ -16,12 +16,14 @@ import com.well.swipe.ItemApplication;
 import com.well.swipe.LauncherModel;
 import com.well.swipe.R;
 import com.well.swipe.SwipeApplication;
+import com.well.swipe.SwipeSwitch;
 import com.well.swipe.view.BubbleView;
 import com.well.swipe.view.CatchView;
 import com.well.swipe.view.SwipeLayout;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -231,15 +233,33 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     }
 
     @Override
-    public void bindAllApps(List<ItemApplication> appslist) {
+    public void bindStart() {
+        Log.i("Gmw", "bindStart=");
+    }
+
+    @Override
+    public void bindAllApps(ArrayList<ItemApplication> appslist) {
         for (int i = 0; i < appslist.size(); i++) {
             //Log.i("Gmw", "pack=" + appslist.get(i).mComponentName);
         }
     }
 
     @Override
-    public void bindFavorites(List<ItemApplication> appslist) {
+    public void bindFavorites(ArrayList<ItemApplication> appslist) {
+        Log.i("Gmw", "bindFavorites_size=" + appslist.size());
+        mSwipeLayout.getAngleLayout().getAngleView().putItemApplications(appslist);
+    }
 
+    @Override
+    public void bindSwitch(ArrayList<SwipeSwitch> switchlist) {
+        Log.i("Gmw", "bindSwitch_size=" + switchlist.size());
+        mSwipeLayout.getAngleLayout().getAngleView().putItemQuickSwitch(switchlist);
+    }
+
+    @Override
+    public void bindFinish() {
+        Log.i("Gmw", "bindFinish=");
+        mSwipeLayout.getAngleLayout().getAngleView().refresh();
     }
 
     private native void swipeDaemon(String serviceName, int sdkVersion);

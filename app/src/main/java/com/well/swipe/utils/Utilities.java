@@ -52,7 +52,7 @@ public class Utilities {
      * icon bitmaps that are stored in the database (which were 74x74 pixels at hdpi size)
      * to the proper size (48dp)
      */
-    static Bitmap createIconBitmap(Bitmap icon, Context context) {
+    public static Bitmap createIconBitmap(Bitmap icon, Context context) {
         int textureWidth = sIconTextureWidth;
         int textureHeight = sIconTextureHeight;
         int sourceWidth = icon.getWidth();

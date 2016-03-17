@@ -73,7 +73,9 @@ public class AngleIndicatorView extends View {
 
     public static final float START_ANGLE = 11.25f;
 
-    private int mIndicatorWidth = 150;
+    private int mIndicatorWidth;
+
+    private int mIndicatorTextSize;
 
     public int mRect;
 
@@ -98,16 +100,21 @@ public class AngleIndicatorView extends View {
 
     public AngleIndicatorView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mLeftOffset = getResources().getDimensionPixelSize(R.dimen.angleindicator_text_paddingleft);
+        mRightOffset = getResources().getDimensionPixelOffset(R.dimen.angleindicator_text_paddingright);
+        mRect = getResources().getDimensionPixelSize(R.dimen.angleindicator_arc_rect);
+        mIndicatorWidth = getResources().getDimensionPixelSize(R.dimen.angleindicator_arc_width);
+        mIndicatorTextSize = getResources().getDimensionPixelSize(R.dimen.angleindicator_arc_textsize);
         mPaint0.setColor(Color.parseColor(mColors[9]));
-        mPaint0.setTextSize(32);
+        mPaint0.setTextSize(mIndicatorTextSize);
         mPaint0.setAntiAlias(true);
 
         mPaint1.setColor(Color.parseColor(mColors[9]));
-        mPaint1.setTextSize(32);
+        mPaint1.setTextSize(mIndicatorTextSize);
         mPaint1.setAntiAlias(true);
 
         mPaint2.setColor(Color.parseColor(mColors[9]));
-        mPaint2.setTextSize(32);
+        mPaint2.setTextSize(mIndicatorTextSize);
         mPaint2.setAntiAlias(true);
 
         mArcPaint = new Paint();
@@ -129,9 +136,6 @@ public class AngleIndicatorView extends View {
         ViewConfiguration configuration = ViewConfiguration.get(context);
         mTouchSlop = configuration.getScaledTouchSlop();
 
-        mLeftOffset = getResources().getDimensionPixelSize(R.dimen.angleindicator_text_paddingleft);
-        mRightOffset = getResources().getDimensionPixelOffset(R.dimen.angleindicator_text_paddingright);
-        mRect = getResources().getDimensionPixelSize(R.dimen.angleindicator_arc_rect);
 
     }
 

@@ -6,9 +6,14 @@
     <string name="test_accessibility">test</string>
 
     <!--QuickSwitch_ACTION-->
-    <string name="swipe_item_action_action1">swipe_item_action_action1</string>
-    <string name="swipe_item_action_action2">swipe_item_action_action2</string>
-    <string name="swipe_item_action_action3">swipe_item_action_action3</string>
+    <string name="swipe_item_action_flash">swipe_item_action_flash</string>
+    <string name="swipe_item_action_data">swipe_item_action_data</string>
+    <string name="swipe_item_action_wifi">swipe_item_action_wifi</string>
     <string name="swipe_item_action_action4">swipe_item_action_action4</string>
+    <!--QuickSwitch_ACTION_TITLE-->
+    <string name="swipe_item_action_flash_title">Flash</string>
+    <string name="swipe_item_action_data_title">Data</string>
+    <string name="swipe_item_action_wifi_title">Wifi</string>
+    <string name="swipe_item_action_action4_title">Action4</string>
 
 </resources>

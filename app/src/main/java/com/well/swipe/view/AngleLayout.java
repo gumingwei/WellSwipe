@@ -433,5 +433,8 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
     }
 
+    public AngleView getAngleView() {
+        return mAngleView;
+    }
 
 }
