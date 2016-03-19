@@ -16,5 +16,7 @@
     <dimen name="angle_item_icon_size">40dp</dimen>
     <dimen name="app_icon_size">48dp</dimen>
 
+    <dimen name="angleview_item_delete_size">20dp</dimen>
+
     <dimen name="test">100dp</dimen>
 </resources>

@@ -16,7 +16,8 @@ import com.well.swipe.ItemApplication;
 import com.well.swipe.LauncherModel;
 import com.well.swipe.R;
 import com.well.swipe.SwipeApplication;
-import com.well.swipe.SwipeSwitch;
+import com.well.swipe.ItemSwipeSwitch;
+import com.well.swipe.view.AngleView;
 import com.well.swipe.view.BubbleView;
 import com.well.swipe.view.CatchView;
 import com.well.swipe.view.SwipeLayout;
@@ -24,32 +25,29 @@ import com.well.swipe.view.SwipeLayout;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
 
 
 /**
  * Created by mingwei on 3/6/16.
  */
-public class SwipeService extends Service implements CatchView.OnEdgeSlidingListener, LauncherModel.Callback {
-
+public class SwipeService extends Service implements CatchView.OnEdgeSlidingListener, LauncherModel.Callback,
+        AngleView.OnClickListener {
 
     SwipeApplication mSwipeApplication;
-
+    /**
+     * LauncherModel广播接收机负责加载和更新数据
+     */
     LauncherModel mLauncherModel;
 
     private BubbleView mBubble;
-
+    /**
+     * 屏幕底部负责捕获手势的试图
+     */
     private CatchView mView;
     /**
-     * Swipe的布局
+     * Swipe的跟布局
      */
     private SwipeLayout mSwipeLayout;
-
-    private int mType = TYPE_LEFT;
-
-    static final int TYPE_LEFT = 0;
-
-    static final int TYPE_RIGHT = 1;
 
     public NotificationManager mNotificationManager;
 
@@ -99,6 +97,10 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         mView.show();
 
         mSwipeLayout = (SwipeLayout) LayoutInflater.from(getBaseContext()).inflate(R.layout.swipe_layout, null);
+        /**
+         * AngleView的单击监听
+         */
+        mSwipeLayout.getAngleLayout().getAngleView().setOnClickListener(this);
 
 
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -221,13 +223,13 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
             mSwipeLayout.switchRight();
         }
         /**
-         * flag==true  自动打开
+         * flag==true  速度满足时自动打开
          * flag==flase 根据当前的sacle判断是否打开
          */
         if (flag) {
-            mSwipeLayout.on();
+            mSwipeLayout.getAngleLayout().on();
         } else {
-            mSwipeLayout.switchAngleLayout();
+            mSwipeLayout.getAngleLayout().switchAngleLayout();
         }
 
     }
@@ -251,7 +253,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     }
 
     @Override
-    public void bindSwitch(ArrayList<SwipeSwitch> switchlist) {
+    public void bindSwitch(ArrayList<ItemSwipeSwitch> switchlist) {
         Log.i("Gmw", "bindSwitch_size=" + switchlist.size());
         mSwipeLayout.getAngleLayout().getAngleView().putItemQuickSwitch(switchlist);
     }
@@ -260,6 +262,17 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     public void bindFinish() {
         Log.i("Gmw", "bindFinish=");
         mSwipeLayout.getAngleLayout().getAngleView().refresh();
+    }
+
+    @Override
+    public void onClick(View view) {
+        Log.i("Gmw", "onClick=");
+    }
+
+    @Override
+    public void onDeleteClick(View view) {
+        Log.i("Gmw", "onDeleteClick=");
+        //mSwipeLayout.getAngleLayout().getAngleView().getData().get()
     }
 
     private native void swipeDaemon(String serviceName, int sdkVersion);

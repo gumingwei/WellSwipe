@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,21 +15,23 @@ import com.well.swipe.R;
 /**
  * Created by mingwei on 3/13/16.
  */
-public class AngleItem extends RelativeLayout {
+public class AngleItemStartUp extends AngleItemCommon {
 
     private TextView mText;
 
     private ImageView mIcon;
 
-    public AngleItem(Context context) {
+    private ImageView mDelIcon;
+
+    public AngleItemStartUp(Context context) {
         super(context);
     }
 
-    public AngleItem(Context context, AttributeSet attrs) {
+    public AngleItemStartUp(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public AngleItem(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AngleItemStartUp(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -37,6 +40,7 @@ public class AngleItem extends RelativeLayout {
         super.onFinishInflate();
         mText = (TextView) findViewById(R.id.angle_item_title);
         mIcon = (ImageView) findViewById(R.id.angle_item_icon);
+        mDelIcon = (ImageView) findViewById(R.id.angle_item_delete);
     }
 
     @Override
@@ -71,5 +75,21 @@ public class AngleItem extends RelativeLayout {
 
     public void setItemIcon(Bitmap icon) {
         mIcon.setImageBitmap(icon);
+    }
+
+    public void showDelBtn() {
+        if (mDelIcon.getVisibility() == View.GONE) {
+            mDelIcon.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void hideDelBtn() {
+        if (mDelIcon.getVisibility() == View.VISIBLE) {
+            mDelIcon.setVisibility(View.GONE);
+        }
+    }
+
+    public View getDelBtn() {
+        return mDelIcon;
     }
 }

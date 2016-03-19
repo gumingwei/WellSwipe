@@ -54,6 +54,9 @@ public class ItemApplication extends ItemInfo {
     public ItemApplication(PackageManager manager, ResolveInfo info, IconCache iconcache, HashMap<Object, CharSequence> lable) {
         String packageName = info.activityInfo.applicationInfo.packageName;
         mComponentName = new ComponentName(packageName, info.activityInfo.name);
+//        Log.i("Gmw", "lable=" + info.activityInfo.loadLabel(manager).toString());
+//        Log.i("Gmw", "package=" + packageName);
+//        Log.i("Gmw", "class=" + info.activityInfo.name);
         setActivity(mComponentName, Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         try {
             int appFlags = manager.getApplicationInfo(packageName, 0).flags;

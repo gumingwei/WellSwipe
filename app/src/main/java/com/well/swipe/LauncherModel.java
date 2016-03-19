@@ -11,10 +11,8 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
 
 import com.well.swipe.utils.Utilities;
 
@@ -84,7 +82,7 @@ public class LauncherModel extends BroadcastReceiver {
          *
          * @param switchlist
          */
-        void bindSwitch(ArrayList<SwipeSwitch> switchlist);
+        void bindSwitch(ArrayList<ItemSwipeSwitch> switchlist);
 
         /**
          * 加载完成式掉用
@@ -148,6 +146,9 @@ public class LauncherModel extends BroadcastReceiver {
             mApplication.getProvider().loadDefaultFavoritesIfNecessary(R.xml.default_workspace);
         }
 
+        /**
+         * 加载设备上的app数据
+         */
         private void loadAndBindAllApps() {
             Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
             mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -249,9 +250,9 @@ public class LauncherModel extends BroadcastReceiver {
             Cursor cursor = resolver.query(SwipeSettings.Favorites.CONTENT_URI, null, SwipeSettings.
                     BaseColumns.ITEM_TYPE + "=?", new String[]{String.valueOf(SwipeSettings.
                     BaseColumns.ITEM_TYPE_SWITCH)}, null);
-            ArrayList<SwipeSwitch> switches = new ArrayList<>();
+            ArrayList<ItemSwipeSwitch> switches = new ArrayList<>();
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                SwipeSwitch application = new SwipeSwitch();
+                ItemSwipeSwitch application = new ItemSwipeSwitch();
                 application.mType = cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TYPE));
                 application.mTitle = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TITLE));
                 application.mAction = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_ACTION));

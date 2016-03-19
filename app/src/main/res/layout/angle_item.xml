@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.well.swipe.view.AngleItem xmlns:android="http://schemas.android.com/apk/res/android"
+<com.well.swipe.view.AngleItemStartUp xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
+
 
     <ImageView
         android:id="@+id/angle_item_icon"
@@ -20,4 +21,11 @@
         android:singleLine="true"
         android:text="Test" />
 
-</com.well.swipe.view.AngleItem>
+    <ImageView
+        android:id="@+id/angle_item_delete"
+        android:layout_width="@dimen/angleview_item_delete_size"
+        android:layout_height="@dimen/angleview_item_delete_size"
+        android:src="@drawable/icon_search_delete"
+        android:visibility="gone" />
+
+</com.well.swipe.view.AngleItemStartUp>

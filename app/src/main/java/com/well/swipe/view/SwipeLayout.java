@@ -3,6 +3,7 @@ package com.well.swipe.view;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.WindowManager;
@@ -27,7 +28,6 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
     private int mWidth;
 
     private int mHeight;
-
 
     public SwipeLayout(Context context) {
         this(context, null);
@@ -107,9 +107,13 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-            mAngleLayout.off(mAngleLayout.getAngleLayoutScale());
-            return false;
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() != KeyEvent.ACTION_UP) {
+            if (mAngleLayout.getEditState() == AngleLayout.STATE_EDIT) {
+                mAngleLayout.setEditState(AngleLayout.STATE_NORMAL);
+            } else if (mAngleLayout.getEditState() == AngleLayout.STATE_NORMAL) {
+                mAngleLayout.off(mAngleLayout.getAngleLayoutScale());
+            }
+            return true;
         }
         return super.dispatchKeyEvent(event);
     }

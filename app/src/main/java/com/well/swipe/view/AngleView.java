@@ -4,8 +4,10 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Vibrator;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,9 +15,8 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 
 import com.well.swipe.ItemApplication;
-import com.well.swipe.ItemInfo;
 import com.well.swipe.R;
-import com.well.swipe.SwipeSwitch;
+import com.well.swipe.ItemSwipeSwitch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ import java.util.Map;
  * 2.根据手指在上一层容器的touch事件来处理AngleView的转动，松开手指转动到指定位置
  * 3.通过捕捉飞快的手指滑动来转动容器
  * 4.给子控件设置扇形的布局坐标
+ * 5.长按进入编辑模式
  */
 public class AngleView extends ViewGroup {
     /**
@@ -59,6 +61,27 @@ public class AngleView extends ViewGroup {
     static int POSITION_STATE_LEFT = 1;
 
     static int POSITION_STATE_RIGHT = 2;
+
+    /**
+     * 用于计算单击时间的X&Y
+     */
+    private float mMotionX;
+
+    private float mMotionY;
+    /**
+     * 单击事件的第一个时间
+     */
+    private long mClickTime1;
+    /**
+     * 判断是否点击到了删除按钮
+     */
+    private boolean isDelClick;
+    /**
+     * AngleView点击时候找到的ItemView
+     */
+    private AngleItemCommon mTargetItem;
+
+    private AngleItemAddTo mItemExtra;
     /**
      * 容器在做右下角区分
      */
@@ -80,9 +103,11 @@ public class AngleView extends ViewGroup {
 
     private int mChildHalfSize;
 
-    public int mInnerRadius = 410;
+    public int mInnerRadius;
 
-    public int mOuterRadius = 590;
+    public int mOuterRadius;
+
+    public int mDeleteBtnSize;
     /**
      * 单位度数
      */
@@ -98,7 +123,9 @@ public class AngleView extends ViewGroup {
 
     private static final int COUNT_4 = 4;
 
-    private static final int COUNT_12 = COUNT_4 * 3;
+    private static final int COUNT_3 = 3;
+
+    private static final int COUNT_12 = COUNT_4 * COUNT_3;
 
 
     private int mCurrentIndex;
@@ -114,6 +141,21 @@ public class AngleView extends ViewGroup {
     private ArrayList<View> mFavoriteAppList = new ArrayList<>();
 
     private OnAngleChangeListener mAngleListener;
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+        }
+    };
+    /**
+     * 长按处理
+     */
+    private LongClickRunable mLongRunable = new LongClickRunable();
+    /**
+     * 震动
+     */
+    private Vibrator mVibrator;
 
     public interface OnAngleChangeListener {
 
@@ -138,6 +180,47 @@ public class AngleView extends ViewGroup {
 
     }
 
+    OnEditModeListener mEditModeListener;
+
+    public interface OnEditModeListener {
+        /**
+         * 进入编辑模式
+         */
+        void startEditMode();
+
+        /**
+         * 结束编辑模式
+         */
+        void endEditMode();
+    }
+
+    OnClickListener mOnClickListener;
+
+    public interface OnClickListener {
+        /**
+         * 本身的OnClick无效，所以自己根据在onTouch中定义一个Onclick
+         */
+        void onClick(View view);
+
+        /**
+         * 删除按钮
+         *
+         * @param view
+         */
+        void onDeleteClick(View view);
+    }
+
+    OnLongClickListener mOnLongClickListener;
+
+    public interface OnLongClickListener {
+        /**
+         * 本身的OnLongClick无效，所以自己根据在onTouch中定义一个OnLongClick
+         *
+         * @param view
+         */
+        void onLongClick(View view);
+    }
+
     public AngleView(Context context) {
         this(context, null);
     }
@@ -152,23 +235,28 @@ public class AngleView extends ViewGroup {
         mChildHalfSize = getResources().getDimensionPixelSize(R.dimen.angleitem_half_size);
         mInnerRadius = getResources().getDimensionPixelSize(R.dimen.angleview_inner_radius);
         mOuterRadius = getResources().getDimensionPixelSize(R.dimen.angleview_outer_radius);
+        mDeleteBtnSize = getResources().getDimensionPixelSize(R.dimen.angleview_item_delete_size);
+
         mMap.put(0, mRecentAppList);
         mMap.put(1, mSwitchList);
         mMap.put(2, mFavoriteAppList);
     }
 
     public void refresh() {
-
+        removeAllViews();
         Iterator<Map.Entry<Integer, ArrayList<View>>> it = mMap.entrySet().iterator();
-        LayoutParams params = new LayoutParams(120, 120);
+        //LayoutParams params = new LayoutParams(120, 120);
         while (it.hasNext()) {
             Map.Entry<Integer, ArrayList<View>> arraylist = it.next();
             ArrayList<View> views = arraylist.getValue();
+
             for (View view : views) {
                 if (view.getParent() == null) {
-                    addView(view, params);
+                    addView(view);
                 }
             }
+
+
         }
         requestLayout();
     }
@@ -177,25 +265,35 @@ public class AngleView extends ViewGroup {
         if (mFavoriteAppList.size() > 0) {
             mFavoriteAppList.clear();
         }
-        AngleItem itemview;
+        AngleItemStartUp itemview;
         for (ItemApplication appitem : itemlist) {
-            itemview = (AngleItem) LayoutInflater.from(getContext()).inflate(R.layout.angle_item, null);
+            itemview = (AngleItemStartUp) LayoutInflater.from(getContext()).inflate(R.layout.angle_item, null);
             itemview.setTitle(appitem.mTitle.toString());
             itemview.setItemIcon(appitem.mIconBitmap);
             mFavoriteAppList.add(itemview);
         }
+        /**
+         * 添加额外的add按钮
+         */
+        AngleItemAddTo mTargetItem = (AngleItemAddTo) LayoutInflater.from(getContext()).inflate(R.layout.angle_item_extra, null);
+        mFavoriteAppList.add(mTargetItem);
     }
 
-    public void putItemQuickSwitch(ArrayList<SwipeSwitch> itemlist) {
+    public void putItemQuickSwitch(ArrayList<ItemSwipeSwitch> itemlist) {
         if (mSwitchList.size() > 0) {
             mSwitchList.clear();
         }
-        AngleItem itemview;
-        for (SwipeSwitch appitem : itemlist) {
-            itemview = (AngleItem) LayoutInflater.from(getContext()).inflate(R.layout.angle_item, null);
+        AngleItemStartUp itemview;
+        for (ItemSwipeSwitch appitem : itemlist) {
+            itemview = (AngleItemStartUp) LayoutInflater.from(getContext()).inflate(R.layout.angle_item, null);
             itemview.setTitle(appitem.mTitle.toString());
             mSwitchList.add(itemview);
         }
+        /**
+         * 添加额外的add按钮
+         */
+        AngleItemAddTo mTargetItem = (AngleItemAddTo) LayoutInflater.from(getContext()).inflate(R.layout.angle_item_extra, null);
+        mSwitchList.add(mTargetItem);
     }
 
     @Override
@@ -272,7 +370,7 @@ public class AngleView extends ViewGroup {
                 size = views.size();
                 group = index;
                 radius = mInnerRadius;
-            } else {
+            } else if (views.size() <= 9) {
                 if (index < COUNT_4) {
                     /**
                      * 总数大于4时内环正好是4
@@ -289,6 +387,28 @@ public class AngleView extends ViewGroup {
                     size = views.size() - COUNT_4;
                     group = index - COUNT_4;
                     radius = mOuterRadius;
+
+
+                }
+            } else {
+                if (index < COUNT_4) {
+                    /**
+                     * 总数大于4时内环正好是4
+                     */
+                    size = COUNT_4;
+                    group = index;
+                    radius = mInnerRadius;
+                } else {
+                    /**
+                     * 总数大于4时外环
+                     * size＝总数－4
+                     * group＝views(index)-4
+                     */
+                    size = COUNT_4 + 1;
+                    group = index - COUNT_4;
+                    radius = mOuterRadius;
+
+
                 }
             }
             /**
@@ -353,7 +473,9 @@ public class AngleView extends ViewGroup {
             /**
              * 指定位置
              */
-            views.get(index).layout((int) (x - mChildHalfSize), (int) (y - mChildHalfSize), (int) (x + mChildHalfSize), (int) (y + mChildHalfSize));
+            if (index < 9) {
+                views.get(index).layout((int) (x - mChildHalfSize), (int) (y - mChildHalfSize), (int) (x + mChildHalfSize), (int) (y + mChildHalfSize));
+            }
         }
     }
 
@@ -375,10 +497,11 @@ public class AngleView extends ViewGroup {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
 
-                float newx = event.getX();
-                float newy = event.getY();
+                mMotionX = event.getX();
+                mMotionY = event.getY();
+                //float newx = event.getX();
+                //float newy = event.getY();
                 ArrayList<View> views = getData();
-
                 for (int index = 0; index < views.size(); index++) {
                     /**
                      * size按照当前views的总数，以4为区分，分别计算出<4,=4,超出4的部分剪掉4即从1，2，3重新开始计数
@@ -398,6 +521,24 @@ public class AngleView extends ViewGroup {
                         size = views.size();
                         group = index;
                         radius = mInnerRadius;
+                    } else if (views.size() <= 9) {
+                        if (index < COUNT_4) {
+                            /**
+                             * 总数大于4时内环正好是4
+                             */
+                            size = COUNT_4;
+                            group = index;
+                            radius = mInnerRadius;
+                        } else if (index < 9) {
+                            /**
+                             * 总数大于4时外环
+                             * size＝总数－4
+                             * group＝views(index)-4
+                             */
+                            size = views.size() - COUNT_4;
+                            group = index - COUNT_4;
+                            radius = mOuterRadius;
+                        }
                     } else {
                         if (index < COUNT_4) {
                             /**
@@ -406,13 +547,13 @@ public class AngleView extends ViewGroup {
                             size = COUNT_4;
                             group = index;
                             radius = mInnerRadius;
-                        } else {
+                        } else if (index < 9) {
                             /**
                              * 总数大于4时外环
                              * size＝总数－4
                              * group＝views(index)-4
                              */
-                            size = views.size() - COUNT_4;
+                            size = COUNT_4 + 1;
                             group = index - COUNT_4;
                             radius = mOuterRadius;
                         }
@@ -449,24 +590,89 @@ public class AngleView extends ViewGroup {
                     float newtop = (float) (y - mChildHalfSize);
                     float newright = (float) (x + mChildHalfSize);
                     float newbottom = (float) (y + mChildHalfSize);
-                    if (newx > newleft && newx < newright && newy > newtop && newy < newbottom) {
-                        Log.i("Gmw", "点击到范围了＝" + ((AngleItem) views.get(index)).getTitle());
+
+                    if (mMotionX > newleft && mMotionX < newright && mMotionY > newtop && mMotionY < newbottom) {
+                        mClickTime1 = System.currentTimeMillis();
+                        /**
+                         * 找到当前点击的那个item
+                         */
+                        mTargetItem = ((AngleItemCommon) views.get(index));
+
+                        if (mTargetItem instanceof AngleItemStartUp) {
+                            if (mMotionX > newleft && mMotionX < (newleft + mDeleteBtnSize) && mMotionY > newtop &&
+                                    mMotionY < (newtop + mDeleteBtnSize) && ((AngleItemStartUp) mTargetItem).getDelBtn().
+                                    getVisibility() == View.VISIBLE) {
+                                isDelClick = true;
+                            }
+                        } else if (mTargetItem instanceof AngleItemAddTo) {
+
+                        }
+                        handler.postDelayed(mLongRunable, 600);
+                        return true;
                     }
                 }
 
                 break;
             case MotionEvent.ACTION_MOVE:
+                //handler.removeCallbacks(mLongRunable);
+                float movenewx = event.getX();
+                float movenewy = event.getY();
+                if (Math.abs(movenewx - mMotionX) > 5 || Math.abs(movenewy - mMotionY) > 4) {
+                    handler.removeCallbacks(mLongRunable);
+                }
                 break;
             case MotionEvent.ACTION_UP:
+                float clicknewx = event.getX();
+                float clicknewy = event.getY();
+                long clicktime = System.currentTimeMillis();
+                if (Math.abs(mMotionX - clicknewx) < 10 && Math.abs(mMotionY - clicknewy) < 10) {
+                    long time = Math.abs(mClickTime1 - clicktime);
+                    if (time < 300) {
+                        if (isDelClick) {
+                            //Log.i("Gmw", "单击删除按钮");
+                            getData().remove(mTargetItem);
+                            refresh();
+                            if (mOnClickListener != null) {
+                                mOnClickListener.onDeleteClick(mTargetItem);
+                            }
+                        } else {
+                            //Log.i("Gmw", "单击按钮");
+                            //mTargetItem.setScaleX(0.5f);
+                            shake(mTargetItem);
+                            //requestLayout();
+                            if (mOnClickListener != null) {
+                                mOnClickListener.onClick(mTargetItem);
+                            }
+                        }
+                        handler.removeCallbacks(mLongRunable);
+
+                    }
+                }
+                isDelClick = false;
+                break;
             case MotionEvent.ACTION_CANCEL:
+                isDelClick = false;
                 break;
         }
 
         return super.onTouchEvent(event);
+
     }
 
     public void setOnAngleChangeListener(OnAngleChangeListener listener) {
         mAngleListener = listener;
+    }
+
+    public void setOnEditModeListener(OnEditModeListener listener) {
+        mEditModeListener = listener;
+    }
+
+    public void setOnClickListener(OnClickListener listener) {
+        mOnClickListener = listener;
+    }
+
+    public void setOnLongClickListener(OnLongClickListener listener) {
+        mOnLongClickListener = listener;
     }
 
     /**
@@ -583,7 +789,6 @@ public class AngleView extends ViewGroup {
                 flingCurrnet();
             }
         }
-
     }
 
     /**
@@ -811,7 +1016,7 @@ public class AngleView extends ViewGroup {
      * @return 得到上一个index
      */
     public int getPreQuaIndex(int index) {
-        return index == 0 ? 3 : (index - 1);
+        return index == 0 ? COUNT_3 : (index - 1);
     }
 
     /**
@@ -821,7 +1026,7 @@ public class AngleView extends ViewGroup {
      * @return 得到下一个index
      */
     private int getNextQuaIndex(int index) {
-        return index == 3 ? 0 : (index + 1);
+        return index == COUNT_3 ? 0 : (index + 1);
     }
 
 
@@ -834,7 +1039,7 @@ public class AngleView extends ViewGroup {
      * @return
      */
     private int getViewsIndex(int index) {
-        return (COUNT_12 - index) % 3;
+        return (COUNT_12 - index) % COUNT_3;
     }
 
     /**
@@ -866,7 +1071,7 @@ public class AngleView extends ViewGroup {
      * @return 转换为右侧的实际Index
      */
     private int getViewsIndex2(int index) {
-        return index < 0 ? 3 + index : index % 3;
+        return index < 0 ? COUNT_3 + index : index % COUNT_3;
     }
 
     /**
@@ -887,6 +1092,75 @@ public class AngleView extends ViewGroup {
      */
     public int getNextViewsIndex(int index) {
         return index == 2 ? 0 : (index + 1);
+    }
+
+    /**
+     * 进入编辑模式，遍历当前的Views集合，显示删除按钮
+     */
+    public void startEditMode() {
+        int index = getViewsIndex();
+
+        for (int i = 0; i < mMap.get(index).size(); i++) {
+            AngleItemCommon item = (AngleItemCommon) mMap.get(index).get(i);
+            if (item instanceof AngleItemStartUp) {
+                ((AngleItemStartUp) item).showDelBtn();
+            }
+        }
+    }
+
+    /**
+     * 退出当前编辑模式，遍历当前的Views集合，隐藏编辑按钮
+     */
+    public void endEditMode() {
+        int index = getViewsIndex();
+        for (int i = 0; i < mMap.get(index).size(); i++) {
+            AngleItemCommon item = (AngleItemCommon) mMap.get(index).get(i);
+            if (item instanceof AngleItemStartUp) {
+                ((AngleItemStartUp) item).hideDelBtn();
+            }
+
+        }
+    }
+
+    /**
+     * 抖一下
+     *
+     * @param view
+     */
+    public void shake(final View view) {
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(1.0f, 0.85f);
+        valueAnimator.setRepeatCount(1);
+        valueAnimator.setDuration(60);
+        valueAnimator.setRepeatMode(ValueAnimator.REVERSE);
+        valueAnimator.setInterpolator(new DecelerateInterpolator());
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float scale = (float) animation.getAnimatedValue();
+                view.setScaleX(scale);
+                view.setScaleY(scale);
+                requestLayout();
+            }
+        });
+        valueAnimator.start();
+    }
+
+
+    public class LongClickRunable implements Runnable {
+        @Override
+        public void run() {
+            if (mOnLongClickListener != null) {
+                if (getAngleValues() % DEGREES_90 == 0) {
+                    mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                    long[] pattern = {0, 35};
+                    mVibrator.vibrate(pattern, -1);
+                    mOnLongClickListener.onLongClick(mTargetItem);
+                    startEditMode();
+                }
+            } else {
+                throw new IllegalArgumentException("AngleView.OnClickListener is null(AngleView的Click监听接口对象为空)");
+            }
+        }
     }
 
 }
