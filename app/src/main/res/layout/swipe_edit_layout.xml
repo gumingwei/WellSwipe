@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.well.swipe.view.SwipeEditLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/swipe_edit_header_height"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/swipe_edit_header_title"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/swipe_edit_header_height"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/swipe_edit_header_title_padding_left"
+            android:textColor="@color/swipe_header_title_color"
+            android:textSize="@dimen/swipe_edit_header_title_size" />
+
+        <Button
+            android:id="@+id/swipe_edit_header_save_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="保存" />
+
+        <Button
+            android:id="@+id/swipe_edit_header_cancal_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/swipe_edit_header_save_btn"
+            android:text="取消" />
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/swipe_edit_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal" />
+</com.well.swipe.view.SwipeEditLayout>

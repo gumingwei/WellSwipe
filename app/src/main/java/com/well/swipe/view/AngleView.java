@@ -73,9 +73,17 @@ public class AngleView extends ViewGroup {
      */
     private long mClickTime1;
     /**
-     * 判断是否点击到了删除按钮
+     * 用来区分点击事件的类型
      */
-    private boolean isDelClick;
+    private int mClickType = -1;
+
+    private static final int TYPE_CLICK = 0;
+
+    private static final int TYPE_DELCLICK = 1;
+
+    private static final int TYPE_ADDCLICK = 2;
+
+    private static final int TYPE_LONGCLICK = 3;
     /**
      * AngleView点击时候找到的ItemView
      */
@@ -203,11 +211,18 @@ public class AngleView extends ViewGroup {
         void onClick(View view);
 
         /**
-         * 删除按钮
+         * 位于布局左上角的删除按钮，点击的时候直接在控件AngleView内部处理了数据
          *
          * @param view
          */
         void onDeleteClick(View view);
+
+        /**
+         * 在每一个扇区最后有一个添加按钮，扇区满的时候这个按钮没有显示出来，
+         * 在扇区显示的时候，点击添加按钮，吧参数回调到SwipLayout
+         * 然后添加新的数据进来
+         */
+        void onAddClick();
     }
 
     OnLongClickListener mOnLongClickListener;
@@ -215,6 +230,7 @@ public class AngleView extends ViewGroup {
     public interface OnLongClickListener {
         /**
          * 本身的OnLongClick无效，所以自己根据在onTouch中定义一个OnLongClick
+         * 本OnLongClick的作用是长安之后告诉上一层处理触摸事件的SwipeLayout的来更改当前为编辑模式
          *
          * @param view
          */
@@ -267,7 +283,7 @@ public class AngleView extends ViewGroup {
         }
         AngleItemStartUp itemview;
         for (ItemApplication appitem : itemlist) {
-            itemview = (AngleItemStartUp) LayoutInflater.from(getContext()).inflate(R.layout.angle_item, null);
+            itemview = (AngleItemStartUp) LayoutInflater.from(getContext()).inflate(R.layout.angle_item_startup, null);
             itemview.setTitle(appitem.mTitle.toString());
             itemview.setItemIcon(appitem.mIconBitmap);
             mFavoriteAppList.add(itemview);
@@ -275,7 +291,7 @@ public class AngleView extends ViewGroup {
         /**
          * 添加额外的add按钮
          */
-        AngleItemAddTo mTargetItem = (AngleItemAddTo) LayoutInflater.from(getContext()).inflate(R.layout.angle_item_extra, null);
+        AngleItemAddTo mTargetItem = (AngleItemAddTo) LayoutInflater.from(getContext()).inflate(R.layout.angle_item_addto, null);
         mFavoriteAppList.add(mTargetItem);
     }
 
@@ -285,14 +301,14 @@ public class AngleView extends ViewGroup {
         }
         AngleItemStartUp itemview;
         for (ItemSwipeSwitch appitem : itemlist) {
-            itemview = (AngleItemStartUp) LayoutInflater.from(getContext()).inflate(R.layout.angle_item, null);
+            itemview = (AngleItemStartUp) LayoutInflater.from(getContext()).inflate(R.layout.angle_item_startup, null);
             itemview.setTitle(appitem.mTitle.toString());
             mSwitchList.add(itemview);
         }
         /**
          * 添加额外的add按钮
          */
-        AngleItemAddTo mTargetItem = (AngleItemAddTo) LayoutInflater.from(getContext()).inflate(R.layout.angle_item_extra, null);
+        AngleItemAddTo mTargetItem = (AngleItemAddTo) LayoutInflater.from(getContext()).inflate(R.layout.angle_item_addto, null);
         mSwitchList.add(mTargetItem);
     }
 
@@ -593,6 +609,7 @@ public class AngleView extends ViewGroup {
 
                     if (mMotionX > newleft && mMotionX < newright && mMotionY > newtop && mMotionY < newbottom) {
                         mClickTime1 = System.currentTimeMillis();
+                        mClickType = TYPE_CLICK;
                         /**
                          * 找到当前点击的那个item
                          */
@@ -602,10 +619,10 @@ public class AngleView extends ViewGroup {
                             if (mMotionX > newleft && mMotionX < (newleft + mDeleteBtnSize) && mMotionY > newtop &&
                                     mMotionY < (newtop + mDeleteBtnSize) && ((AngleItemStartUp) mTargetItem).getDelBtn().
                                     getVisibility() == View.VISIBLE) {
-                                isDelClick = true;
+                                mClickType = TYPE_DELCLICK;
                             }
                         } else if (mTargetItem instanceof AngleItemAddTo) {
-
+                            mClickType = TYPE_ADDCLICK;
                         }
                         handler.postDelayed(mLongRunable, 600);
                         return true;
@@ -628,30 +645,37 @@ public class AngleView extends ViewGroup {
                 if (Math.abs(mMotionX - clicknewx) < 10 && Math.abs(mMotionY - clicknewy) < 10) {
                     long time = Math.abs(mClickTime1 - clicktime);
                     if (time < 300) {
-                        if (isDelClick) {
-                            //Log.i("Gmw", "单击删除按钮");
+                        if (mClickType == TYPE_DELCLICK) {
+                            /**
+                             * 删除时直接掉用删掉当前的数据，回调接口暂时没有用
+                             */
                             getData().remove(mTargetItem);
                             refresh();
                             if (mOnClickListener != null) {
                                 mOnClickListener.onDeleteClick(mTargetItem);
                             }
-                        } else {
-                            //Log.i("Gmw", "单击按钮");
-                            //mTargetItem.setScaleX(0.5f);
+                        } else if (mClickType == TYPE_CLICK) {
+                            /**
+                             * 正常的点击事件
+                             */
                             shake(mTargetItem);
-                            //requestLayout();
                             if (mOnClickListener != null) {
                                 mOnClickListener.onClick(mTargetItem);
                             }
+                        } else if (mClickType == TYPE_ADDCLICK) {
+                            /**
+                             * 点击最后一个AddBtn时的点击时间
+                             */
+                            shake(mTargetItem);
+                            mOnClickListener.onAddClick();
                         }
                         handler.removeCallbacks(mLongRunable);
-
                     }
                 }
-                isDelClick = false;
+                mClickType = -1;
                 break;
             case MotionEvent.ACTION_CANCEL:
-                isDelClick = false;
+                mClickType = -1;
                 break;
         }
 

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.well.swipe.view.AngleItemAddTo xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/angle_item_icon"
+        android:layout_width="@dimen/angle_item_icon_size"
+        android:layout_height="@dimen/angle_item_icon_size"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/swipe_add_icon" />
+
+    <TextView
+        android:id="@+id/angle_item_title"
+        android:layout_width="@dimen/angleitem_size"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/angle_item_icon"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:singleLine="true"
+        android:visibility="invisible" />
+
+</com.well.swipe.view.AngleItemAddTo>

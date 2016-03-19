@@ -10,4 +10,6 @@
     <string name="swipe_item_action_wifi_title">Wifi</string>
     <string name="swipe_item_action_action4_title">动作4</string>
 
+
+    <string name="swipe_edit_header_title">已选(%1$s/%2$s)</string>
 </resources>

@@ -23,7 +23,6 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -131,11 +130,13 @@ public class SwipeProvider extends ContentProvider {
         return 0;
     }
 
+    /**
+     * 读取配置的app个开关数据
+     *
+     * @param resId
+     */
     synchronized public void loadDefaultFavoritesIfNecessary(int resId) {
-        //mDatabaseHelper.printAllAppList();
-        Log.i("Gmw", "loadDefaultFavoritesIfNecessary");
         mDatabaseHelper.loadFavorites(mDatabaseHelper.getWritableDatabase(), resId);
-
     }
 
     public class DatabaseHelper extends SQLiteOpenHelper {
@@ -236,6 +237,18 @@ public class SwipeProvider extends ContentProvider {
 
         }
 
+        /**
+         * 从default_workspace中读取配置数据，然后存入数据库
+         *
+         * @param database
+         * @param values
+         * @param array
+         * @param packageManager
+         * @param intent
+         * @return
+         * @throws XmlPullParserException
+         * @throws IOException
+         */
         private boolean addFavorite(SQLiteDatabase database, ContentValues values, TypedArray array,
                                     PackageManager packageManager, Intent intent) throws XmlPullParserException, IOException {
             String packageName = array.getString(R.styleable.Favorite_packageName);
@@ -245,9 +258,10 @@ public class SwipeProvider extends ContentProvider {
                 return false;
             }
             boolean hasPackage = true;
-
+            /**
+             * 判断是否安装
+             */
             if (!isApkInstalled(mContext, packageName)) {
-                //Log.i("Gmw", "没安装=" + packageName);
                 hasPackage = false;
             }
             if (hasPackage) {
@@ -267,13 +281,9 @@ public class SwipeProvider extends ContentProvider {
                     values.put(SwipeSettings.BaseColumns.ITEM_INDEX, item_index);
                     values.put(SwipeSettings.BaseColumns.ITEM_TYPE, SwipeSettings.BaseColumns.ITEM_TYPE_APPLICATION);
                     values.put(SwipeSettings.BaseColumns.ICON_TYPE, SwipeSettings.BaseColumns.ICON_TYPE_BITMAP);
-                    if (bd.getBitmap() == null) {
-                        Log.i("Gmw", "bitmap==null");
-                    } else {
-                        Log.i("Gmw", "bitmap!=null");
-                    }
+                    //把bitmap存入数据库
                     values.put(SwipeSettings.BaseColumns.ICON_BITMAP, flattenBitmap(bd.getBitmap()));
-                    //ItemInfo.writeBitmap(values, bd.getBitmap());
+
                     /**
                      * 如果表里已经包含了存在的index，就不在插入了
                      */
@@ -321,6 +331,15 @@ public class SwipeProvider extends ContentProvider {
             }
         }
 
+        /**
+         * 存表之前每次检查一边表中是否已经存在可当前读取到的index的app，如果有就跳过读下一个
+         * 没有才回存表
+         *
+         * @param database
+         * @param target
+         * @param type
+         * @return
+         */
         private boolean hasIndex(SQLiteDatabase database, int target, int type) {
             Cursor cursor = database.rawQuery("select item_index from favorites where item_type=" + type, null);
             ArrayList<Integer> index = new ArrayList<>();
@@ -356,7 +375,6 @@ public class SwipeProvider extends ContentProvider {
                 out.close();
                 return out.toByteArray();
             } catch (IOException e) {
-                Log.w("Gmw", "flattenBitmap-Could not write icon");
                 return null;
             }
         }

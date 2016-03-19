@@ -7,8 +7,7 @@
     android:orientation="vertical"
     tools:context=".activitys.SwipeSettingActivity">
 
-    <!--<include layout="@layout/swipe_layout" />-->
-    <!--<include layout="@layout/angle_item"></include>-->
+
     <TextView
         android:id="@+id/test_text"
         android:layout_width="wrap_content"

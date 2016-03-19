@@ -83,20 +83,17 @@ public class BubbleView extends ImageView {
         return super.onTouchEvent(e);
     }
 
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        Log.i("Gmw", "dispatchKeyEvent");
-        return super.dispatchKeyEvent(event);
-    }
 
     private void initManager(int x, int y) {
         mParams = new WindowManager.LayoutParams();
         mManager = (WindowManager) getContext().getSystemService(getContext().WINDOW_SERVICE);
         mParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
         mParams.format = PixelFormat.RGBA_8888;
-        mParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                | WindowManager.LayoutParams.FLAG_FULLSCREEN;
+//        mParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+//                | WindowManager.LayoutParams.FLAG_FULLSCREEN;
         //mParams.flags = WindowManager.LayoutParams.TYPE_TOAST;
+        mParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                | WindowManager.LayoutParams.FLAG_FULLSCREEN;
 
         mParams.gravity = Gravity.LEFT | Gravity.TOP;
         mParams.x = x;
@@ -123,6 +120,16 @@ public class BubbleView extends ImageView {
                 mManager.removeView(this);
             }
         }
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() != KeyEvent.ACTION_UP) {
+            Log.i("Gmw", "dispatchKeyEvent_back");
+            dismiss();
+            return true;
+        }
+        return super.dispatchKeyEvent(event);
     }
 
 

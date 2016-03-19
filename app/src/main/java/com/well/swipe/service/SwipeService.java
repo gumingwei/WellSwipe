@@ -17,6 +17,7 @@ import com.well.swipe.LauncherModel;
 import com.well.swipe.R;
 import com.well.swipe.SwipeApplication;
 import com.well.swipe.ItemSwipeSwitch;
+import com.well.swipe.view.SwipeEditLayout;
 import com.well.swipe.view.AngleView;
 import com.well.swipe.view.BubbleView;
 import com.well.swipe.view.CatchView;
@@ -49,6 +50,8 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
      */
     private SwipeLayout mSwipeLayout;
 
+    private SwipeEditLayout mEditLayout;
+
     public NotificationManager mNotificationManager;
 
     public Notification mNotification;
@@ -73,9 +76,10 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     @Override
     public void onCreate() {
         super.onCreate();
-
+        mBubble = new BubbleView(getBaseContext());
         mSwipeApplication = (SwipeApplication) getApplication();
         mLauncherModel = mSwipeApplication.setLaunchr(this);
+
         mView = new CatchView(getBaseContext(), 0, 0, 50, 300);
         mView.setState(CatchView.POSITION_STATE_LEFT);
         mView.setOnEdgeSlidingListener(this);
@@ -102,6 +106,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
          */
         mSwipeLayout.getAngleLayout().getAngleView().setOnClickListener(this);
 
+        mEditLayout = (SwipeEditLayout) LayoutInflater.from(getBaseContext()).inflate(R.layout.swipe_edit_layout, null);
 
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
@@ -273,6 +278,12 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     public void onDeleteClick(View view) {
         Log.i("Gmw", "onDeleteClick=");
         //mSwipeLayout.getAngleLayout().getAngleView().getData().get()
+    }
+
+    @Override
+    public void onAddClick() {
+        Log.i("Gmw", "onAddClick");
+        mEditLayout.show();
     }
 
     private native void swipeDaemon(String serviceName, int sdkVersion);

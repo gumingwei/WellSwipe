@@ -2,8 +2,7 @@
 <com.well.swipe.view.AngleLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/anglelayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <com.well.swipe.view.AngleView
         android:id="@id/angleview"
@@ -14,4 +13,5 @@
         android:id="@id/indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
 </com.well.swipe.view.AngleLayout>

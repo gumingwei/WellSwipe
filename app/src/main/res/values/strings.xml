@@ -16,4 +16,6 @@
     <string name="swipe_item_action_wifi_title">Wifi</string>
     <string name="swipe_item_action_action4_title">Action4</string>
 
+    <string name="swipe_edit_header_title">selected(%1$s/%2$s)</string>
+
 </resources>
