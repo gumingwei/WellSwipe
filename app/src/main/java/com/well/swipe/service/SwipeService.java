@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.well.swipe.AllAppsList;
 import com.well.swipe.ItemApplication;
 import com.well.swipe.LauncherModel;
 import com.well.swipe.R;
@@ -126,6 +127,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         mLauncherModel.startLoadTask();
+
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -246,26 +248,21 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     @Override
     public void bindAllApps(ArrayList<ItemApplication> appslist) {
-        for (int i = 0; i < appslist.size(); i++) {
-            //Log.i("Gmw", "pack=" + appslist.get(i).mComponentName);
-        }
+        mEditLayout.setData(appslist);
     }
 
     @Override
     public void bindFavorites(ArrayList<ItemApplication> appslist) {
-        Log.i("Gmw", "bindFavorites_size=" + appslist.size());
         mSwipeLayout.getAngleLayout().getAngleView().putItemApplications(appslist);
     }
 
     @Override
     public void bindSwitch(ArrayList<ItemSwipeSwitch> switchlist) {
-        Log.i("Gmw", "bindSwitch_size=" + switchlist.size());
         mSwipeLayout.getAngleLayout().getAngleView().putItemQuickSwitch(switchlist);
     }
 
     @Override
     public void bindFinish() {
-        Log.i("Gmw", "bindFinish=");
         mSwipeLayout.getAngleLayout().getAngleView().refresh();
     }
 
@@ -282,7 +279,6 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     @Override
     public void onAddClick() {
-        Log.i("Gmw", "onAddClick");
         mEditLayout.show();
     }
 

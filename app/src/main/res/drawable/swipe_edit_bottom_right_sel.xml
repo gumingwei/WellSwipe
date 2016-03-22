@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 定义按钮按下时的图片 -->
+    <item android:drawable="@drawable/swipe_edit_bottom_right_enable" android:state_pressed="true" />
+    <!-- 定义按钮默认的图片 -->
+    <item android:drawable="@drawable/swipe_edit_bottom_right_normal" />
+</selector>

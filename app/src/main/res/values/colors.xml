@@ -7,4 +7,5 @@
     <color name="indicator_theme_purple_selector">#7e57c2</color>
     <color name="white">#ffffff</color>
     <color name="swipe_header_title_color">#383838</color>
+    <color name="swipe_bottom_gray">#cccccc</color>
 </resources>

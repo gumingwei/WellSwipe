@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.well.swipe.view.GridLayoutItemView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/appindex_item_icon"
+        android:layout_width="@dimen/angle_item_icon_size"
+        android:layout_height="@dimen/angle_item_icon_size"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/ic_launcher" />
+
+    <TextView
+        android:id="@+id/appindex_item_title"
+        android:layout_width="@dimen/angleitem_size"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/appindex_item_icon"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="Test" />
+
+    <ImageView
+        android:id="@+id/appindex_item_check"
+        android:layout_width="@dimen/angleview_item_delete_size"
+        android:layout_height="@dimen/angleview_item_delete_size"
+        android:src="@drawable/icon_search_delete"
+        android:visibility="visible" />
+</com.well.swipe.view.GridLayoutItemView>

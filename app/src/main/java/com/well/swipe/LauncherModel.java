@@ -113,6 +113,10 @@ public class LauncherModel extends BroadcastReceiver {
         mLoadTask.run();
     }
 
+    public AllAppsList getAllAppsList() {
+        return mAllAppsList;
+    }
+
     static ComponentName getComponentNameFromResolveInfo(ResolveInfo info) {
         if (info.activityInfo != null) {
             return new ComponentName(info.activityInfo.packageName, info.activityInfo.name);
@@ -157,11 +161,14 @@ public class LauncherModel extends BroadcastReceiver {
             Collections.sort(mInfoLists,
                     new LauncherModel.ShortcutNameComparator(manager, mLabelCache));
 
+            if (mAllAppsList.data.size() > 0) {
+                mAllAppsList.data.clear();
+            }
             for (int i = 0; i < mInfoLists.size(); i++) {
                 mAllAppsList.data.add(new ItemApplication(manager, mInfoLists.get(i), mIconCache, mLabelCache));
             }
             ArrayList<ItemApplication> applications = new ArrayList<>();
-            if (applications.size() != 0) {
+            if (applications.size() > 0) {
                 applications.clear();
             }
             applications.addAll(mAllAppsList.data);

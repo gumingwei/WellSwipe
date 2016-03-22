@@ -24,14 +24,14 @@ public class SwipeSettingActivity extends AppCompatActivity {
         test = (TextView) findViewById(R.id.test_text);
         test.setText("density=" + this.getResources().getDisplayMetrics().density + ",test=" +
                 getResources().getDimensionPixelSize(R.dimen.test));
-
+        btn = (Button) findViewById(R.id.test_btn);
 //        test.setOnLongClickListener();
-//        btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override

@@ -261,7 +261,6 @@ public class AngleView extends ViewGroup {
     public void refresh() {
         removeAllViews();
         Iterator<Map.Entry<Integer, ArrayList<View>>> it = mMap.entrySet().iterator();
-        //LayoutParams params = new LayoutParams(120, 120);
         while (it.hasNext()) {
             Map.Entry<Integer, ArrayList<View>> arraylist = it.next();
             ArrayList<View> views = arraylist.getValue();
@@ -271,8 +270,6 @@ public class AngleView extends ViewGroup {
                     addView(view);
                 }
             }
-
-
         }
         requestLayout();
     }
@@ -367,132 +364,135 @@ public class AngleView extends ViewGroup {
      * @param qua   限象
      */
     private void itemLayout(ArrayList<View> views, int qua) {
-        for (int index = 0; index < views.size(); index++) {
-            /**
-             * size按照当前views的总数，以4为区分，分别计算出<4,=4,超出4的部分剪掉4即从1，2，3重新开始计数
-             */
-            int size = 0;
-            /**
-             * group可认为是跟随环数而变化的一个值，用来计算index非0时的子控件的角度增长
-             * 角度增为只有一个子控件的时候：90/1=45；
-             * index非0的时候：(group＋0.5)*newdegree(按照当前环中子控件的总数平分90的值)
-             */
-            int group = 0;
-            /**
-             * 半径变化，环数增加，半径增加
-             */
-            int radius = 0;
-            if (views.size() <= COUNT_4) {
-                size = views.size();
-                group = index;
-                radius = mInnerRadius;
-            } else if (views.size() <= 9) {
-                if (index < COUNT_4) {
-                    /**
-                     * 总数大于4时内环正好是4
-                     */
-                    size = COUNT_4;
+        if (views != null) {
+            for (int index = 0; index < views.size(); index++) {
+                /**
+                 * size按照当前views的总数，以4为区分，分别计算出<4,=4,超出4的部分剪掉4即从1，2，3重新开始计数
+                 */
+                int size = 0;
+                /**
+                 * group可认为是跟随环数而变化的一个值，用来计算index非0时的子控件的角度增长
+                 * 角度增为只有一个子控件的时候：90/1=45；
+                 * index非0的时候：(group＋0.5)*newdegree(按照当前环中子控件的总数平分90的值)
+                 */
+                int group = 0;
+                /**
+                 * 半径变化，环数增加，半径增加
+                 */
+                int radius = 0;
+                if (views.size() <= COUNT_4) {
+                    size = views.size();
                     group = index;
                     radius = mInnerRadius;
+                } else if (views.size() <= 9) {
+                    if (index < COUNT_4) {
+                        /**
+                         * 总数大于4时内环正好是4
+                         */
+                        size = COUNT_4;
+                        group = index;
+                        radius = mInnerRadius;
+                    } else {
+                        /**
+                         * 总数大于4时外环
+                         * size＝总数－4
+                         * group＝views(index)-4
+                         */
+                        size = views.size() - COUNT_4;
+                        group = index - COUNT_4;
+                        radius = mOuterRadius;
+
+
+                    }
                 } else {
-                    /**
-                     * 总数大于4时外环
-                     * size＝总数－4
-                     * group＝views(index)-4
-                     */
-                    size = views.size() - COUNT_4;
-                    group = index - COUNT_4;
-                    radius = mOuterRadius;
+                    if (index < COUNT_4) {
+                        /**
+                         * 总数大于4时内环正好是4
+                         */
+                        size = COUNT_4;
+                        group = index;
+                        radius = mInnerRadius;
+                    } else {
+                        /**
+                         * 总数大于4时外环
+                         * size＝总数－4
+                         * group＝views(index)-4
+                         */
+                        size = COUNT_4 + 1;
+                        group = index - COUNT_4;
+                        radius = mOuterRadius;
 
 
+                    }
                 }
-            } else {
-                if (index < COUNT_4) {
-                    /**
-                     * 总数大于4时内环正好是4
-                     */
-                    size = COUNT_4;
-                    group = index;
-                    radius = mInnerRadius;
+                /**
+                 * 按照views(index)所在的当前环的个数平分90度
+                 */
+                float degree = (float) DEGREES_90 / (float) (size);
+                /**
+                 * 得出一个新的递增的角度，用来后面按照三角函数计算子控的位置
+                 */
+                float newdegree;
+                if (index == 0) {
+                    newdegree = degree / 2;
                 } else {
-                    /**
-                     * 总数大于4时外环
-                     * size＝总数－4
-                     * group＝views(index)-4
-                     */
-                    size = COUNT_4 + 1;
-                    group = index - COUNT_4;
-                    radius = mOuterRadius;
-
-
+                    newdegree = (int) ((group + 0.5) * degree);
                 }
-            }
-            /**
-             * 按照views(index)所在的当前环的个数平分90度
-             */
-            float degree = (float) DEGREES_90 / (float) (size);
-            /**
-             * 得出一个新的递增的角度，用来后面按照三角函数计算子控的位置
-             */
-            float newdegree;
-            if (index == 0) {
-                newdegree = degree / 2;
-            } else {
-                newdegree = (int) ((group + 0.5) * degree);
-            }
-            /**
-             * 1.按照限象使用不同的三角函数计算所得x,y坐标
-             * 2.子控件根据不同的呃限象旋转位置满足在第0限象的正常显示效果
-             * 3.当整个控件的容器反转之后，为保证显示效果，要做一定的反转
-             */
-            double x = 0l;
-            double y = 0l;
-            if (mPositionState == POSITION_STATE_LEFT) {
-                if (qua == 0) {
-                    x = Math.sin(Math.toRadians(newdegree)) * radius;
-                    y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
-                } else if (qua == 1) {
-                    x = Math.cos(Math.toRadians(newdegree)) * radius;
-                    y = mHeight + Math.sin(Math.toRadians(newdegree)) * radius;
-                } else if (qua == 2) {
-                    x = -Math.sin(Math.toRadians(newdegree)) * radius;
-                    y = mHeight + Math.cos(Math.toRadians(newdegree)) * radius;
-                } else if (qua == 3) {
-                    x = -Math.cos(Math.toRadians(newdegree)) * radius;
-                    y = mHeight - Math.sin(Math.toRadians(newdegree)) * radius;
+                /**
+                 * 1.按照限象使用不同的三角函数计算所得x,y坐标
+                 * 2.子控件根据不同的呃限象旋转位置满足在第0限象的正常显示效果
+                 * 3.当整个控件的容器反转之后，为保证显示效果，要做一定的反转
+                 */
+                double x = 0l;
+                double y = 0l;
+                if (mPositionState == POSITION_STATE_LEFT) {
+                    if (qua == 0) {
+                        x = Math.sin(Math.toRadians(newdegree)) * radius;
+                        y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
+                    } else if (qua == 1) {
+                        x = Math.cos(Math.toRadians(newdegree)) * radius;
+                        y = mHeight + Math.sin(Math.toRadians(newdegree)) * radius;
+                    } else if (qua == 2) {
+                        x = -Math.sin(Math.toRadians(newdegree)) * radius;
+                        y = mHeight + Math.cos(Math.toRadians(newdegree)) * radius;
+                    } else if (qua == 3) {
+                        x = -Math.cos(Math.toRadians(newdegree)) * radius;
+                        y = mHeight - Math.sin(Math.toRadians(newdegree)) * radius;
+                    }
+                } else if (mPositionState == POSITION_STATE_RIGHT) {
+                    if (qua == 0) {
+                        x = mWidth - Math.sin(Math.toRadians(newdegree)) * radius;
+                        y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
+                    } else if (qua == 1) {
+                        x = mWidth - Math.cos(Math.toRadians(newdegree)) * radius;
+                        y = mHeight + Math.sin(Math.toRadians(newdegree)) * radius;
+                    } else if (qua == 2) {
+                        x = mWidth + Math.sin(Math.toRadians(newdegree)) * radius;
+                        y = mHeight + Math.cos(Math.toRadians(newdegree)) * radius;
+                    } else if (qua == 3) {
+                        x = mWidth + Math.cos(Math.toRadians(newdegree)) * radius;
+                        y = mHeight - Math.sin(Math.toRadians(newdegree)) * radius;
+                    }
                 }
-            } else if (mPositionState == POSITION_STATE_RIGHT) {
-                if (qua == 0) {
-                    x = mWidth - Math.sin(Math.toRadians(newdegree)) * radius;
-                    y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
-                } else if (qua == 1) {
-                    x = mWidth - Math.cos(Math.toRadians(newdegree)) * radius;
-                    y = mHeight + Math.sin(Math.toRadians(newdegree)) * radius;
-                } else if (qua == 2) {
-                    x = mWidth + Math.sin(Math.toRadians(newdegree)) * radius;
-                    y = mHeight + Math.cos(Math.toRadians(newdegree)) * radius;
-                } else if (qua == 3) {
-                    x = mWidth + Math.cos(Math.toRadians(newdegree)) * radius;
-                    y = mHeight - Math.sin(Math.toRadians(newdegree)) * radius;
-                }
-            }
 
-            /**
-             * 矫正子view
-             * 旋转一定的角度,以保证旋转至第0限象时方向是正的
-             */
-            if (mPositionState == POSITION_STATE_LEFT) {
-                views.get(index).setRotation(DEGREES_90 * qua);
-            } else if (mPositionState == POSITION_STATE_RIGHT) {
-                views.get(index).setRotation(-DEGREES_90 * qua);
-            }
-            /**
-             * 指定位置
-             */
-            if (index < 9) {
-                views.get(index).layout((int) (x - mChildHalfSize), (int) (y - mChildHalfSize), (int) (x + mChildHalfSize), (int) (y + mChildHalfSize));
+                /**
+                 * 矫正子view
+                 * 旋转一定的角度,以保证旋转至第0限象时方向是正的
+                 */
+                if (mPositionState == POSITION_STATE_LEFT) {
+                    views.get(index).setRotation(DEGREES_90 * qua);
+                } else if (mPositionState == POSITION_STATE_RIGHT) {
+                    views.get(index).setRotation(-DEGREES_90 * qua);
+                }
+                /**
+                 * 指定位置
+                 */
+                if (index < 9) {
+                    views.get(index).layout((int) (x - mChildHalfSize), (int) (y - mChildHalfSize), (int) (x + mChildHalfSize), (int) (y + mChildHalfSize));
+                }
             }
         }
+
     }
 
     @Override

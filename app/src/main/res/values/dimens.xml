@@ -17,9 +17,15 @@
     <dimen name="app_icon_size">48dp</dimen>
 
     <dimen name="angleview_item_delete_size">20dp</dimen>
-    <dimen name="swipe_edit_header_height">55dp</dimen>
+    <dimen name="swipe_edit_header_height">48dp</dimen>
     <dimen name="swipe_edit_header_title_padding_left">15dp</dimen>
     <dimen name="swipe_edit_header_title_size">25sp</dimen>
+
+    <dimen name="swipe_edit_keyitem_size">40dp</dimen>
+    <dimen name="swipe_edit_keyitem_marginleft">10dp</dimen>
+    <dimen name="swipe_edit_keyitem_margintop">10dp</dimen>
+    <dimen name="swipe_edit_layout_width">280dp</dimen>
+    <dimen name="swipe_edit_layout_height">350dp</dimen>
 
     <dimen name="test">100dp</dimen>
 </resources>

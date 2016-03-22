@@ -1,0 +1,46 @@
+package com.well.swipe.view;
+
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.well.swipe.R;
+
+/**
+ * Created by mingwei on 3/22/16.
+ */
+public class GridLayoutItemView extends AngleItemCommon {
+
+    private ImageView mImageView;
+
+    private TextView mTextView;
+
+    public GridLayoutItemView(Context context) {
+        this(context, null);
+    }
+
+    public GridLayoutItemView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public GridLayoutItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        mImageView = (ImageView) findViewById(R.id.appindex_item_icon);
+        mTextView = (TextView) findViewById(R.id.appindex_item_title);
+    }
+
+    public void setItemIcon(Drawable drawable) {
+        mImageView.setImageDrawable(drawable);
+    }
+
+    public void setItemTitle(String title) {
+        mTextView.setText(title);
+    }
+}
