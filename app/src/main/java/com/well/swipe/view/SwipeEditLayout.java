@@ -1,9 +1,10 @@
 package com.well.swipe.view;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
+import com.well.swipe.utils.FastBitmapDrawable;
 import com.well.swipe.utils.Pinyin;
 import com.well.swipe.utils.SwipeWindowManager;
 
@@ -48,6 +50,8 @@ public class SwipeEditLayout extends RelativeLayout {
 
     private GridLayout mHeaderGridLayout;
 
+    private int mSize;
+
     private LinearLayout mContentLayout;
 
     private ListView mListView;
@@ -66,6 +70,14 @@ public class SwipeEditLayout extends RelativeLayout {
 
     private ArrayList<ItemApplication> mApplist;
 
+    private ArrayList<ItemApplication> mHeaderDataList;
+
+    public OnCancelListener mOnCancelListenel;
+
+    public interface OnCancelListener {
+        void onCancel();
+    }
+
     public SwipeEditLayout(Context context) {
         this(context, null);
     }
@@ -76,6 +88,7 @@ public class SwipeEditLayout extends RelativeLayout {
 
     public SwipeEditLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mSize = getResources().getDimensionPixelSize(R.dimen.angleitem_size);
         mManager = new SwipeWindowManager(0, 0, context);
         mTitleFormat = getResources().getString(R.string.swipe_edit_header_title);
         mHeaderGridLayout = new GridLayout(context);
@@ -88,6 +101,8 @@ public class SwipeEditLayout extends RelativeLayout {
         mHeaderTitle = (TextView) findViewById(R.id.swipe_edit_header_title);
         mContentLayout = (LinearLayout) findViewById(R.id.swipe_edit_content);
         mListView = (ListView) findViewById(R.id.swipe_edit_listview);
+
+        mListView.addHeaderView(mHeaderGridLayout);
         mHeaderTitle.setText(String.format(mTitleFormat, "1", "2"));
     }
 
@@ -103,6 +118,7 @@ public class SwipeEditLayout extends RelativeLayout {
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() != KeyEvent.ACTION_UP) {
             hide();
+            mOnCancelListenel.onCancel();
             return true;
         }
         return super.dispatchKeyEvent(event);
@@ -166,6 +182,7 @@ public class SwipeEditLayout extends RelativeLayout {
         KeyAdapter adapter = new KeyAdapter(getContext(), mKeys);
         mListView.setAdapter(adapter);
 
+
     }
 
     private void contains(String key, ItemApplication app) {
@@ -179,6 +196,75 @@ public class SwipeEditLayout extends RelativeLayout {
         if (mApplist != null) {
             mApplist.add(app);
         }
+    }
+
+    public void setHeaderData(ArrayList<ItemApplication> appslist) {
+        mHeaderDataList = new ArrayList<>();
+        mHeaderDataList.addAll(appslist);
+        refreshHeader();
+    }
+
+    public void refreshHeader() {
+        mHeaderGridLayout.removeAllViews();
+        if (mHeaderDataList != null && mHeaderDataList.size() > 0) {
+            //final
+            for (int i = 0; i < mHeaderDataList.size(); i++) {
+                final GridLayoutItemView itemview = (GridLayoutItemView) LayoutInflater.from(getContext()).inflate(R.layout.gridlayout_item_layout, null);
+                itemview.setItemIcon(new FastBitmapDrawable(mHeaderDataList.get(i).mIconBitmap));
+                itemview.setTag(mHeaderDataList.get(i));
+                itemview.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //mHeaderGridLayout.removeView(itemview);
+                        hideAnimation(v);
+                    }
+                });
+                mHeaderGridLayout.addView(itemview, new LinearLayout.LayoutParams(mSize, mSize));
+            }
+        }
+    }
+
+    private void hideAnimation(final View view) {
+        view.setPivotX(view.getWidth() / 2);
+        view.setPivotY(view.getHeight() / 2);
+        final ItemApplication itemapp = (ItemApplication) view.getTag();
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(1.0f, 0f);
+        valueAnimator.setDuration(300);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float values = (float) animation.getAnimatedValue();
+                view.setScaleX(values);
+                view.setScaleY(values);
+            }
+        });
+        valueAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mHeaderDataList.remove(itemapp);
+                refreshHeader();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        valueAnimator.start();
+    }
+
+    public void setOnCancelListener(OnCancelListener listener) {
+        mOnCancelListenel = listener;
     }
 
     class KeyAdapter extends BaseAdapter {

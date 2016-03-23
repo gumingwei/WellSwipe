@@ -1,11 +1,12 @@
 package com.well.swipe;
 
 import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import java.util.HashMap;
 
@@ -68,7 +69,7 @@ public class ItemApplication extends ItemInfo {
             }
             mFirstInstallTime = manager.getPackageInfo(packageName, 0).firstInstallTime;
         } catch (PackageManager.NameNotFoundException e) {
-            Log.d(TAG, "PackageManager.getApplicationInfo failed for " + packageName);
+            e.printStackTrace();
         }
         iconcache.getTitleAndIcon(this, info, lable);
     }
@@ -83,5 +84,11 @@ public class ItemApplication extends ItemInfo {
         mIntent.setComponent(clazzName);
         mIntent.setFlags(flag);
         mType = SwipeSettings.BaseColumns.ITEM_TYPE_APPLICATION;
+    }
+
+    public int deleted(Context context) {
+        ContentResolver resolver = context.getContentResolver();
+        return resolver.delete(SwipeSettings.Favorites.CONTENT_URI, SwipeSettings.BaseColumns.ITEM_INTENT + "=?",
+                new String[]{mIntent.toUri(0)});
     }
 }

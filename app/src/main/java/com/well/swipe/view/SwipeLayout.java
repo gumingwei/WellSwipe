@@ -1,30 +1,34 @@
 package com.well.swipe.view;
 
 import android.content.Context;
-import android.graphics.PixelFormat;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.WindowManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
 import com.well.swipe.utils.SwipeWindowManager;
+
+import java.util.ArrayList;
 
 /**
  * Created by mingwei on 3/9/16.
  */
 public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffListener {
 
-    //private WindowManager.LayoutParams mParams;
-
-    //private WindowManager mManager;
-    SwipeWindowManager mManager;
+    private SwipeWindowManager mManager;
 
     private AngleLayout mAngleLayout;
 
     private LinearLayout mBgLayout;
+
+    private BubbleView mBubble;
+
+    private SwipeEditLayout mEditLayout;
 
     private int mWidth;
 
@@ -40,6 +44,12 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
 
     public SwipeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        mEditLayout = (SwipeEditLayout) LayoutInflater.from(context).inflate(R.layout.swipe_edit_layout, null);
+        mEditLayout.setVisibility(GONE);
+        addView(mEditLayout, params);
+
     }
 
     @Override
@@ -48,7 +58,6 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
         mAngleLayout = (AngleLayout) findViewById(R.id.anglelayout);
         mAngleLayout.setOnOffListener(this);
         mBgLayout = (LinearLayout) findViewById(R.id.swipe_bg_layout);
-        //initManager(0, 0);
         mManager = new SwipeWindowManager(0, 0, getContext());
     }
 
@@ -80,10 +89,16 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() != KeyEvent.ACTION_UP) {
-            if (mAngleLayout.getEditState() == AngleLayout.STATE_EDIT) {
-                mAngleLayout.setEditState(AngleLayout.STATE_NORMAL);
-            } else if (mAngleLayout.getEditState() == AngleLayout.STATE_NORMAL) {
-                mAngleLayout.off(mAngleLayout.getAngleLayoutScale());
+
+            if (mEditLayout.getVisibility() == VISIBLE) {
+                mEditLayout.setVisibility(GONE);
+                mAngleLayout.bringToFront();
+            } else {
+                if (mAngleLayout.getEditState() == AngleLayout.STATE_EDIT) {
+                    mAngleLayout.setEditState(AngleLayout.STATE_NORMAL);
+                } else if (mAngleLayout.getEditState() == AngleLayout.STATE_NORMAL) {
+                    mAngleLayout.off(mAngleLayout.getAngleLayoutScale());
+                }
             }
             return true;
         }
@@ -127,4 +142,26 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
     public AngleLayout getAngleLayout() {
         return mAngleLayout;
     }
+
+    //    public void setAllApps(ArrayList<ItemApplication> applist) {
+//        mEditLayout.setData(applist);
+//    }
+//
+//    public void setHeaderData(ArrayList<ItemApplication> data) {
+//        mEditLayout.setHeaderData(data);
+//    }
+    public SwipeEditLayout getSwipeEditLayout() {
+        return mEditLayout;
+    }
+
+    public void addBubble() {
+        mEditLayout.setVisibility(View.VISIBLE);
+        mEditLayout.bringToFront();
+
+    }
+
+    public void removeBubble() {
+        mEditLayout.setVisibility(View.GONE);
+    }
+
 }

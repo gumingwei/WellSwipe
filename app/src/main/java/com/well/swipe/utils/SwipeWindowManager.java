@@ -24,8 +24,8 @@ public class SwipeWindowManager {
     public SwipeWindowManager(int x, int y, Context context) {
         mParams = new WindowManager.LayoutParams();
         mManager = (WindowManager) context.getSystemService(context.WINDOW_SERVICE);
-        //mParams.type = WindowManager.LayoutParams.TYPE_PHONE;
-        mParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        mParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+        //mParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
         mParams.format = PixelFormat.RGBA_8888;
         //mParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         mParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL

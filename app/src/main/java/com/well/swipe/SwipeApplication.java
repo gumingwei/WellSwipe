@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.os.Handler;
-import android.util.Log;
 
 import com.well.swipe.service.SwipeService;
 
@@ -73,7 +72,6 @@ public class SwipeApplication extends Application {
             // workspace on the next load
             //mModel.resetLoadedState(false, true);
             //mModel.startLoaderFromBackground();
-            Log.i("Gmw", "ContentObserver_onChange");
         }
     };
 }

@@ -3,7 +3,6 @@ package com.well.swipe;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -72,7 +71,7 @@ public class ItemInfo {
             out.close();
             return out.toByteArray();
         } catch (IOException e) {
-            Log.w("Gmw", "flattenBitmap-Could not write icon");
+            e.printStackTrace();
             return null;
         }
     }

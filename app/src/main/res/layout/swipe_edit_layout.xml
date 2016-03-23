@@ -20,22 +20,7 @@
             android:textColor="@color/swipe_header_title_color"
             android:textSize="@dimen/swipe_edit_header_title_size" />
 
-        <Button
-            android:id="@+id/swipe_edit_header_save_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:text="保存" />
 
-        <Button
-            android:id="@+id/swipe_edit_header_cancal_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/swipe_edit_header_save_btn"
-            android:background="@drawable/swipe_edit_bottom_left_sel"
-            android:text="取消" />
     </RelativeLayout>
 
     <LinearLayout

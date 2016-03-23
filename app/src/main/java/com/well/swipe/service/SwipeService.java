@@ -8,11 +8,9 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.well.swipe.AllAppsList;
 import com.well.swipe.ItemApplication;
 import com.well.swipe.LauncherModel;
 import com.well.swipe.R;
@@ -51,7 +49,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
      */
     private SwipeLayout mSwipeLayout;
 
-    private SwipeEditLayout mEditLayout;
+    //private SwipeEditLayout mEditLayout;
 
     public NotificationManager mNotificationManager;
 
@@ -107,7 +105,6 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
          */
         mSwipeLayout.getAngleLayout().getAngleView().setOnClickListener(this);
 
-        mEditLayout = (SwipeEditLayout) LayoutInflater.from(getBaseContext()).inflate(R.layout.swipe_edit_layout, null);
 
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
@@ -243,17 +240,17 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     @Override
     public void bindStart() {
-        Log.i("Gmw", "bindStart=");
     }
 
     @Override
     public void bindAllApps(ArrayList<ItemApplication> appslist) {
-        mEditLayout.setData(appslist);
+        //mSwipeLayout.getSwipeEditLayout().setData(appslist);
     }
 
     @Override
     public void bindFavorites(ArrayList<ItemApplication> appslist) {
         mSwipeLayout.getAngleLayout().getAngleView().putItemApplications(appslist);
+        //mSwipeLayout.getSwipeEditLayout().setHeaderData(appslist);
     }
 
     @Override
@@ -268,18 +265,35 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     @Override
     public void onClick(View view) {
-        Log.i("Gmw", "onClick=");
     }
 
     @Override
     public void onDeleteClick(View view) {
-        Log.i("Gmw", "onDeleteClick=");
-        //mSwipeLayout.getAngleLayout().getAngleView().getData().get()
+        Object tag = view.getTag();
+        if (tag instanceof ItemApplication) {
+            int index = ((ItemApplication) tag).deleted(getBaseContext());
+            if (index > 0) {
+                mSwipeLayout.getAngleLayout().getAngleView().removeItem();
+            }
+        } else if (tag instanceof ItemSwipeSwitch) {
+
+        }
     }
 
     @Override
-    public void onAddClick() {
-        mEditLayout.show();
+    public void onAddClick(int index) {
+        switch (index) {
+            case 2:
+                //mBubble.show();
+                mSwipeLayout.addBubble();
+                //mLauncherModel.loafFavorite();
+                //mSwipeLayout.showA();
+                //mEditLayout.show();
+                break;
+            case 1:
+                break;
+        }
+
     }
 
     private native void swipeDaemon(String serviceName, int sdkVersion);

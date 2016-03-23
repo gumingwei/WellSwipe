@@ -127,7 +127,13 @@ public class SwipeProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        SqlArguments args = new SqlArguments(uri, selection, selectionArgs);
+
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+        int count = db.delete(args.table, args.where, args.args);
+        if (count > 0) sendNotify(uri);
+
+        return count;
     }
 
     /**

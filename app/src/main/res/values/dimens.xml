@@ -19,7 +19,7 @@
     <dimen name="angleview_item_delete_size">20dp</dimen>
     <dimen name="swipe_edit_header_height">48dp</dimen>
     <dimen name="swipe_edit_header_title_padding_left">15dp</dimen>
-    <dimen name="swipe_edit_header_title_size">25sp</dimen>
+    <dimen name="swipe_edit_header_title_size">20sp</dimen>
 
     <dimen name="swipe_edit_keyitem_size">40dp</dimen>
     <dimen name="swipe_edit_keyitem_marginleft">10dp</dimen>

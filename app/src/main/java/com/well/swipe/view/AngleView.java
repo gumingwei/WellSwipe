@@ -222,7 +222,7 @@ public class AngleView extends ViewGroup {
          * 在扇区显示的时候，点击添加按钮，吧参数回调到SwipLayout
          * 然后添加新的数据进来
          */
-        void onAddClick();
+        void onAddClick(int index);
     }
 
     OnLongClickListener mOnLongClickListener;
@@ -283,6 +283,7 @@ public class AngleView extends ViewGroup {
             itemview = (AngleItemStartUp) LayoutInflater.from(getContext()).inflate(R.layout.angle_item_startup, null);
             itemview.setTitle(appitem.mTitle.toString());
             itemview.setItemIcon(appitem.mIconBitmap);
+            itemview.setTag(appitem);
             mFavoriteAppList.add(itemview);
         }
         /**
@@ -300,6 +301,7 @@ public class AngleView extends ViewGroup {
         for (ItemSwipeSwitch appitem : itemlist) {
             itemview = (AngleItemStartUp) LayoutInflater.from(getContext()).inflate(R.layout.angle_item_startup, null);
             itemview.setTitle(appitem.mTitle.toString());
+            itemview.setTag(appitem);
             mSwitchList.add(itemview);
         }
         /**
@@ -515,8 +517,6 @@ public class AngleView extends ViewGroup {
 
                 mMotionX = event.getX();
                 mMotionY = event.getY();
-                //float newx = event.getX();
-                //float newy = event.getY();
                 ArrayList<View> views = getData();
                 for (int index = 0; index < views.size(); index++) {
                     /**
@@ -649,8 +649,9 @@ public class AngleView extends ViewGroup {
                             /**
                              * 删除时直接掉用删掉当前的数据，回调接口暂时没有用
                              */
-                            getData().remove(mTargetItem);
-                            refresh();
+                            //getData().remove(mTargetItem);
+                            //refresh();
+
                             if (mOnClickListener != null) {
                                 mOnClickListener.onDeleteClick(mTargetItem);
                             }
@@ -664,10 +665,10 @@ public class AngleView extends ViewGroup {
                             }
                         } else if (mClickType == TYPE_ADDCLICK) {
                             /**
-                             * 点击最后一个AddBtn时的点击时间
+                             * 点击最后一个AddBtn时的点击事件
                              */
                             shake(mTargetItem);
-                            mOnClickListener.onAddClick();
+                            mOnClickListener.onAddClick(getViewsIndex());
                         }
                         handler.removeCallbacks(mLongRunable);
                     }
@@ -680,6 +681,45 @@ public class AngleView extends ViewGroup {
         }
 
         return super.onTouchEvent(event);
+
+    }
+
+    public void removeItem() {
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(1.0f, 0f);
+        valueAnimator.setDuration(250);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float values = (float) animation.getAnimatedValue();
+                mTargetItem.setScaleX(values);
+                mTargetItem.setScaleY(values);
+                requestLayout();
+            }
+        });
+        valueAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                getData().remove(mTargetItem);
+                refresh();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        valueAnimator.start();
+
 
     }
 
@@ -1128,6 +1168,7 @@ public class AngleView extends ViewGroup {
             AngleItemCommon item = (AngleItemCommon) mMap.get(index).get(i);
             if (item instanceof AngleItemStartUp) {
                 ((AngleItemStartUp) item).showDelBtn();
+                requestLayout();
             }
         }
     }
@@ -1141,6 +1182,7 @@ public class AngleView extends ViewGroup {
             AngleItemCommon item = (AngleItemCommon) mMap.get(index).get(i);
             if (item instanceof AngleItemStartUp) {
                 ((AngleItemStartUp) item).hideDelBtn();
+                requestLayout();
             }
 
         }
@@ -1179,6 +1221,12 @@ public class AngleView extends ViewGroup {
                     long[] pattern = {0, 35};
                     mVibrator.vibrate(pattern, -1);
                     mOnLongClickListener.onLongClick(mTargetItem);
+                    requestLayout();
+                    requestLayout();
+                    requestLayout();
+                    requestLayout();
+                    requestLayout();
+
                     startEditMode();
                 }
             } else {

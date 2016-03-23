@@ -123,6 +123,11 @@ public class LauncherModel extends BroadcastReceiver {
         } else {
             return new ComponentName(info.serviceInfo.packageName, info.serviceInfo.name);
         }
+
+    }
+
+    public void loafFavorite() {
+        mLoadTask.bindFavorites();
     }
 
     private class LoadTask implements Runnable {
@@ -180,7 +185,7 @@ public class LauncherModel extends BroadcastReceiver {
         /**
          * 从表中读出数据传到Service
          */
-        private void bindFavorites() {
+        public void bindFavorites() {
             ContentResolver resolver = mContext.getContentResolver();
             Cursor cursor = resolver.query(SwipeSettings.Favorites.CONTENT_URI, null, SwipeSettings.
                     BaseColumns.ITEM_TYPE + "=?", new String[]{String.valueOf(SwipeSettings.
@@ -252,6 +257,9 @@ public class LauncherModel extends BroadcastReceiver {
             mCallback.get().bindFavorites(favorites);
         }
 
+        /**
+         * 查询并绑定开关数据
+         */
         private void bindSwitch() {
             ContentResolver resolver = mContext.getContentResolver();
             Cursor cursor = resolver.query(SwipeSettings.Favorites.CONTENT_URI, null, SwipeSettings.

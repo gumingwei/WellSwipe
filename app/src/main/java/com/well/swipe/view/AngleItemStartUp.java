@@ -78,15 +78,11 @@ public class AngleItemStartUp extends AngleItemCommon {
     }
 
     public void showDelBtn() {
-        if (mDelIcon.getVisibility() == View.GONE) {
-            mDelIcon.setVisibility(View.VISIBLE);
-        }
+        mDelIcon.setVisibility(View.VISIBLE);
     }
 
     public void hideDelBtn() {
-        if (mDelIcon.getVisibility() == View.VISIBLE) {
-            mDelIcon.setVisibility(View.GONE);
-        }
+        mDelIcon.setVisibility(View.GONE);
     }
 
     public View getDelBtn() {

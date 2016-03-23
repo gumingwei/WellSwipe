@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.*;
 import android.util.AttributeSet;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -14,7 +13,6 @@ import android.widget.ImageView;
 import com.well.swipe.R;
 import com.well.swipe.utils.Utils;
 
-import java.lang.reflect.Field;
 
 /**
  * Created by mingwei on 1/12/16.
@@ -125,7 +123,6 @@ public class BubbleView extends ImageView {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() != KeyEvent.ACTION_UP) {
-            Log.i("Gmw", "dispatchKeyEvent_back");
             dismiss();
             return true;
         }
