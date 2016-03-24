@@ -6,6 +6,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.UriMatcher;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -46,6 +47,10 @@ public class SwipeProvider extends ContentProvider {
     static final String AUTHORITY = "com.well.swipe.favorites";
 
     private static UriMatcher mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
+    private static final String PREFERENCE_NAME = "loadfavorite";
+
+    private static final String PREFERENCE_KEY = "isFirstLoad";
 
     static {
         mUriMatcher.addURI("com.well.swipe.favorites", "favorites", 1);
@@ -142,7 +147,16 @@ public class SwipeProvider extends ContentProvider {
      * @param resId
      */
     synchronized public void loadDefaultFavoritesIfNecessary(int resId) {
-        mDatabaseHelper.loadFavorites(mDatabaseHelper.getWritableDatabase(), resId);
+
+        SharedPreferences preferences = getContext().getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        if (!preferences.getBoolean(PREFERENCE_KEY, false)) {
+            mDatabaseHelper.loadFavorites(mDatabaseHelper.getWritableDatabase(), resId);
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean(PREFERENCE_KEY, true);
+            editor.commit();
+        }
+
     }
 
     public class DatabaseHelper extends SQLiteOpenHelper {

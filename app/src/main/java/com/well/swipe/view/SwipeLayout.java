@@ -5,15 +5,12 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
 import com.well.swipe.utils.SwipeWindowManager;
 
-import java.util.ArrayList;
 
 /**
  * Created by mingwei on 3/9/16.
@@ -70,12 +67,22 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
 
     public void switchLeft() {
         show();
-        mAngleLayout.setPositionLeft();
+        if (isSwipeOff()) {
+            mAngleLayout.setPositionLeft();
+        }
+
     }
 
     public void switchRight() {
         show();
-        mAngleLayout.setPositionRight();
+        if (isSwipeOff()) {
+            mAngleLayout.setPositionRight();
+        }
+
+    }
+
+    public boolean isSwipeOff() {
+        return mAngleLayout.getSwitchType() == AngleLayout.SWITCH_TYPE_OFF;
     }
 
     public void show() {
@@ -103,15 +110,6 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
             return true;
         }
         return super.dispatchKeyEvent(event);
-    }
-
-    /**
-     * AngleLayout的大小变化
-     *
-     * @param scale
-     */
-    public void setScale(float scale) {
-        mAngleLayout.setAngleLayoutScale(scale);
     }
 
     /**
@@ -143,13 +141,6 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
         return mAngleLayout;
     }
 
-    //    public void setAllApps(ArrayList<ItemApplication> applist) {
-//        mEditLayout.setData(applist);
-//    }
-//
-//    public void setHeaderData(ArrayList<ItemApplication> data) {
-//        mEditLayout.setHeaderData(data);
-//    }
     public SwipeEditLayout getSwipeEditLayout() {
         return mEditLayout;
     }

@@ -16,6 +16,7 @@ import com.well.swipe.LauncherModel;
 import com.well.swipe.R;
 import com.well.swipe.SwipeApplication;
 import com.well.swipe.ItemSwipeSwitch;
+import com.well.swipe.view.AngleLayout;
 import com.well.swipe.view.SwipeEditLayout;
 import com.well.swipe.view.AngleView;
 import com.well.swipe.view.BubbleView;
@@ -45,7 +46,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
      */
     private CatchView mView;
     /**
-     * Swipe的跟布局
+     * Swipe的根布局
      */
     private SwipeLayout mSwipeLayout;
 
@@ -203,39 +204,43 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     @Override
     public void openLeft() {
+
         mSwipeLayout.switchLeft();
     }
 
     @Override
     public void openRight() {
         mSwipeLayout.switchRight();
-
     }
 
     @Override
     public void change(float scale) {
-        mSwipeLayout.setScale(scale);
-        mSwipeLayout.setSwipeBackgroundViewAlpha(scale);
+        if (mSwipeLayout.isSwipeOff()) {
+            mSwipeLayout.getAngleLayout().setAngleLayoutScale(scale);
+            mSwipeLayout.setSwipeBackgroundViewAlpha(scale);
+        }
     }
 
     @Override
     public void cancel(View view, boolean flag) {
-        int state = ((CatchView) view).getState();
-        if (state == CatchView.POSITION_STATE_LEFT) {
-            mSwipeLayout.switchLeft();
-        } else if (state == CatchView.POSITION_STATE_RIGHT) {
-            mSwipeLayout.switchRight();
-        }
-        /**
-         * flag==true  速度满足时自动打开
-         * flag==flase 根据当前的sacle判断是否打开
-         */
-        if (flag) {
-            mSwipeLayout.getAngleLayout().on();
-        } else {
-            mSwipeLayout.getAngleLayout().switchAngleLayout();
-        }
+        if (mSwipeLayout.isSwipeOff()) {
+            int state = ((CatchView) view).getState();
+            if (state == CatchView.POSITION_STATE_LEFT) {
+                mSwipeLayout.switchLeft();
+            } else if (state == CatchView.POSITION_STATE_RIGHT) {
+                mSwipeLayout.switchRight();
+            }
+            /**
+             * flag==true  速度满足时自动打开
+             * flag==flase 根据当前的sacle判断是否打开
+             */
+            if (flag) {
+                mSwipeLayout.getAngleLayout().on();
+            } else {
+                mSwipeLayout.getAngleLayout().switchAngleLayout();
+            }
 
+        }
     }
 
     @Override
@@ -286,6 +291,8 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
             case 2:
                 //mBubble.show();
                 mSwipeLayout.addBubble();
+                mSwipeLayout.getSwipeEditLayout().setData(mLauncherModel.getAllAppsList().data);
+                mSwipeLayout.getSwipeEditLayout().setHeaderData(mLauncherModel.loadFavorite(this));
                 //mLauncherModel.loafFavorite();
                 //mSwipeLayout.showA();
                 //mEditLayout.show();

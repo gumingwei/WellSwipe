@@ -49,6 +49,13 @@ public class SwipeWindowManager {
         }
     }
 
+    public boolean hasView(View view) {
+        if (isManager()) {
+            return view.getParent() != null;
+        }
+        return false;
+    }
+
     public void hide(View view) {
         if (isManager()) {
             if (view.getParent() != null) {

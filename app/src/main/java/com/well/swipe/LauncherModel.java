@@ -117,6 +117,93 @@ public class LauncherModel extends BroadcastReceiver {
         return mAllAppsList;
     }
 
+    public Bitmap getFallbackIcon() {
+        return Bitmap.createBitmap(mDefaultIcon);
+    }
+
+    public Bitmap getIconFromCursor(Cursor c, int iconIndex, Context context) {
+        @SuppressWarnings("all") // suppress dead code warning
+        final boolean debug = false;
+        byte[] data = c.getBlob(iconIndex);
+        try {
+            return Utilities.createIconBitmap(BitmapFactory.decodeByteArray(data, 0, data.length), context);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public ArrayList<ItemApplication> loadFavorite(Context context) {
+        ContentResolver resolver = context.getContentResolver();
+        Cursor cursor = resolver.query(SwipeSettings.Favorites.CONTENT_URI, null, SwipeSettings.
+                BaseColumns.ITEM_TYPE + "=?", new String[]{String.valueOf(SwipeSettings.
+                BaseColumns.ITEM_TYPE_APPLICATION)}, null);
+        ArrayList<ItemApplication> favorites = new ArrayList<>();
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            int type = cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TYPE));
+            String title = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TITLE));
+            String intentStr = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_INTENT));
+            int iconType = cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ICON_TYPE));
+            int packagenameIndex = cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ICON_PACKAGENAME);
+            int resourcenameIndex = cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ICON_RESOURCE);
+            int iconIndex = cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ICON_BITMAP);
+            Intent intent = null;
+            Bitmap icon = null;
+            try {
+                intent = Intent.parseUri(intentStr, 0);
+            } catch (URISyntaxException e) {
+
+            }
+            ItemApplication application = new ItemApplication();
+            application.mType = type;
+            application.mTitle = title;
+            application.mIntent = intent;
+            switch (iconType) {
+                case SwipeSettings.BaseColumns.ICON_TYPE_RESOURCE:
+                    String packagename = cursor.getString(packagenameIndex);
+                    String resourcename = cursor.getString(resourcenameIndex);
+                    PackageManager packageManager = context.getPackageManager();
+                    try {
+                        Resources resources = packageManager.getResourcesForApplication(packagename);
+                        if (resources != null) {
+                            final int id = resources.getIdentifier(resourcename, null, null);
+                            icon = Utilities.createIconBitmap(
+                                    mIconCache.getFullResIcon(resources, id), context);
+                        }
+                    } catch (PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    if (icon == null) {
+                        icon = getIconFromCursor(cursor, iconIndex, context);
+                    }
+                    if (icon == null) {
+                        icon = getFallbackIcon();
+                        application.isFallbackIcon = true;
+                    }
+                    break;
+                case SwipeSettings.BaseColumns.ICON_TYPE_BITMAP:
+                    icon = getIconFromCursor(cursor, iconIndex, context);
+                    if (icon == null) {
+                        icon = getFallbackIcon();
+                        application.isCustomIcon = false;
+                        application.isFallbackIcon = true;
+                    } else {
+                        application.isCustomIcon = true;
+                    }
+                    break;
+                default:
+                    icon = getFallbackIcon();
+                    application.isFallbackIcon = true;
+                    application.isCustomIcon = false;
+                    break;
+            }
+
+            application.mIconBitmap = icon;
+
+            favorites.add(application);
+        }
+        return favorites;
+    }
+
     static ComponentName getComponentNameFromResolveInfo(ResolveInfo info) {
         if (info.activityInfo != null) {
             return new ComponentName(info.activityInfo.packageName, info.activityInfo.name);
@@ -291,20 +378,6 @@ public class LauncherModel extends BroadcastReceiver {
 
         }
 
-        Bitmap getIconFromCursor(Cursor c, int iconIndex, Context context) {
-            @SuppressWarnings("all") // suppress dead code warning
-            final boolean debug = false;
-            byte[] data = c.getBlob(iconIndex);
-            try {
-                return Utilities.createIconBitmap(BitmapFactory.decodeByteArray(data, 0, data.length), context);
-            } catch (Exception e) {
-                return null;
-            }
-        }
-
-        public Bitmap getFallbackIcon() {
-            return Bitmap.createBitmap(mDefaultIcon);
-        }
 
     }
 

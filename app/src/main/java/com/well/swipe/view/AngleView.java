@@ -188,20 +188,6 @@ public class AngleView extends ViewGroup {
 
     }
 
-    OnEditModeListener mEditModeListener;
-
-    public interface OnEditModeListener {
-        /**
-         * 进入编辑模式
-         */
-        void startEditMode();
-
-        /**
-         * 结束编辑模式
-         */
-        void endEditMode();
-    }
-
     OnClickListener mOnClickListener;
 
     public interface OnClickListener {
@@ -727,10 +713,6 @@ public class AngleView extends ViewGroup {
         mAngleListener = listener;
     }
 
-    public void setOnEditModeListener(OnEditModeListener listener) {
-        mEditModeListener = listener;
-    }
-
     public void setOnClickListener(OnClickListener listener) {
         mOnClickListener = listener;
     }
@@ -1168,7 +1150,6 @@ public class AngleView extends ViewGroup {
             AngleItemCommon item = (AngleItemCommon) mMap.get(index).get(i);
             if (item instanceof AngleItemStartUp) {
                 ((AngleItemStartUp) item).showDelBtn();
-                requestLayout();
             }
         }
     }
@@ -1182,7 +1163,6 @@ public class AngleView extends ViewGroup {
             AngleItemCommon item = (AngleItemCommon) mMap.get(index).get(i);
             if (item instanceof AngleItemStartUp) {
                 ((AngleItemStartUp) item).hideDelBtn();
-                requestLayout();
             }
 
         }
@@ -1221,12 +1201,6 @@ public class AngleView extends ViewGroup {
                     long[] pattern = {0, 35};
                     mVibrator.vibrate(pattern, -1);
                     mOnLongClickListener.onLongClick(mTargetItem);
-                    requestLayout();
-                    requestLayout();
-                    requestLayout();
-                    requestLayout();
-                    requestLayout();
-
                     startEditMode();
                 }
             } else {

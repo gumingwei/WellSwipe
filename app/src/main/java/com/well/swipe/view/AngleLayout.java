@@ -87,11 +87,14 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
     private float mAngleLayoutScale;
 
-    private int mSwitchType = SWITCH_TYPE_ON;
+    /**
+     * 切换状态，开和关
+     */
+    private int mSwitchType = SWITCH_TYPE_OFF;
 
-    private static final int SWITCH_TYPE_ON = 0;
+    public static final int SWITCH_TYPE_ON = 0;
 
-    private static final int SWITCH_TYPE_OFF = 1;
+    public static final int SWITCH_TYPE_OFF = 1;
     /**
      * AngleView 的编辑状态
      */
@@ -353,6 +356,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         if (mAngleView.getCurrentIndex() != 0) {
             mAngleView.setBaseAngle((12 - mAngleView.getCurrentIndex()) * AngleView.DEGREES_90);
         }
+        requestLayout();
     }
 
     /**
@@ -370,6 +374,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         if (mAngleView.getCurrentIndex() != 0) {
             mAngleView.setBaseAngle(mAngleView.getCurrentIndex() * AngleView.DEGREES_90);
         }
+        requestLayout();
     }
 
     public int getPositionState() {
@@ -403,6 +408,8 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     }
 
     /**
+     * 放大和缩小的状态
+     *
      * @param scale
      */
     public void setAngleLayoutScale(float scale) {
@@ -510,6 +517,15 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
      */
     public AngleView getAngleView() {
         return mAngleView;
+    }
+
+    /**
+     * 获取开还是关
+     *
+     * @return
+     */
+    public int getSwitchType() {
+        return mSwitchType;
     }
 
 }
