@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -16,11 +17,12 @@ import com.well.swipe.LauncherModel;
 import com.well.swipe.R;
 import com.well.swipe.SwipeApplication;
 import com.well.swipe.ItemSwipeSwitch;
+import com.well.swipe.SwipeProvider;
 import com.well.swipe.view.AngleLayout;
-import com.well.swipe.view.SwipeEditLayout;
 import com.well.swipe.view.AngleView;
 import com.well.swipe.view.BubbleView;
 import com.well.swipe.view.CatchView;
+import com.well.swipe.view.SwipeEditLayout;
 import com.well.swipe.view.SwipeLayout;
 
 import java.lang.reflect.InvocationTargetException;
@@ -32,7 +34,7 @@ import java.util.ArrayList;
  * Created by mingwei on 3/6/16.
  */
 public class SwipeService extends Service implements CatchView.OnEdgeSlidingListener, LauncherModel.Callback,
-        AngleView.OnClickListener {
+        AngleView.OnClickListener, SwipeEditLayout.OnChangeListener {
 
     SwipeApplication mSwipeApplication;
     /**
@@ -49,8 +51,6 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
      * Swipe的根布局
      */
     private SwipeLayout mSwipeLayout;
-
-    //private SwipeEditLayout mEditLayout;
 
     public NotificationManager mNotificationManager;
 
@@ -105,7 +105,10 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
          * AngleView的单击监听
          */
         mSwipeLayout.getAngleLayout().getAngleView().setOnClickListener(this);
-
+        /**
+         * 设置FavoriteAppEditLayout关闭时的监听
+         */
+        mSwipeLayout.getSwipeEditLayout().setOnChangeListener(this);
 
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
@@ -281,7 +284,10 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
                 mSwipeLayout.getAngleLayout().getAngleView().removeItem();
             }
         } else if (tag instanceof ItemSwipeSwitch) {
-
+            int index = ((ItemSwipeSwitch) tag).delete(getBaseContext());
+            if (index > 0) {
+                mSwipeLayout.getAngleLayout().getAngleView().removeItem();
+            }
         }
     }
 
@@ -289,18 +295,39 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     public void onAddClick(int index) {
         switch (index) {
             case 2:
-                //mBubble.show();
-                mSwipeLayout.addBubble();
+                mSwipeLayout.setEditLayoutVisiable();
                 mSwipeLayout.getSwipeEditLayout().setData(mLauncherModel.getAllAppsList().data);
                 mSwipeLayout.getSwipeEditLayout().setHeaderData(mLauncherModel.loadFavorite(this));
-                //mLauncherModel.loafFavorite();
-                //mSwipeLayout.showA();
-                //mEditLayout.show();
+                //mLauncherModel.loafFavorite();这句话可以导致WindowsManager窗口失去焦点更新卡住，不知道为什么
                 break;
             case 1:
+
                 break;
         }
+    }
 
+    @Override
+    public void onChanged(boolean bool) {
+        mSwipeLayout.setEditLayoutGone();
+        if (true) {
+            boolean refresh = mLauncherModel.compare(this, mSwipeLayout.getSwipeEditLayout().getHeaderDataList(),
+                    mSwipeLayout.getSwipeEditLayout().getFixedDataListDataList());
+            /**
+             * refresh是在compare中对比并且更新数据之后返回的，ture表示数据已经跟新过了，回来之后需要刷新
+             * false表示不需要更新
+             */
+            if (refresh) {
+                /**
+                 * 重新读取数据
+                 */
+                mSwipeLayout.getAngleLayout().getAngleView().putItemApplications(mLauncherModel.loadFavorite(this));
+                mSwipeLayout.getAngleLayout().getAngleView().refresh();
+                /**
+                 * 刷新过数据之后将编辑状态设置为STATE_NORMAL 即退出编辑状态
+                 */
+                mSwipeLayout.getAngleLayout().setEditState(AngleLayout.STATE_NORMAL);
+            }
+        }
     }
 
     private native void swipeDaemon(String serviceName, int sdkVersion);

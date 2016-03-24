@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -612,6 +613,8 @@ public class AngleView extends ViewGroup {
                         }
                         handler.postDelayed(mLongRunable, 600);
                         return true;
+                    } else {
+                        //Log.i("Gmw", "ev_x=" + event.getX() + ",y=" + event.getY());
                     }
                 }
 
@@ -635,9 +638,6 @@ public class AngleView extends ViewGroup {
                             /**
                              * 删除时直接掉用删掉当前的数据，回调接口暂时没有用
                              */
-                            //getData().remove(mTargetItem);
-                            //refresh();
-
                             if (mOnClickListener != null) {
                                 mOnClickListener.onDeleteClick(mTargetItem);
                             }
@@ -654,7 +654,12 @@ public class AngleView extends ViewGroup {
                              * 点击最后一个AddBtn时的点击事件
                              */
                             shake(mTargetItem);
-                            mOnClickListener.onAddClick(getViewsIndex());
+                            postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mOnClickListener.onAddClick(getViewsIndex());
+                                }
+                            }, 120);
                         }
                         handler.removeCallbacks(mLongRunable);
                     }

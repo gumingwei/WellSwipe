@@ -1,5 +1,8 @@
 package com.well.swipe.view;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -30,6 +33,8 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
     private int mWidth;
 
     private int mHeight;
+
+    static int mAnimatorDur = 250;
 
     public SwipeLayout(Context context) {
         this(context, null);
@@ -98,8 +103,7 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() != KeyEvent.ACTION_UP) {
 
             if (mEditLayout.getVisibility() == VISIBLE) {
-                mEditLayout.setVisibility(GONE);
-                mAngleLayout.bringToFront();
+                setEditLayoutGone();
             } else {
                 if (mAngleLayout.getEditState() == AngleLayout.STATE_EDIT) {
                     mAngleLayout.setEditState(AngleLayout.STATE_NORMAL);
@@ -145,9 +149,89 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
         return mEditLayout;
     }
 
-    public void addBubble() {
-        mEditLayout.setVisibility(View.VISIBLE);
+    public void setEditLayoutVisiable() {
+        mEditLayout.setVisibility(View.INVISIBLE);
         mEditLayout.bringToFront();
+        final AnimatorSet animSet = new AnimatorSet();
+        ValueAnimator scaleAnim = ValueAnimator.ofFloat(0.85f, 1f);
+        scaleAnim.setDuration(mAnimatorDur);
+        scaleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float s = (float) animation.getAnimatedValue();
+                mEditLayout.setScaleX(s);
+                mEditLayout.setScaleY(s);
+            }
+        });
+
+        ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f);
+        alphaAnim.setDuration(mAnimatorDur);
+        alphaAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float a = (float) animation.getAnimatedValue();
+                mEditLayout.setAlpha(a);
+            }
+        });
+        animSet.playTogether(scaleAnim, alphaAnim);
+        post(new Runnable() {
+            @Override
+            public void run() {
+                mEditLayout.setPivotY(mEditLayout.getHeight() / 2);
+                mEditLayout.setPivotX(mEditLayout.getWidth() / 2);
+                mEditLayout.setVisibility(View.VISIBLE);
+                animSet.start();
+            }
+        });
+    }
+
+    public void setEditLayoutGone() {
+
+        final AnimatorSet animSet = new AnimatorSet();
+        ValueAnimator scaleAnim = ValueAnimator.ofFloat(1f, 0.85f);
+        scaleAnim.setDuration(mAnimatorDur);
+        scaleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float s = (float) animation.getAnimatedValue();
+                mEditLayout.setScaleX(s);
+                mEditLayout.setScaleY(s);
+            }
+        });
+
+        ValueAnimator alphaAnim = ValueAnimator.ofFloat(1f, 0f);
+        alphaAnim.setDuration(mAnimatorDur);
+        alphaAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float a = (float) animation.getAnimatedValue();
+                mEditLayout.setAlpha(a);
+            }
+        });
+        alphaAnim.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mEditLayout.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        animSet.playTogether(scaleAnim, alphaAnim);
+        animSet.start();
+
 
     }
 

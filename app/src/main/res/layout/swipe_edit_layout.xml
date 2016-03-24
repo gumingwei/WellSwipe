@@ -51,7 +51,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/swipe_edit_bottom_left_sel"
-            android:text="Aaa" />
+            android:text="@string/cancel_title" />
 
         <Button
             android:id="@+id/swipe_edit_footer_ok"
@@ -59,6 +59,6 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/swipe_edit_bottom_right_sel"
-            android:text="Bbb" />
+            android:text="@string/ok_title" />
     </LinearLayout>
 </com.well.swipe.view.SwipeEditLayout>

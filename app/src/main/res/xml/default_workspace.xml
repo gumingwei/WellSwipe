@@ -77,42 +77,39 @@
         wellswipe:item_action="@string/swipe_item_action_flash"
         wellswipe:item_index="0"
         wellswipe:item_title="@string/swipe_item_action_flash_title" />
+
     <quicksswitch
-        wellswipe:item_action="@string/swipe_item_action_flash"
+        wellswipe:item_action="@string/swipe_item_action_data"
         wellswipe:item_index="1"
-        wellswipe:item_title="@string/swipe_item_action_flash_title" />
+        wellswipe:item_title="@string/swipe_item_action_data_title" />
     <quicksswitch
-        wellswipe:item_action="@string/swipe_item_action_data"
+        wellswipe:item_action="@string/swipe_item_action_action1"
         wellswipe:item_index="2"
-        wellswipe:item_title="@string/swipe_item_action_data_title" />
+        wellswipe:item_title="@string/swipe_item_action_action1_title" />
     <quicksswitch
-        wellswipe:item_action="@string/swipe_item_action_data"
+        wellswipe:item_action="@string/swipe_item_action_action2"
         wellswipe:item_index="3"
-        wellswipe:item_title="@string/swipe_item_action_data_title" />
+        wellswipe:item_title="@string/swipe_item_action_action2_title" />
     <quicksswitch
-        wellswipe:item_action="@string/swipe_item_action_wifi"
+        wellswipe:item_action="@string/swipe_item_action_action3"
         wellswipe:item_index="4"
-        wellswipe:item_title="@string/swipe_item_action_wifi_title" />
+        wellswipe:item_title="@string/swipe_item_action_action3_title" />
     <quicksswitch
         wellswipe:item_action="@string/swipe_item_action_action4"
         wellswipe:item_index="5"
         wellswipe:item_title="@string/swipe_item_action_action4_title" />
     <quicksswitch
-        wellswipe:item_action="@string/swipe_item_action_action4"
+        wellswipe:item_action="@string/swipe_item_action_action5"
         wellswipe:item_index="6"
-        wellswipe:item_title="@string/swipe_item_action_action4_title" />
+        wellswipe:item_title="@string/swipe_item_action_action5_title" />
     <quicksswitch
-        wellswipe:item_action="@string/swipe_item_action_action4"
+        wellswipe:item_action="@string/swipe_item_action_action6"
         wellswipe:item_index="7"
-        wellswipe:item_title="@string/swipe_item_action_action4_title" />
+        wellswipe:item_title="@string/swipe_item_action_action6_title" />
     <quicksswitch
-        wellswipe:item_action="@string/swipe_item_action_action4"
+        wellswipe:item_action="@string/swipe_item_action_action7"
         wellswipe:item_index="8"
-        wellswipe:item_title="@string/swipe_item_action_action4_title" />
-    <quicksswitch
-        wellswipe:item_action="@string/swipe_item_action_action4"
-        wellswipe:item_index="9"
-        wellswipe:item_title="@string/swipe_item_action_action4_title" />
+        wellswipe:item_title="@string/swipe_item_action_action7_title" />
 
 
 </favorites>

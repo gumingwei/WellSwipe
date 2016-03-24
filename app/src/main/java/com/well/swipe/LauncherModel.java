@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 
 import com.well.swipe.utils.Utilities;
 
@@ -121,6 +122,14 @@ public class LauncherModel extends BroadcastReceiver {
         return Bitmap.createBitmap(mDefaultIcon);
     }
 
+    /**
+     * 从数据库中读图片
+     *
+     * @param c
+     * @param iconIndex
+     * @param context
+     * @return
+     */
     public Bitmap getIconFromCursor(Cursor c, int iconIndex, Context context) {
         @SuppressWarnings("all") // suppress dead code warning
         final boolean debug = false;
@@ -132,6 +141,12 @@ public class LauncherModel extends BroadcastReceiver {
         }
     }
 
+    /**
+     * 读当前的FavoriteApp数据
+     *
+     * @param context
+     * @return
+     */
     public ArrayList<ItemApplication> loadFavorite(Context context) {
         ContentResolver resolver = context.getContentResolver();
         Cursor cursor = resolver.query(SwipeSettings.Favorites.CONTENT_URI, null, SwipeSettings.
@@ -203,6 +218,49 @@ public class LauncherModel extends BroadcastReceiver {
         }
         return favorites;
     }
+
+    public boolean compare(Context context, ArrayList<ItemApplication> newlist, ArrayList<ItemApplication> oldlist) {
+        /**
+         * 长度相等的时候经一步比较，负责直接更新
+         */
+        if (newlist.size() == oldlist.size()) {
+            Log.i("Gmw", "长度一样");
+            boolean bool = false;
+            for (int i = 0; i < newlist.size(); i++) {
+                if (!newlist.get(i).mIntent.getComponent().getClassName().equals(oldlist.get(i).mIntent.
+                        getComponent().getClassName())) {
+                    bool = true;
+                }
+            }
+            if (bool) {
+                deleteList(context, oldlist);
+                addList(context, newlist);
+                return true;
+            }
+        } else {
+            //替换
+            deleteList(context, oldlist);
+            addList(context, newlist);
+            return true;
+        }
+        return false;
+    }
+
+    public void deleteList(Context context, ArrayList<ItemApplication> oldlist) {
+        for (int i = 0; i < oldlist.size(); i++) {
+            oldlist.get(i).deleted(context);
+        }
+    }
+
+    public void addList(Context context, ArrayList<ItemApplication> newlist) {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        PackageManager packageManager = context.getPackageManager();
+        for (int i = 0; i < newlist.size(); i++) {
+            newlist.get(i).addToDatabase(context, i, intent, packageManager);
+        }
+    }
+
 
     static ComponentName getComponentNameFromResolveInfo(ResolveInfo info) {
         if (info.activityInfo != null) {

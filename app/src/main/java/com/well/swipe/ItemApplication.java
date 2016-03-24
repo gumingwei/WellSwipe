@@ -2,11 +2,15 @@ package com.well.swipe;
 
 import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
 import java.util.HashMap;
 
@@ -18,7 +22,7 @@ public class ItemApplication extends ItemInfo {
     /**
      * app的Intent
      */
-    Intent mIntent;
+    public Intent mIntent;
     /**
      * bitmap
      */
@@ -90,5 +94,28 @@ public class ItemApplication extends ItemInfo {
         ContentResolver resolver = context.getContentResolver();
         return resolver.delete(SwipeSettings.Favorites.CONTENT_URI, SwipeSettings.BaseColumns.ITEM_INTENT + "=?",
                 new String[]{mIntent.toUri(0)});
+    }
+
+
+    public void addToDatabase(Context context, int index, Intent intent, PackageManager packageManager) {
+        ContentResolver resolver = context.getContentResolver();
+        intent.setComponent(mIntent.getComponent());
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        try {
+            ApplicationInfo appinfo = packageManager.getApplicationInfo(mIntent.getComponent().getPackageName(), 0);
+            Drawable drawable = appinfo.loadIcon(packageManager);
+            BitmapDrawable bd = (BitmapDrawable) drawable;
+            ContentValues values = new ContentValues();
+            values.put(SwipeSettings.BaseColumns.ITEM_TITLE, mTitle.toString());
+            values.put(SwipeSettings.BaseColumns.ITEM_INTENT, intent.toUri(0));
+            values.put(SwipeSettings.BaseColumns.ITEM_INDEX, index);
+            values.put(SwipeSettings.BaseColumns.ITEM_TYPE, SwipeSettings.BaseColumns.ITEM_TYPE_APPLICATION);
+            values.put(SwipeSettings.BaseColumns.ICON_TYPE, SwipeSettings.BaseColumns.ICON_TYPE_BITMAP);
+            values.put(SwipeSettings.BaseColumns.ICON_BITMAP, flattenBitmap(bd.getBitmap()));
+            resolver.insert(SwipeSettings.Favorites.CONTENT_URI, values);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
 }

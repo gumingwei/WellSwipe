@@ -20,10 +20,9 @@
         android:singleLine="true"
         android:text="Test" />
 
-    <ImageView
+    <CheckBox
         android:id="@+id/appindex_item_check"
         android:layout_width="@dimen/angleview_item_delete_size"
         android:layout_height="@dimen/angleview_item_delete_size"
-        android:src="@drawable/icon_search_delete"
         android:visibility="visible" />
 </com.well.swipe.view.GridLayoutItemView>

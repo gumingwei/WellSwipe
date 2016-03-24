@@ -151,7 +151,6 @@ public class SwipeProvider extends ContentProvider {
         SharedPreferences preferences = getContext().getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         if (!preferences.getBoolean(PREFERENCE_KEY, false)) {
             mDatabaseHelper.loadFavorites(mDatabaseHelper.getWritableDatabase(), resId);
-
             SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean(PREFERENCE_KEY, true);
             editor.commit();

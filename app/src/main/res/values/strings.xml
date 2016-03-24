@@ -4,18 +4,38 @@
     <string name="frequent">Frequent</string>
     <string name="toolbox">Toolbox</string>
     <string name="test_accessibility">test</string>
+    <string name="ok_title">Ok</string>
+    <string name="cancel_title">Cancel</string>
 
     <!--QuickSwitch_ACTION-->
     <string name="swipe_item_action_flash">swipe_item_action_flash</string>
     <string name="swipe_item_action_data">swipe_item_action_data</string>
     <string name="swipe_item_action_wifi">swipe_item_action_wifi</string>
+    <string name="swipe_item_action_action1">swipe_item_action_action1</string>
+    <string name="swipe_item_action_action2">swipe_item_action_action2</string>
+    <string name="swipe_item_action_action3">swipe_item_action_action3</string>
     <string name="swipe_item_action_action4">swipe_item_action_action4</string>
+    <string name="swipe_item_action_action5">swipe_item_action_action5</string>
+    <string name="swipe_item_action_action6">swipe_item_action_action6</string>
+    <string name="swipe_item_action_action7">swipe_item_action_action7</string>
+    <string name="swipe_item_action_action8">swipe_item_action_action8</string>
+    <string name="swipe_item_action_action9">swipe_item_action_action9</string>
     <!--QuickSwitch_ACTION_TITLE-->
     <string name="swipe_item_action_flash_title">Flash</string>
     <string name="swipe_item_action_data_title">Data</string>
     <string name="swipe_item_action_wifi_title">Wifi</string>
+    <string name="swipe_item_action_action1_title">Action1</string>
+    <string name="swipe_item_action_action2_title">Action2</string>
+    <string name="swipe_item_action_action3_title">Action3</string>
     <string name="swipe_item_action_action4_title">Action4</string>
+    <string name="swipe_item_action_action5_title">Action5</string>
+    <string name="swipe_item_action_action6_title">Action6</string>
+    <string name="swipe_item_action_action7_title">Action7</string>
+    <string name="swipe_item_action_action8_title">Action8</string>
+    <string name="swipe_item_action_action9_title">Action9</string>
+
 
     <string name="swipe_edit_header_title">selected(%1$s/%2$s)</string>
+    <string name="favorite_up_to_9">up to 9</string>
 
 </resources>
