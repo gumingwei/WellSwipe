@@ -505,116 +505,120 @@ public class AngleView extends ViewGroup {
                 mMotionX = event.getX();
                 mMotionY = event.getY();
                 ArrayList<View> views = getData();
-                for (int index = 0; index < views.size(); index++) {
-                    /**
-                     * size按照当前views的总数，以4为区分，分别计算出<4,=4,超出4的部分剪掉4即从1，2，3重新开始计数
-                     */
-                    int size = 0;
-                    /**
-                     * group可认为是跟随环数而变化的一个值，用来计算index非0时的子控件的角度增长
-                     * 角度增为只有一个子控件的时候：90/1=45；
-                     * index非0的时候：(group＋0.5)*newdegree(按照当前环中子控件的总数平分90的值)
-                     */
-                    int group = 0;
-                    /**
-                     * 半径变化，环数增加，半径增加
-                     */
-                    int radius = 0;
-                    if (views.size() <= COUNT_4) {
-                        size = views.size();
-                        group = index;
-                        radius = mInnerRadius;
-                    } else if (views.size() <= 9) {
-                        if (index < COUNT_4) {
-                            /**
-                             * 总数大于4时内环正好是4
-                             */
-                            size = COUNT_4;
-                            group = index;
-                            radius = mInnerRadius;
-                        } else if (index < 9) {
-                            /**
-                             * 总数大于4时外环
-                             * size＝总数－4
-                             * group＝views(index)-4
-                             */
-                            size = views.size() - COUNT_4;
-                            group = index - COUNT_4;
-                            radius = mOuterRadius;
-                        }
-                    } else {
-                        if (index < COUNT_4) {
-                            /**
-                             * 总数大于4时内环正好是4
-                             */
-                            size = COUNT_4;
-                            group = index;
-                            radius = mInnerRadius;
-                        } else if (index < 9) {
-                            /**
-                             * 总数大于4时外环
-                             * size＝总数－4
-                             * group＝views(index)-4
-                             */
-                            size = COUNT_4 + 1;
-                            group = index - COUNT_4;
-                            radius = mOuterRadius;
-                        }
-                    }
-                    /**
-                     * 按照views(index)所在的当前环的个数平分90度
-                     */
-                    float degree = (float) DEGREES_90 / (float) (size);
-                    /**
-                     * 得出一个新的递增的角度，用来后面按照三角函数计算子控的位置
-                     */
-                    float newdegree;
-                    if (index == 0) {
-                        newdegree = degree / 2;
-                    } else {
-                        newdegree = (int) ((group + 0.5) * degree);
-                    }
-                    /**
-                     * 1.按照限象使用不同的三角函数计算所得x,y坐标
-                     * 2.子控件根据不同的呃限象旋转位置满足在第0限象的正常显示效果
-                     * 3.当整个控件的容器反转之后，为保证显示效果，要做一定的反转
-                     */
-                    double x = 0l;
-                    double y = 0l;
-                    if (mPositionState == POSITION_STATE_LEFT) {
-                        x = Math.sin(Math.toRadians(newdegree)) * radius;
-                        y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
-                    } else if (mPositionState == POSITION_STATE_RIGHT) {
-                        x = mWidth - Math.sin(Math.toRadians(newdegree)) * radius;
-                        y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
-                    }
+                if (views != null) {
 
-                    float newleft = (float) (x - mChildHalfSize);
-                    float newtop = (float) (y - mChildHalfSize);
-                    float newright = (float) (x + mChildHalfSize);
-                    float newbottom = (float) (y + mChildHalfSize);
 
-                    if (mMotionX > newleft && mMotionX < newright && mMotionY > newtop && mMotionY < newbottom) {
-                        mClickTime1 = System.currentTimeMillis();
-                        mClickType = TYPE_CLICK;
+                    for (int index = 0; index < views.size(); index++) {
                         /**
-                         * 找到当前点击的那个item
+                         * size按照当前views的总数，以4为区分，分别计算出<4,=4,超出4的部分剪掉4即从1，2，3重新开始计数
                          */
-                        mTargetItem = ((AngleItemCommon) views.get(index));
-
-                        if (mTargetItem instanceof AngleItemStartUp) {
-                            if (mMotionX > newleft && mMotionX < (newleft + mDeleteBtnSize) && mMotionY > newtop &&
-                                    mMotionY < (newtop + mDeleteBtnSize) && ((AngleItemStartUp) mTargetItem).getDelBtn().
-                                    getVisibility() == View.VISIBLE) {
-                                mClickType = TYPE_DELCLICK;
+                        int size = 0;
+                        /**
+                         * group可认为是跟随环数而变化的一个值，用来计算index非0时的子控件的角度增长
+                         * 角度增为只有一个子控件的时候：90/1=45；
+                         * index非0的时候：(group＋0.5)*newdegree(按照当前环中子控件的总数平分90的值)
+                         */
+                        int group = 0;
+                        /**
+                         * 半径变化，环数增加，半径增加
+                         */
+                        int radius = 0;
+                        if (views.size() <= COUNT_4) {
+                            size = views.size();
+                            group = index;
+                            radius = mInnerRadius;
+                        } else if (views.size() <= 9) {
+                            if (index < COUNT_4) {
+                                /**
+                                 * 总数大于4时内环正好是4
+                                 */
+                                size = COUNT_4;
+                                group = index;
+                                radius = mInnerRadius;
+                            } else if (index < 9) {
+                                /**
+                                 * 总数大于4时外环
+                                 * size＝总数－4
+                                 * group＝views(index)-4
+                                 */
+                                size = views.size() - COUNT_4;
+                                group = index - COUNT_4;
+                                radius = mOuterRadius;
                             }
-                        } else if (mTargetItem instanceof AngleItemAddTo) {
-                            mClickType = TYPE_ADDCLICK;
+                        } else {
+                            if (index < COUNT_4) {
+                                /**
+                                 * 总数大于4时内环正好是4
+                                 */
+                                size = COUNT_4;
+                                group = index;
+                                radius = mInnerRadius;
+                            } else if (index < 9) {
+                                /**
+                                 * 总数大于4时外环
+                                 * size＝总数－4
+                                 * group＝views(index)-4
+                                 */
+                                size = COUNT_4 + 1;
+                                group = index - COUNT_4;
+                                radius = mOuterRadius;
+                            }
                         }
-                        handler.postDelayed(mLongRunable, 600);
-                        return true;
-                    } else {
-                        //Log.i("Gmw", "ev_x=" + event.getX() + ",y=" + event.getY());
+                        /**
+                         * 按照views(index)所在的当前环的个数平分90度
+                         */
+                        float degree = (float) DEGREES_90 / (float) (size);
+                        /**
+                         * 得出一个新的递增的角度，用来后面按照三角函数计算子控的位置
+                         */
+                        float newdegree;
+                        if (index == 0) {
+                            newdegree = degree / 2;
+                        } else {
+                            newdegree = (int) ((group + 0.5) * degree);
+                        }
+                        /**
+                         * 1.按照限象使用不同的三角函数计算所得x,y坐标
+                         * 2.子控件根据不同的呃限象旋转位置满足在第0限象的正常显示效果
+                         * 3.当整个控件的容器反转之后，为保证显示效果，要做一定的反转
+                         */
+                        double x = 0l;
+                        double y = 0l;
+                        if (mPositionState == POSITION_STATE_LEFT) {
+                            x = Math.sin(Math.toRadians(newdegree)) * radius;
+                            y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
+                        } else if (mPositionState == POSITION_STATE_RIGHT) {
+                            x = mWidth - Math.sin(Math.toRadians(newdegree)) * radius;
+                            y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
+                        }
+
+                        float newleft = (float) (x - mChildHalfSize);
+                        float newtop = (float) (y - mChildHalfSize);
+                        float newright = (float) (x + mChildHalfSize);
+                        float newbottom = (float) (y + mChildHalfSize);
+
+                        if (mMotionX > newleft && mMotionX < newright && mMotionY > newtop && mMotionY < newbottom) {
+                            mClickTime1 = System.currentTimeMillis();
+                            mClickType = TYPE_CLICK;
+                            /**
+                             * 找到当前点击的那个item
+                             */
+                            mTargetItem = ((AngleItemCommon) views.get(index));
+
+                            if (mTargetItem instanceof AngleItemStartUp) {
+                                if (mMotionX > newleft && mMotionX < (newleft + mDeleteBtnSize) && mMotionY > newtop &&
+                                        mMotionY < (newtop + mDeleteBtnSize) && ((AngleItemStartUp) mTargetItem).getDelBtn().
+                                        getVisibility() == View.VISIBLE) {
+                                    mClickType = TYPE_DELCLICK;
+                                }
+                            } else if (mTargetItem instanceof AngleItemAddTo) {
+                                mClickType = TYPE_ADDCLICK;
+                            }
+                            handler.postDelayed(mLongRunable, 600);
+                            return true;
+                        } else {
+                            //Log.i("Gmw", "ev_x=" + event.getX() + ",y=" + event.getY());
+                        }
                     }
                 }
 

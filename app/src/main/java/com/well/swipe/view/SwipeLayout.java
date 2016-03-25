@@ -28,7 +28,9 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
 
     private BubbleView mBubble;
 
-    private SwipeEditLayout mEditLayout;
+    private SwipeEditFavoriteDialog mFavoriteLayout;
+
+    private SwipeEditToolsDialog mToolsLayout;
 
     private int mWidth;
 
@@ -48,10 +50,13 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
         super(context, attrs, defStyleAttr);
 
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        mEditLayout = (SwipeEditLayout) LayoutInflater.from(context).inflate(R.layout.swipe_edit_layout, null);
-        mEditLayout.setVisibility(GONE);
-        addView(mEditLayout, params);
+        mFavoriteLayout = (SwipeEditFavoriteDialog) LayoutInflater.from(context).inflate(R.layout.swipe_edit_favorite_layout, null);
+        mFavoriteLayout.setVisibility(GONE);
+        addView(mFavoriteLayout, params);
 
+        mToolsLayout = (SwipeEditToolsDialog) LayoutInflater.from(context).inflate(R.layout.swipe_edit_tools_layout, null);
+        mToolsLayout.setVisibility(GONE);
+        addView(mToolsLayout, params);
     }
 
     @Override
@@ -75,7 +80,6 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
         if (isSwipeOff()) {
             mAngleLayout.setPositionLeft();
         }
-
     }
 
     public void switchRight() {
@@ -102,8 +106,10 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() != KeyEvent.ACTION_UP) {
 
-            if (mEditLayout.getVisibility() == VISIBLE) {
-                setEditLayoutGone();
+            if (mFavoriteLayout.getVisibility() == VISIBLE) {
+                setEditFavoriteGone();
+            } else if (mToolsLayout.getVisibility() == VISIBLE) {
+                setEditToolsGone();
             } else {
                 if (mAngleLayout.getEditState() == AngleLayout.STATE_EDIT) {
                     mAngleLayout.setEditState(AngleLayout.STATE_NORMAL);
@@ -145,13 +151,46 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
         return mAngleLayout;
     }
 
-    public SwipeEditLayout getSwipeEditLayout() {
-        return mEditLayout;
+    public SwipeEditFavoriteDialog getEditFavoriteLayout() {
+        return mFavoriteLayout;
     }
 
-    public void setEditLayoutVisiable() {
-        mEditLayout.setVisibility(View.INVISIBLE);
-        mEditLayout.bringToFront();
+    public SwipeEditToolsDialog getEditToolsLayout() {
+        return mToolsLayout;
+    }
+
+    /**
+     * 打开Favorite编辑Dialog
+     */
+    public void setEditFavoritetVisiable() {
+        mFavoriteLayout.setVisibility(INVISIBLE);
+        mFavoriteLayout.bringToFront();
+        showAnimator(mFavoriteLayout);
+    }
+
+    /**
+     * 关闭Favorite编辑Dialog
+     */
+    public void setEditFavoriteGone() {
+        hideAnimator(mFavoriteLayout);
+    }
+
+    public void setEditToolsVisiable() {
+        mToolsLayout.setVisibility(INVISIBLE);
+        mToolsLayout.bringToFront();
+        showAnimator(mToolsLayout);
+    }
+
+    public void setEditToolsGone() {
+        hideAnimator(mToolsLayout);
+    }
+
+    /**
+     * 打开动画
+     *
+     * @param view
+     */
+    public void showAnimator(final View view) {
         final AnimatorSet animSet = new AnimatorSet();
         ValueAnimator scaleAnim = ValueAnimator.ofFloat(0.85f, 1f);
         scaleAnim.setDuration(mAnimatorDur);
@@ -159,8 +198,8 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float s = (float) animation.getAnimatedValue();
-                mEditLayout.setScaleX(s);
-                mEditLayout.setScaleY(s);
+                view.setScaleX(s);
+                view.setScaleY(s);
             }
         });
 
@@ -170,23 +209,27 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float a = (float) animation.getAnimatedValue();
-                mEditLayout.setAlpha(a);
+                view.setAlpha(a);
             }
         });
         animSet.playTogether(scaleAnim, alphaAnim);
         post(new Runnable() {
             @Override
             public void run() {
-                mEditLayout.setPivotY(mEditLayout.getHeight() / 2);
-                mEditLayout.setPivotX(mEditLayout.getWidth() / 2);
-                mEditLayout.setVisibility(View.VISIBLE);
+                view.setPivotY(view.getHeight() / 2);
+                view.setPivotX(view.getWidth() / 2);
+                view.setVisibility(View.VISIBLE);
                 animSet.start();
             }
         });
     }
 
-    public void setEditLayoutGone() {
-
+    /**
+     * 关闭动画
+     *
+     * @param view
+     */
+    public void hideAnimator(final View view) {
         final AnimatorSet animSet = new AnimatorSet();
         ValueAnimator scaleAnim = ValueAnimator.ofFloat(1f, 0.85f);
         scaleAnim.setDuration(mAnimatorDur);
@@ -194,8 +237,8 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float s = (float) animation.getAnimatedValue();
-                mEditLayout.setScaleX(s);
-                mEditLayout.setScaleY(s);
+                view.setScaleX(s);
+                view.setScaleY(s);
             }
         });
 
@@ -205,7 +248,7 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float a = (float) animation.getAnimatedValue();
-                mEditLayout.setAlpha(a);
+                view.setAlpha(a);
             }
         });
         alphaAnim.addListener(new Animator.AnimatorListener() {
@@ -216,7 +259,7 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                mEditLayout.setVisibility(View.GONE);
+                view.setVisibility(View.GONE);
             }
 
             @Override
@@ -231,12 +274,10 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
         });
         animSet.playTogether(scaleAnim, alphaAnim);
         animSet.start();
-
-
     }
 
     public void removeBubble() {
-        mEditLayout.setVisibility(View.GONE);
+        mFavoriteLayout.setVisibility(View.GONE);
     }
 
 }

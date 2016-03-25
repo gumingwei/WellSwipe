@@ -3,29 +3,24 @@ package com.well.swipe.view;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
 import com.well.swipe.utils.FastBitmapDrawable;
 import com.well.swipe.utils.Pinyin;
-import com.well.swipe.utils.SwipeWindowManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,13 +31,7 @@ import java.util.regex.Pattern;
 /**
  * Created by mingwei on 3/19/16.
  */
-public class SwipeEditLayout extends RelativeLayout implements View.OnClickListener {
-
-    private SwipeWindowManager mManager;
-
-    private TextView mHeaderTitle;
-
-    private String mTitleFormat;
+public class SwipeEditFavoriteDialog extends SwipeDialog implements View.OnClickListener {
 
     public static final String JING_INDEXER_SIGN = "#";
 
@@ -54,15 +43,7 @@ public class SwipeEditLayout extends RelativeLayout implements View.OnClickListe
 
     private GridLayout mHeaderGridLayout;
 
-    private int mSize;
-
-    private LinearLayout mContentLayout;
-
     private ListView mListView;
-
-    private Button mCancelBtn;
-
-    private Button mOkBtn;
     /**
      * 用来给数据进行排序的集合
      */
@@ -84,30 +65,16 @@ public class SwipeEditLayout extends RelativeLayout implements View.OnClickListe
      */
     private ArrayList<ItemApplication> mFixedDataList;
 
-    public OnChangeListener mOnChangeListener;
-
-    public interface OnChangeListener {
-        /**
-         * 数据发生变化时通知Service更新数据
-         *
-         * @param bool 为true时更新数据，为false不更新
-         */
-        void onChanged(boolean bool);
-    }
-
-    public SwipeEditLayout(Context context) {
+    public SwipeEditFavoriteDialog(Context context) {
         this(context, null);
     }
 
-    public SwipeEditLayout(Context context, AttributeSet attrs) {
+    public SwipeEditFavoriteDialog(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SwipeEditLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SwipeEditFavoriteDialog(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mSize = getResources().getDimensionPixelSize(R.dimen.angleitem_size);
-        mManager = new SwipeWindowManager(0, 0, context);
-        mTitleFormat = getResources().getString(R.string.swipe_edit_header_title);
         mHeaderGridLayout = new GridLayout(context);
         mHeaderGridLayout.setColumnCount(4);
     }
@@ -115,37 +82,16 @@ public class SwipeEditLayout extends RelativeLayout implements View.OnClickListe
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mHeaderTitle = (TextView) findViewById(R.id.swipe_edit_header_title);
-        mContentLayout = (LinearLayout) findViewById(R.id.swipe_edit_content);
-        mListView = (ListView) findViewById(R.id.swipe_edit_listview);
-        mOkBtn = (Button) findViewById(R.id.swipe_edit_footer_ok);
-        mCancelBtn = (Button) findViewById(R.id.swipe_edit_footer_cancel);
-        mOkBtn.setOnClickListener(this);
-        mCancelBtn.setOnClickListener(this);
+        mPositiveBtn.setOnClickListener(this);
+        mNegativeBtn.setOnClickListener(this);
+        mDialogTitle.setText(String.format(mTitleFormat, "1", "9"));
+    }
+
+    @Override
+    public View createContentView() {
+        mListView = new ListView(getContext());
         mListView.addHeaderView(mHeaderGridLayout);
-        mHeaderTitle.setText(String.format(mTitleFormat, "1", "2"));
-    }
-
-    public void show() {
-        mManager.show(this);
-    }
-
-    public void hide() {
-        mManager.hide(this);
-    }
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() != KeyEvent.ACTION_UP) {
-            hide();
-            return true;
-        }
-        return super.dispatchKeyEvent(event);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return true;
+        return mListView;
     }
 
     /**
@@ -266,7 +212,7 @@ public class SwipeEditLayout extends RelativeLayout implements View.OnClickListe
                 mHeaderGridLayout.addView(itemview, new LinearLayout.LayoutParams(mSize, mSize));
             }
         }
-
+        mDialogTitle.setText(String.format(mTitleFormat, String.valueOf(mHeaderDataList.size()), "9"));
         mAdapter.notifyDataSetChanged();
     }
 
@@ -314,24 +260,21 @@ public class SwipeEditLayout extends RelativeLayout implements View.OnClickListe
         valueAnimator.start();
     }
 
-    public void setOnChangeListener(OnChangeListener listener) {
-        mOnChangeListener = listener;
-    }
 
-    public ArrayList<ItemApplication> getHeaderDataList() {
+    public ArrayList<ItemApplication> getNewDataList() {
         return mHeaderDataList;
     }
 
-    public ArrayList<ItemApplication> getFixedDataListDataList() {
+    public ArrayList<ItemApplication> getOldDataList() {
         return mFixedDataList;
     }
 
     @Override
     public void onClick(View v) {
-        if (v == mCancelBtn) {
-            mOnChangeListener.onChanged(false);
-        } else if (v == mOkBtn) {
-            mOnChangeListener.onChanged(true);
+        if (v == mPositiveBtn) {
+            mOnDialogListener.onPositive(this);
+        } else if (v == mNegativeBtn) {
+            mOnDialogListener.onNegative(this);
         } else if (v instanceof GridLayoutItemView) {
             ItemApplication itemapp = (ItemApplication) v.getTag();
             GridLayoutItemView itemview = (GridLayoutItemView) v;
@@ -354,6 +297,12 @@ public class SwipeEditLayout extends RelativeLayout implements View.OnClickListe
         }
     }
 
+    /**
+     * 从Header中找到当前的item，返回索引Index
+     *
+     * @param app 当前的传入的item
+     * @return 返回找到的index，找不到返回－1
+     */
     public int findAppInHeader(ItemApplication app) {
         for (int i = 0; i < mHeaderDataList.size(); i++) {
             if (mHeaderDataList.get(i).mIntent.getComponent().getClassName().equals(app.mIntent.
@@ -364,6 +313,75 @@ public class SwipeEditLayout extends RelativeLayout implements View.OnClickListe
         return -1;
     }
 
+    public boolean compare() {
+        return compare(getContext(), getNewDataList(), getOldDataList());
+    }
+
+    /**
+     * 比较两个集合确定是否更新数据
+     *
+     * @param context
+     * @param newlist 新的数据集合
+     * @param oldlist 就的数据集合
+     * @return
+     */
+    public boolean compare(Context context, ArrayList<ItemApplication> newlist, ArrayList<ItemApplication> oldlist) {
+        /**
+         * 长度相等的时候经一步比较，负责直接更新
+         */
+        if (newlist.size() == oldlist.size()) {
+            boolean bool = false;
+            for (int i = 0; i < newlist.size(); i++) {
+                if (!newlist.get(i).mIntent.getComponent().getClassName().equals(oldlist.get(i).mIntent.
+                        getComponent().getClassName())) {
+                    bool = true;
+                }
+            }
+            if (bool) {
+                deleteList(context, oldlist);
+                addList(context, newlist);
+                return true;
+            }
+        } else {
+            //替换
+            deleteList(context, oldlist);
+            addList(context, newlist);
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * 删除一个ItemApp List
+     *
+     * @param context
+     * @param oldlist 需要删除的list数据
+     */
+    public void deleteList(Context context, ArrayList<ItemApplication> oldlist) {
+        for (int i = 0; i < oldlist.size(); i++) {
+            oldlist.get(i).delete(context);
+        }
+    }
+
+    /**
+     * 新增的ItemList数据
+     *
+     * @param context
+     * @param newlist
+     */
+    public void addList(Context context, ArrayList<ItemApplication> newlist) {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        PackageManager packageManager = context.getPackageManager();
+        for (int i = 0; i < newlist.size(); i++) {
+            newlist.get(i).insert(context, i, intent, packageManager);
+        }
+    }
+
+    /**
+     * 带keylist的Adapter
+     */
     class KeyAdapter extends BaseAdapter {
 
         private Context mContext;
@@ -399,7 +417,7 @@ public class SwipeEditLayout extends RelativeLayout implements View.OnClickListe
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.appsindexview_layout, null);
             }
             ((AppsIndexView) convertView).setKeyString(mKeys.get(position).toString());
-            ((AppsIndexView) convertView).setSwipeEditLayout(SwipeEditLayout.this);
+            ((AppsIndexView) convertView).setSwipeEditLayout(SwipeEditFavoriteDialog.this);
             //((AppsIndexView) convertView).setMeasure(mKeyItem.get(stringsArray.get(position)).size());
             ((AppsIndexView) convertView).setContent(mDataList.get(mKeys.get(position)), mHeaderDataList);
             return convertView;

@@ -90,14 +90,14 @@ public class ItemApplication extends ItemInfo {
         mType = SwipeSettings.BaseColumns.ITEM_TYPE_APPLICATION;
     }
 
-    public int deleted(Context context) {
+    public int delete(Context context) {
         ContentResolver resolver = context.getContentResolver();
         return resolver.delete(SwipeSettings.Favorites.CONTENT_URI, SwipeSettings.BaseColumns.ITEM_INTENT + "=?",
                 new String[]{mIntent.toUri(0)});
     }
 
 
-    public void addToDatabase(Context context, int index, Intent intent, PackageManager packageManager) {
+    public void insert(Context context, int index, Intent intent, PackageManager packageManager) {
         ContentResolver resolver = context.getContentResolver();
         intent.setComponent(mIntent.getComponent());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);

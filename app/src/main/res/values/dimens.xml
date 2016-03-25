@@ -15,6 +15,7 @@
     <dimen name="angleitem_size">64dp</dimen>
     <dimen name="angle_item_icon_size">40dp</dimen>
     <dimen name="app_icon_size">48dp</dimen>
+    <dimen name="angle_item_text_size">12sp</dimen>
 
     <dimen name="angleview_item_delete_size">20dp</dimen>
     <dimen name="swipe_edit_header_height">48dp</dimen>
@@ -26,6 +27,7 @@
     <dimen name="swipe_edit_keyitem_margintop">10dp</dimen>
     <dimen name="swipe_edit_layout_width">280dp</dimen>
     <dimen name="swipe_edit_layout_height">350dp</dimen>
+    <dimen name="swipe_edit_tools_layout_height">220dp</dimen>
 
     <dimen name="test">100dp</dimen>
 </resources>

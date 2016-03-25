@@ -16,6 +16,4 @@
 
     <include layout="@layout/angle_layout" />
 
-    <!--<include layout="@layout/swipe_edit_layout" />-->
-
 </com.well.swipe.view.SwipeLayout>

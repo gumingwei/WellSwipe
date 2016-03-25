@@ -19,7 +19,8 @@
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:singleLine="true"
-        android:text="Test" />
+        android:text="Test"
+        android:textSize="@dimen/angle_item_text_size" />
 
     <ImageView
         android:id="@+id/angle_item_delete"

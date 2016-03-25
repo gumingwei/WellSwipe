@@ -18,6 +18,7 @@
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:singleLine="true"
+        android:textSize="@dimen/angle_item_text_size"
         android:text="Test" />
 
     <CheckBox

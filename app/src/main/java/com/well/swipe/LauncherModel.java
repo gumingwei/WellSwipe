@@ -44,6 +44,10 @@ public class LauncherModel extends BroadcastReceiver {
      */
     private AllAppsList mAllAppsList;
     /**
+     * 所有的Tools数据
+     */
+    private AllToolsList mAllToolsList;
+    /**
      * 图片缓存
      */
     private IconCache mIconCache;
@@ -94,6 +98,7 @@ public class LauncherModel extends BroadcastReceiver {
     public LauncherModel(SwipeApplication app, IconCache iconCache) {
         mApplication = app;
         mAllAppsList = new AllAppsList(iconCache);
+        mAllToolsList = new AllToolsList(app);
         mIconCache = iconCache;
         mDefaultIcon = Utilities.createIconBitmap(
                 mIconCache.getFullResDefaultActivityIcon(), app);
@@ -116,6 +121,10 @@ public class LauncherModel extends BroadcastReceiver {
 
     public AllAppsList getAllAppsList() {
         return mAllAppsList;
+    }
+
+    public AllToolsList getAllToolsList() {
+        return mAllToolsList;
     }
 
     public Bitmap getFallbackIcon() {
@@ -219,48 +228,24 @@ public class LauncherModel extends BroadcastReceiver {
         return favorites;
     }
 
-    public boolean compare(Context context, ArrayList<ItemApplication> newlist, ArrayList<ItemApplication> oldlist) {
-        /**
-         * 长度相等的时候经一步比较，负责直接更新
-         */
-        if (newlist.size() == oldlist.size()) {
-            Log.i("Gmw", "长度一样");
-            boolean bool = false;
-            for (int i = 0; i < newlist.size(); i++) {
-                if (!newlist.get(i).mIntent.getComponent().getClassName().equals(oldlist.get(i).mIntent.
-                        getComponent().getClassName())) {
-                    bool = true;
-                }
-            }
-            if (bool) {
-                deleteList(context, oldlist);
-                addList(context, newlist);
-                return true;
-            }
-        } else {
-            //替换
-            deleteList(context, oldlist);
-            addList(context, newlist);
-            return true;
+    public ArrayList<ItemSwipeSwitch> loadTools(Context context) {
+        ContentResolver resolver = context.getContentResolver();
+        Cursor cursor = resolver.query(SwipeSettings.Favorites.CONTENT_URI, null, SwipeSettings.
+                BaseColumns.ITEM_TYPE + "=?", new String[]{String.valueOf(SwipeSettings.
+                BaseColumns.ITEM_TYPE_SWITCH)}, null);
+        ArrayList<ItemSwipeSwitch> switches = new ArrayList<>();
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            ItemSwipeSwitch application = new ItemSwipeSwitch();
+            application.mType = cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TYPE));
+            application.mTitle = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TITLE));
+            application.mAction = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_ACTION));
+            application.mTitle = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TITLE));
+            //#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10200000;component=com.android.camera/.Camera;end
+            //index.add(cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.Favorites.ITEM_INDEX)));
+            switches.add(application);
         }
-        return false;
+        return switches;
     }
-
-    public void deleteList(Context context, ArrayList<ItemApplication> oldlist) {
-        for (int i = 0; i < oldlist.size(); i++) {
-            oldlist.get(i).deleted(context);
-        }
-    }
-
-    public void addList(Context context, ArrayList<ItemApplication> newlist) {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        PackageManager packageManager = context.getPackageManager();
-        for (int i = 0; i < newlist.size(); i++) {
-            newlist.get(i).addToDatabase(context, i, intent, packageManager);
-        }
-    }
-
 
     static ComponentName getComponentNameFromResolveInfo(ResolveInfo info) {
         if (info.activityInfo != null) {
@@ -486,5 +471,4 @@ public class LauncherModel extends BroadcastReceiver {
         }
     }
 
-    ;
 }

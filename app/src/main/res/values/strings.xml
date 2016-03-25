@@ -8,31 +8,45 @@
     <string name="cancel_title">Cancel</string>
 
     <!--QuickSwitch_ACTION-->
-    <string name="swipe_item_action_flash">swipe_item_action_flash</string>
-    <string name="swipe_item_action_data">swipe_item_action_data</string>
-    <string name="swipe_item_action_wifi">swipe_item_action_wifi</string>
-    <string name="swipe_item_action_action1">swipe_item_action_action1</string>
-    <string name="swipe_item_action_action2">swipe_item_action_action2</string>
-    <string name="swipe_item_action_action3">swipe_item_action_action3</string>
-    <string name="swipe_item_action_action4">swipe_item_action_action4</string>
-    <string name="swipe_item_action_action5">swipe_item_action_action5</string>
-    <string name="swipe_item_action_action6">swipe_item_action_action6</string>
-    <string name="swipe_item_action_action7">swipe_item_action_action7</string>
-    <string name="swipe_item_action_action8">swipe_item_action_action8</string>
-    <string name="swipe_item_action_action9">swipe_item_action_action9</string>
+    <string name="swipe_flash">com.well.swipe.action.flash</string>
+    <string name="swipe_wifi">com.well.swipe.action.wifi</string>
+    <string name="swipe_screenbrightness">com.well.swipe.action.screenbrightness</string>
+    <string name="swipe_speeder">com.well.swipe.action.speeder</string>
+
+    <string name="swipe_screenlock">com.well.swipe.action.screenlock</string>
+    <string name="swipe_camere">com.well.swipe.action.camera</string>
+    <string name="swipe_calendar">com.well.swipe.action.calendar</string>
+    <string name="swipe_data">com.well.swipe.action.data</string>
+
+    <string name="swipe_calculator">com.well.swipe.action.calculator</string>
+    <string name="swipe_flightmode">com.well.swipe.action.flightmode</string>
+    <string name="swipe_swipesetting">com.well.swipe.action.swipesetting</string>
+    <string name="swipe_bluetooth">com.well.swipe.action.bluetooth</string>
+
+    <string name="swipe_mute">com.well.swipe.action.mute</string>
+    <string name="swipe_autorotation">com.well.swipe.action.autorotation</string>
+    <string name="swipe_setting">com.well.swipe.action.setting</string>
+    <string name="swipe_alarm">com.well.swipe.action.alarm</string>
     <!--QuickSwitch_ACTION_TITLE-->
-    <string name="swipe_item_action_flash_title">Flash</string>
-    <string name="swipe_item_action_data_title">Data</string>
-    <string name="swipe_item_action_wifi_title">Wifi</string>
-    <string name="swipe_item_action_action1_title">Action1</string>
-    <string name="swipe_item_action_action2_title">Action2</string>
-    <string name="swipe_item_action_action3_title">Action3</string>
-    <string name="swipe_item_action_action4_title">Action4</string>
-    <string name="swipe_item_action_action5_title">Action5</string>
-    <string name="swipe_item_action_action6_title">Action6</string>
-    <string name="swipe_item_action_action7_title">Action7</string>
-    <string name="swipe_item_action_action8_title">Action8</string>
-    <string name="swipe_item_action_action9_title">Action9</string>
+    <string name="swipe_flash_title">Flash</string>
+    <string name="swipe_wifi_title">Wi-Fi</string>
+    <string name="swipe_screenbrightness_title">light</string>
+    <string name="swipe_speeder_title">Speeder</string>
+
+    <string name="swipe_screenlock_title">ScreenLock</string>
+    <string name="swipe_camere_title">Camera</string>
+    <string name="swipe_calendar_title">Calendar</string>
+    <string name="swipe_data_title">Data</string>
+
+    <string name="swipe_calculator_title">Calculator</string>
+    <string name="swipe_flightmode_title">Flight-Mode</string>
+    <string name="swipe_swipesetting_title">Swipesetting</string>
+    <string name="swipe_bluetooth_title">Bluetooth</string>
+
+    <string name="swipe_mute_title">Mute</string>
+    <string name="swipe_autorotation_title">Autorotation</string>
+    <string name="swipe_setting_title">Setting</string>
+    <string name="swipe_alarm_title">Alarm</string>
 
 
     <string name="swipe_edit_header_title">selected(%1$s/%2$s)</string>

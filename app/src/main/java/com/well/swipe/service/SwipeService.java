@@ -17,12 +17,11 @@ import com.well.swipe.LauncherModel;
 import com.well.swipe.R;
 import com.well.swipe.SwipeApplication;
 import com.well.swipe.ItemSwipeSwitch;
-import com.well.swipe.SwipeProvider;
 import com.well.swipe.view.AngleLayout;
 import com.well.swipe.view.AngleView;
 import com.well.swipe.view.BubbleView;
 import com.well.swipe.view.CatchView;
-import com.well.swipe.view.SwipeEditLayout;
+import com.well.swipe.view.OnDialogListener;
 import com.well.swipe.view.SwipeLayout;
 
 import java.lang.reflect.InvocationTargetException;
@@ -34,7 +33,7 @@ import java.util.ArrayList;
  * Created by mingwei on 3/6/16.
  */
 public class SwipeService extends Service implements CatchView.OnEdgeSlidingListener, LauncherModel.Callback,
-        AngleView.OnClickListener, SwipeEditLayout.OnChangeListener {
+        AngleView.OnClickListener, OnDialogListener {
 
     SwipeApplication mSwipeApplication;
     /**
@@ -108,7 +107,8 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         /**
          * 设置FavoriteAppEditLayout关闭时的监听
          */
-        mSwipeLayout.getSwipeEditLayout().setOnChangeListener(this);
+        mSwipeLayout.getEditFavoriteLayout().setOnDialogListener(this);
+        mSwipeLayout.getEditToolsLayout().setOnDialogListener(this);
 
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
@@ -279,8 +279,14 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     public void onDeleteClick(View view) {
         Object tag = view.getTag();
         if (tag instanceof ItemApplication) {
-            int index = ((ItemApplication) tag).deleted(getBaseContext());
+            /**
+             * 删除操作，删除成功之后会返回1，失败后返回-1
+             */
+            int index = ((ItemApplication) tag).delete(getBaseContext());
             if (index > 0) {
+                /**
+                 *删除成功后更新戒面
+                 */
                 mSwipeLayout.getAngleLayout().getAngleView().removeItem();
             }
         } else if (tag instanceof ItemSwipeSwitch) {
@@ -295,23 +301,31 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     public void onAddClick(int index) {
         switch (index) {
             case 2:
-                mSwipeLayout.setEditLayoutVisiable();
-                mSwipeLayout.getSwipeEditLayout().setData(mLauncherModel.getAllAppsList().data);
-                mSwipeLayout.getSwipeEditLayout().setHeaderData(mLauncherModel.loadFavorite(this));
+                /**
+                 * 点击AngleView的加号，打开编辑Favorite的窗口
+                 */
+                mSwipeLayout.setEditFavoritetVisiable();
+                mSwipeLayout.getEditFavoriteLayout().setData(mLauncherModel.getAllAppsList().data);
+                mSwipeLayout.getEditFavoriteLayout().setHeaderData(mLauncherModel.loadFavorite(this));
                 //mLauncherModel.loafFavorite();这句话可以导致WindowsManager窗口失去焦点更新卡住，不知道为什么
                 break;
             case 1:
-
+                /**
+                 * 点击AngleView的加号，打开编辑Tools的窗口
+                 */
+                mSwipeLayout.setEditToolsVisiable();
+                mSwipeLayout.getEditToolsLayout().setGridData(mLauncherModel.getAllToolsList().mSwipeDataList);
+                mSwipeLayout.getEditToolsLayout().setSelectedData(mLauncherModel.loadTools(this));
                 break;
         }
     }
 
+
     @Override
-    public void onChanged(boolean bool) {
-        mSwipeLayout.setEditLayoutGone();
-        if (true) {
-            boolean refresh = mLauncherModel.compare(this, mSwipeLayout.getSwipeEditLayout().getHeaderDataList(),
-                    mSwipeLayout.getSwipeEditLayout().getFixedDataListDataList());
+    public void onPositive(View view) {
+        if (view == mSwipeLayout.getEditFavoriteLayout()) {
+            mSwipeLayout.setEditFavoriteGone();
+            boolean refresh = mSwipeLayout.getEditFavoriteLayout().compare();
             /**
              * refresh是在compare中对比并且更新数据之后返回的，ture表示数据已经跟新过了，回来之后需要刷新
              * false表示不需要更新
@@ -327,6 +341,26 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
                  */
                 mSwipeLayout.getAngleLayout().setEditState(AngleLayout.STATE_NORMAL);
             }
+        } else if (view == mSwipeLayout.getEditToolsLayout()) {
+            mSwipeLayout.setEditToolsGone();
+            boolean refresh = mSwipeLayout.getEditToolsLayout().compare();
+            if (refresh) {
+                mSwipeLayout.getAngleLayout().getAngleView().putItemQuickSwitch(mLauncherModel.loadTools(this));
+                mSwipeLayout.getAngleLayout().getAngleView().refresh();
+                /**
+                 * 刷新过数据之后将编辑状态设置为STATE_NORMAL 即退出编辑状态
+                 */
+                mSwipeLayout.getAngleLayout().setEditState(AngleLayout.STATE_NORMAL);
+            }
+        }
+    }
+
+    @Override
+    public void onNegative(View view) {
+        if (view == mSwipeLayout.getEditFavoriteLayout()) {
+            mSwipeLayout.setEditFavoriteGone();
+        } else if (view == mSwipeLayout.getEditToolsLayout()) {
+            mSwipeLayout.setEditToolsGone();
         }
     }
 

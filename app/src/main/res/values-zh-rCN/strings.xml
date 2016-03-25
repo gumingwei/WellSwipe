@@ -7,18 +7,26 @@
     <string name="ok_title">确定</string>
     <string name="cancel_title">取消</string>
 
-    <string name="swipe_item_action_flash_title">s手电筒</string>
-    <string name="swipe_item_action_data_title">移动数据</string>
-    <string name="swipe_item_action_wifi_title">Wifi</string>
-    <string name="swipe_item_action_action1_title">Action1</string>
-    <string name="swipe_item_action_action2_title">Action2</string>
-    <string name="swipe_item_action_action3_title">Action3</string>
-    <string name="swipe_item_action_action4_title">Action4</string>
-    <string name="swipe_item_action_action5_title">Action5</string>
-    <string name="swipe_item_action_action6_title">Action6</string>
-    <string name="swipe_item_action_action7_title">Action7</string>
-    <string name="swipe_item_action_action8_title">Action8</string>
-    <string name="swipe_item_action_action9_title">Action9</string>
+    <!--QuickSwitch_ACTION_TITLE-->
+    <string name="swipe_flash_title">手电筒</string>
+    <string name="swipe_wifi_title">Wi-Fi</string>
+    <string name="swipe_screenbrightness_title">屏幕亮度</string>
+    <string name="swipe_speeder_title">加速器</string>
+
+    <string name="swipe_screenlock_title">屏幕锁</string>
+    <string name="swipe_camere_title">相机</string>
+    <string name="swipe_calendar_title">日历</string>
+    <string name="swipe_data_title">移动数据</string>
+
+    <string name="swipe_calculator_title">计算器</string>
+    <string name="swipe_flightmode_title">飞行模式</string>
+    <string name="swipe_swipesetting_title">Swipe设置</string>
+    <string name="swipe_bluetooth_title">蓝牙</string>
+
+    <string name="swipe_mute_title">静音</string>
+    <string name="swipe_autorotation_title">自动旋转屏幕</string>
+    <string name="swipe_setting_title">设置</string>
+    <string name="swipe_alarm_title">闹钟</string>
 
 
     <string name="swipe_edit_header_title">已选(%1$s/%2$s)</string>

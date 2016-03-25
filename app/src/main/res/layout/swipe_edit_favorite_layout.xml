@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.well.swipe.view.SwipeEditFavoriteDialog xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <RelativeLayout
+        android:id="@+id/swipe_edit_header"
+        android:layout_width="@dimen/swipe_edit_layout_width"
+        android:layout_height="@dimen/swipe_edit_header_height"
+        android:background="@drawable/swipe_edit_header_normal">
+
+        <TextView
+            android:id="@+id/swipe_edit_header_title"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/swipe_edit_header_height"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/swipe_edit_header_title_padding_left"
+            android:textColor="@color/swipe_header_title_color"
+            android:textSize="@dimen/swipe_edit_header_title_size" />
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/swipe_edit_content"
+        android:layout_width="@dimen/swipe_edit_layout_width"
+        android:layout_height="@dimen/swipe_edit_layout_height"
+        android:layout_below="@+id/swipe_edit_header"
+        android:background="@color/white"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/swipe_edit_footer_layout"
+        android:layout_width="@dimen/swipe_edit_layout_width"
+        android:layout_height="@dimen/swipe_edit_header_height"
+        android:layout_below="@+id/swipe_edit_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/swipe_edit_footer_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/swipe_edit_bottom_left_sel"
+            android:text="@string/cancel_title"
+            android:textColor="@color/colorPrimary" />
+
+        <Button
+            android:id="@+id/swipe_edit_footer_ok"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/swipe_edit_bottom_right_sel"
+            android:text="@string/ok_title"
+            android:textColor="@color/colorPrimary" />
+    </LinearLayout>
+</com.well.swipe.view.SwipeEditFavoriteDialog>

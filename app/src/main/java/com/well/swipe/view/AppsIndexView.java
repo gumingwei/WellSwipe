@@ -2,7 +2,6 @@ package com.well.swipe.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.CompoundButton;
 import android.widget.GridLayout;
@@ -15,8 +14,6 @@ import com.well.swipe.utils.FastBitmapDrawable;
 
 import java.util.ArrayList;
 
-import javax.security.auth.login.LoginException;
-
 /**
  * Created by mingwei on 3/21/16.
  */
@@ -26,7 +23,7 @@ public class AppsIndexView extends LinearLayout {
 
     private GridLayout mAppsGridLayout;
 
-    private SwipeEditLayout mSwipeEditLayout;
+    private SwipeEditFavoriteDialog mSwipeEditFavoriteDialog;
 
     private int mSize;
 
@@ -62,8 +59,8 @@ public class AppsIndexView extends LinearLayout {
         mAppsGridLayout.setBackgroundColor(c);
     }
 
-    public void setSwipeEditLayout(SwipeEditLayout swipeEditLayout) {
-        mSwipeEditLayout = swipeEditLayout;
+    public void setSwipeEditLayout(SwipeEditFavoriteDialog swipeEditFavoriteDialog) {
+        mSwipeEditFavoriteDialog = swipeEditFavoriteDialog;
     }
 
     public void setContent(ArrayList<ItemApplication> infos, ArrayList<ItemApplication> headerlist) {
@@ -84,7 +81,7 @@ public class AppsIndexView extends LinearLayout {
             }
             itemview.setTag(infos.get(i));
             itemview.setItemTitle(infos.get(i).mTitle.toString());
-            itemview.setOnClickListener(mSwipeEditLayout);
+            itemview.setOnClickListener(mSwipeEditFavoriteDialog);
             mAppsGridLayout.addView(itemview, Math.min(1, mAppsGridLayout.getChildCount()), new
                     LayoutParams(mSize, mSize));
         }

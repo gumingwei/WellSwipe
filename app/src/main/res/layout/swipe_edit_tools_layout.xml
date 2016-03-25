@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.well.swipe.view.SwipeEditLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.well.swipe.view.SwipeEditToolsDialog xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:gravity="center">
+
 
     <RelativeLayout
         android:id="@+id/swipe_edit_header"
@@ -26,15 +26,12 @@
     <LinearLayout
         android:id="@+id/swipe_edit_content"
         android:layout_width="@dimen/swipe_edit_layout_width"
-        android:layout_height="@dimen/swipe_edit_layout_height"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/swipe_edit_header"
         android:background="@color/white"
+        android:gravity="center_horizontal"
         android:orientation="horizontal">
 
-        <ListView
-            android:id="@+id/swipe_edit_listview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
 
     </LinearLayout>
 
@@ -51,7 +48,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/swipe_edit_bottom_left_sel"
-            android:text="@string/cancel_title" />
+            android:text="@string/cancel_title"
+            android:textColor="@color/colorPrimary" />
 
         <Button
             android:id="@+id/swipe_edit_footer_ok"
@@ -59,6 +57,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/swipe_edit_bottom_right_sel"
-            android:text="@string/ok_title" />
+            android:text="@string/ok_title"
+            android:textColor="@color/colorPrimary" />
     </LinearLayout>
-</com.well.swipe.view.SwipeEditLayout>
+
+
+</com.well.swipe.view.SwipeEditToolsDialog>
