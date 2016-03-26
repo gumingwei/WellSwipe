@@ -18,12 +18,14 @@
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:singleLine="true"
-        android:textSize="@dimen/angle_item_text_size"
-        android:text="Test" />
+        android:textSize="@dimen/angle_item_text_size" />
 
     <CheckBox
         android:id="@+id/appindex_item_check"
         android:layout_width="@dimen/angleview_item_delete_size"
         android:layout_height="@dimen/angleview_item_delete_size"
+        android:button="@drawable/swipe_checkbox"
+        android:clickable="false"
+        android:focusable="false"
         android:visibility="visible" />
 </com.well.swipe.view.GridLayoutItemView>

@@ -1,6 +1,8 @@
 package com.well.swipe.view;
 
+import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -22,6 +24,8 @@ public class AngleItemStartUp extends AngleItemCommon {
     private ImageView mIcon;
 
     private ImageView mDelIcon;
+
+    public RecentTag mRecentTag;
 
     public AngleItemStartUp(Context context) {
         super(context);
@@ -87,5 +91,14 @@ public class AngleItemStartUp extends AngleItemCommon {
 
     public View getDelBtn() {
         return mDelIcon;
+    }
+
+
+    public static class RecentTag {
+
+        public ActivityManager.RecentTaskInfo info;
+
+        public Intent intent;
+
     }
 }

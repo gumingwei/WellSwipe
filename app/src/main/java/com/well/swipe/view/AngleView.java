@@ -2,8 +2,16 @@ package com.well.swipe.view;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
@@ -18,10 +26,12 @@ import android.view.animation.DecelerateInterpolator;
 import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
 import com.well.swipe.ItemSwipeSwitch;
+import com.well.swipe.utils.FastBitmapDrawable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -89,8 +99,6 @@ public class AngleView extends ViewGroup {
      * AngleView点击时候找到的ItemView
      */
     private AngleItemCommon mTargetItem;
-
-    private AngleItemAddTo mItemExtra;
     /**
      * 容器在做右下角区分
      */
@@ -135,7 +143,6 @@ public class AngleView extends ViewGroup {
     private static final int COUNT_3 = 3;
 
     private static final int COUNT_12 = COUNT_4 * COUNT_3;
-
 
     private int mCurrentIndex;
 
@@ -296,6 +303,50 @@ public class AngleView extends ViewGroup {
          */
         AngleItemAddTo mTargetItem = (AngleItemAddTo) LayoutInflater.from(getContext()).inflate(R.layout.angle_item_addto, null);
         mSwitchList.add(mTargetItem);
+    }
+
+    public void putRecentTask(List<ActivityManager.RecentTaskInfo> activityInfoList) {
+        if (mRecentAppList.size() > 0) {
+            mRecentAppList.clear();
+        }
+        PackageManager manager = getContext().getPackageManager();
+        ActivityInfo homeInfo = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME).resolveActivityInfo(manager, 0);
+        for (int i = 0; i < activityInfoList.size(); i++) {
+            ActivityManager.RecentTaskInfo info = activityInfoList.get(i);
+            Intent intent = new Intent(info.baseIntent);
+            if (info.origActivity != null) {
+                intent.setComponent(info.origActivity);
+            }
+            if (homeInfo != null) {
+                if (homeInfo.packageName.equals(intent.getComponent().getPackageName()) &&
+                        homeInfo.name.equals(intent.getComponent().getClassName())) {
+                    continue;
+
+                }
+            }
+            intent.setFlags((intent.getFlags() & ~Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+                    | Intent.FLAG_ACTIVITY_NEW_TASK);
+            final ResolveInfo resolveInfo = manager.resolveActivity(intent, 0);
+            if (resolveInfo != null) {
+                ActivityInfo activityInfo = resolveInfo.activityInfo;
+                String title = activityInfo.loadLabel(manager).toString();
+                Drawable icon = activityInfo.loadIcon(manager);
+                BitmapDrawable bd = (BitmapDrawable) icon;
+                if (title != null && title.length() > 0 && icon != null) {
+                    AngleItemStartUp itemview = (AngleItemStartUp) LayoutInflater.from(getContext())
+                            .inflate(R.layout.angle_item_startup, null);
+                    itemview.setTag(activityInfoList.get(i));
+                    AngleItemStartUp.RecentTag recenttag = new AngleItemStartUp.RecentTag();
+                    recenttag.info = info;
+                    recenttag.intent = intent;
+                    itemview.mRecentTag = recenttag;
+                    itemview.setTitle(title);
+                    itemview.setItemIcon(bd.getBitmap());
+                    mRecentAppList.add(itemview);
+                }
+            }
+        }
+        refresh();
     }
 
     @Override
@@ -599,14 +650,18 @@ public class AngleView extends ViewGroup {
 
                         if (mMotionX > newleft && mMotionX < newright && mMotionY > newtop && mMotionY < newbottom) {
                             mClickTime1 = System.currentTimeMillis();
-                            mClickType = TYPE_CLICK;
+
                             /**
                              * 找到当前点击的那个item
                              */
                             mTargetItem = ((AngleItemCommon) views.get(index));
-
+                            /**
+                             *
+                             */
                             if (mTargetItem instanceof AngleItemStartUp) {
-                                if (mMotionX > newleft && mMotionX < (newleft + mDeleteBtnSize) && mMotionY > newtop &&
+                                if (((AngleItemStartUp) mTargetItem).getDelBtn().getVisibility() == View.GONE) {
+                                    mClickType = TYPE_CLICK;
+                                } else if (mMotionX > newleft && mMotionX < (newleft + mDeleteBtnSize) && mMotionY > newtop &&
                                         mMotionY < (newtop + mDeleteBtnSize) && ((AngleItemStartUp) mTargetItem).getDelBtn().
                                         getVisibility() == View.VISIBLE) {
                                     mClickType = TYPE_DELCLICK;
@@ -614,7 +669,9 @@ public class AngleView extends ViewGroup {
                             } else if (mTargetItem instanceof AngleItemAddTo) {
                                 mClickType = TYPE_ADDCLICK;
                             }
-                            handler.postDelayed(mLongRunable, 600);
+                            if (getViewsIndex() != 0) {
+                                handler.postDelayed(mLongRunable, 600);
+                            }
                             return true;
                         } else {
                             //Log.i("Gmw", "ev_x=" + event.getX() + ",y=" + event.getY());
@@ -650,9 +707,15 @@ public class AngleView extends ViewGroup {
                              * 正常的点击事件
                              */
                             shake(mTargetItem);
-                            if (mOnClickListener != null) {
-                                mOnClickListener.onClick(mTargetItem);
-                            }
+                            postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (mOnClickListener != null) {
+                                        mOnClickListener.onClick(mTargetItem);
+                                    }
+                                }
+                            }, 140);
+
                         } else if (mClickType == TYPE_ADDCLICK) {
                             /**
                              * 点击最后一个AddBtn时的点击事件
@@ -663,7 +726,7 @@ public class AngleView extends ViewGroup {
                                 public void run() {
                                     mOnClickListener.onAddClick(getViewsIndex());
                                 }
-                            }, 120);
+                            }, 140);
                         }
                         handler.removeCallbacks(mLongRunable);
                     }

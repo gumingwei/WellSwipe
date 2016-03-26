@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -201,6 +200,7 @@ public class SwipeEditFavoriteDialog extends SwipeDialog implements View.OnClick
                 final GridLayoutItemView itemview = (GridLayoutItemView) LayoutInflater.from(getContext()).inflate(R.layout.gridlayout_item_layout, null);
                 itemview.setItemIcon(new FastBitmapDrawable(mHeaderDataList.get(i).mIconBitmap));
                 itemview.setTag(mHeaderDataList.get(i));
+                itemview.getCheckBox().setVisibility(GONE);
                 itemview.setItemTitle(mHeaderDataList.get(i).mTitle.toString());
                 itemview.setOnClickListener(new OnClickListener() {
                     @Override
@@ -281,7 +281,7 @@ public class SwipeEditFavoriteDialog extends SwipeDialog implements View.OnClick
             if (itemview.getCheckBox().isChecked() == true) {
                 //delete
                 int index = findAppInHeader(itemapp);
-                if (index > 0) {
+                if (index > -1) {
                     mHeaderDataList.remove(index);
                 }
                 refreshHeader();
@@ -297,6 +297,7 @@ public class SwipeEditFavoriteDialog extends SwipeDialog implements View.OnClick
         }
     }
 
+
     /**
      * 从Header中找到当前的item，返回索引Index
      *
@@ -306,7 +307,8 @@ public class SwipeEditFavoriteDialog extends SwipeDialog implements View.OnClick
     public int findAppInHeader(ItemApplication app) {
         for (int i = 0; i < mHeaderDataList.size(); i++) {
             if (mHeaderDataList.get(i).mIntent.getComponent().getClassName().equals(app.mIntent.
-                    getComponent().getClassName())) {
+                    getComponent().getClassName()) && mHeaderDataList.get(i).mIntent.getComponent().
+                    getPackageName().equals(app.mIntent.getComponent().getPackageName())) {
                 return i;
             }
         }

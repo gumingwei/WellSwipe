@@ -1,16 +1,19 @@
 package com.well.swipe;
 
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
@@ -61,6 +64,10 @@ public class LauncherModel extends BroadcastReceiver {
     private WeakReference<Callback> mCallback;
 
     private Bitmap mDefaultIcon;
+
+    private static final int NUM_BUTTONS = 8;
+
+    private static final int MAX_RECENT_TASKS = NUM_BUTTONS * 2;
 
     public interface Callback {
         /**
@@ -245,6 +252,12 @@ public class LauncherModel extends BroadcastReceiver {
             switches.add(application);
         }
         return switches;
+    }
+
+    public List<ActivityManager.RecentTaskInfo> loadRecentTask(Context context) {
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RecentTaskInfo> activityInfoList = am.getRecentTasks(MAX_RECENT_TASKS, ActivityManager.RECENT_IGNORE_UNAVAILABLE);
+        return activityInfoList;
     }
 
     static ComponentName getComponentNameFromResolveInfo(ResolveInfo info) {

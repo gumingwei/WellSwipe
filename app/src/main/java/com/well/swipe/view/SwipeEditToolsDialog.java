@@ -84,11 +84,21 @@ public class SwipeEditToolsDialog extends SwipeDialog implements View.OnClickLis
         return mGridLayout;
     }
 
+    /**
+     * 全部的数据
+     *
+     * @param switches
+     */
     public void setGridData(ArrayList<ItemSwipeSwitch> switches) {
         mDatalist = new ArrayList<>();
         mDatalist.addAll(switches);
     }
 
+    /**
+     * 已经选中的数据
+     *
+     * @param switchs
+     */
     public void setSelectedData(ArrayList<ItemSwipeSwitch> switchs) {
         mSelectedList = new ArrayList<>();
         mSelectedList.addAll(switchs);
@@ -115,8 +125,14 @@ public class SwipeEditToolsDialog extends SwipeDialog implements View.OnClickLis
         }
 
         mFixedList = new ArrayList<>();
+        /**
+         * 把select、normal的数据合并到mFixedList中
+         */
         merge(select, true);
         merge(normal, false);
+        /**
+         * 刷新界面
+         */
         refreshView();
     }
 

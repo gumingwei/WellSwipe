@@ -1,5 +1,6 @@
 package com.well.swipe.service;
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -17,6 +18,7 @@ import com.well.swipe.LauncherModel;
 import com.well.swipe.R;
 import com.well.swipe.SwipeApplication;
 import com.well.swipe.ItemSwipeSwitch;
+import com.well.swipe.view.AngleItemStartUp;
 import com.well.swipe.view.AngleLayout;
 import com.well.swipe.view.AngleView;
 import com.well.swipe.view.BubbleView;
@@ -207,7 +209,6 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     @Override
     public void openLeft() {
-
         mSwipeLayout.switchLeft();
     }
 
@@ -243,6 +244,8 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
                 mSwipeLayout.getAngleLayout().switchAngleLayout();
             }
 
+            mSwipeLayout.getAngleLayout().getAngleView().putRecentTask(mLauncherModel.loadRecentTask(this));
+
         }
     }
 
@@ -273,6 +276,20 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     @Override
     public void onClick(View view) {
+        Object object = view.getTag();
+        AngleItemStartUp itemview = (AngleItemStartUp) view;
+        if (object instanceof ActivityManager.RecentTaskInfo) {
+            AngleItemStartUp.RecentTag recent = itemview.mRecentTag;
+            startActivity(recent.intent);
+            mSwipeLayout.dismissAnimator();
+        } else if (object instanceof ItemApplication) {
+            ItemApplication itemapp = (ItemApplication) view.getTag();
+            startActivity(itemapp.mIntent);
+            mSwipeLayout.dismissAnimator();
+        } else if (object instanceof ItemSwipeSwitch) {
+            ItemSwipeSwitch itemswitch = (ItemSwipeSwitch) view.getTag();
+            //itemview.setVisibility(View.GONE);
+        }
     }
 
     @Override

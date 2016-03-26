@@ -91,7 +91,8 @@ public class AppsIndexView extends LinearLayout {
         for (int i = 0; i < applist.size(); i++) {
 
             if (applist.get(i).mIntent.getComponent().getClassName().equals(app.mIntent.getComponent()
-                    .getClassName())) {
+                    .getClassName()) && applist.get(i).mIntent.getComponent().getPackageName().
+                    equals(app.mIntent.getComponent().getPackageName())) {
 
                 return true;
             }

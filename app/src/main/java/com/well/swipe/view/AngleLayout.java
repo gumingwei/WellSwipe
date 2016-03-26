@@ -453,12 +453,21 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         }
     }
 
+    public void off() {
+        off(mAngleLayoutScale);
+    }
+
+    public void offnoAnimator() {
+        mAngleLayoutScale = 0f;
+        mSwitchType = SWITCH_TYPE_OFF;
+    }
+
     /**
      * 关闭
      *
      * @param start
      */
-    public void off(float start) {
+    private void off(float start) {
         if (isAnimator) {
             mSwitchType = SWITCH_TYPE_OFF;
             animator(start, 0f);

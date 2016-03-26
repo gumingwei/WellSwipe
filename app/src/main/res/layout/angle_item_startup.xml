@@ -26,7 +26,7 @@
         android:id="@+id/angle_item_delete"
         android:layout_width="@dimen/angleview_item_delete_size"
         android:layout_height="@dimen/angleview_item_delete_size"
-        android:src="@drawable/icon_search_delete"
+        android:src="@drawable/icon_edit_delete"
         android:visibility="gone" />
 
 </com.well.swipe.view.AngleItemStartUp>

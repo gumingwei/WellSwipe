@@ -102,6 +102,11 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
         mManager.hide(this);
     }
 
+    public void dismissAnimator() {
+        mAngleLayout.offnoAnimator();
+        dismiss();
+    }
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() != KeyEvent.ACTION_UP) {
@@ -114,7 +119,7 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
                 if (mAngleLayout.getEditState() == AngleLayout.STATE_EDIT) {
                     mAngleLayout.setEditState(AngleLayout.STATE_NORMAL);
                 } else if (mAngleLayout.getEditState() == AngleLayout.STATE_NORMAL) {
-                    mAngleLayout.off(mAngleLayout.getAngleLayoutScale());
+                    mAngleLayout.off();
                 }
             }
             return true;
