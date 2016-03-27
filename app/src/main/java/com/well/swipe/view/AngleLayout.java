@@ -516,7 +516,6 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
             }
         });
         mAnimator.start();
-
     }
 
     /**

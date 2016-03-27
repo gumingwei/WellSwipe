@@ -31,4 +31,7 @@
 
     <string name="swipe_edit_header_title">已选(%1$s/%2$s)</string>
     <string name="favorite_up_to_9">最多只能添加9个</string>
+    <string name="scene_mode_0">震动</string>
+    <string name="scene_mode_1">静音</string>
+    <string name="scene_mode_2">音量</string>
 </resources>

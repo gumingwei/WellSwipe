@@ -51,5 +51,8 @@
 
     <string name="swipe_edit_header_title">selected(%1$s/%2$s)</string>
     <string name="favorite_up_to_9">up to 9</string>
+    <string name="scene_mode_0">Vibrator</string>
+    <string name="scene_mode_1">Muted</string>
+    <string name="scene_mode_2">volume</string>
 
 </resources>

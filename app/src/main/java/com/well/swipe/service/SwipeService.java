@@ -4,9 +4,22 @@ import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.AudioManager;
+import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.PowerManager;
+import android.os.SystemClock;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -18,6 +31,12 @@ import com.well.swipe.LauncherModel;
 import com.well.swipe.R;
 import com.well.swipe.SwipeApplication;
 import com.well.swipe.ItemSwipeSwitch;
+import com.well.swipe.tools.FlashLight;
+import com.well.swipe.tools.SwipeAudio;
+import com.well.swipe.tools.SwipeBrightness;
+import com.well.swipe.tools.SwipeRotation;
+import com.well.swipe.tools.ToolsStrategy;
+import com.well.swipe.tools.WifiAndData;
 import com.well.swipe.view.AngleItemStartUp;
 import com.well.swipe.view.AngleLayout;
 import com.well.swipe.view.AngleView;
@@ -29,6 +48,7 @@ import com.well.swipe.view.SwipeLayout;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
 /**
@@ -69,7 +89,13 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     private Object[] mSetForegroundArgs = new Object[1];
     private Object[] mStartForegroundArgs = new Object[2];
     private Object[] mStopForegroundArgs = new Object[1];
+    private long lastClickTime = 0;
 
+    private ChangedReceiver mReceiver;
+
+    private MobileContentObserver mObserver;
+
+    private Handler mHandler = new Handler();
 
     public SwipeService() {
     }
@@ -119,6 +145,23 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         initForeground();
         startForegroundCompat(123, new Notification());
 
+        mReceiver = new ChangedReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filter);
+
+
+        mObserver = new MobileContentObserver(this, mHandler);
+        getContentResolver().registerContentObserver(Settings.Secure.getUriFor("mobile_data"), false, mObserver);
+        getContentResolver().registerContentObserver(Settings.System
+                .getUriFor(Settings.System.ACCELEROMETER_ROTATION), false, mObserver);
+        getContentResolver().registerContentObserver(Settings.System
+                .getUriFor(Settings.System.SCREEN_BRIGHTNESS), false, mObserver);
+        getContentResolver().registerContentObserver(Settings.System
+                .getUriFor(Settings.System.SCREEN_BRIGHTNESS_MODE), false, mObserver);
     }
 
     @Nullable
@@ -140,6 +183,9 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         Intent intent = new Intent();
         intent.setClass(this, SwipeService.class);
         startService(intent);
+        unregisterReceiver(mReceiver);
+        getContentResolver().unregisterContentObserver(mObserver);
+
     }
 
     public void initForeground() {
@@ -243,8 +289,11 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
             } else {
                 mSwipeLayout.getAngleLayout().switchAngleLayout();
             }
-
-            mSwipeLayout.getAngleLayout().getAngleView().putRecentTask(mLauncherModel.loadRecentTask(this));
+            /**
+             * 设置RecentTask数据，如果新开机之后没有数据，就拿AllApps的数据做一个补充
+             */
+            mSwipeLayout.getAngleLayout().getAngleView().putRecentTask(mLauncherModel.loadRecentTask(this),
+                    mLauncherModel.getAllAppsList().data);
 
         }
     }
@@ -287,9 +336,25 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
             startActivity(itemapp.mIntent);
             mSwipeLayout.dismissAnimator();
         } else if (object instanceof ItemSwipeSwitch) {
-            ItemSwipeSwitch itemswitch = (ItemSwipeSwitch) view.getTag();
-            //itemview.setVisibility(View.GONE);
+            if (safeClick()) {
+                ItemSwipeSwitch itemswitch = (ItemSwipeSwitch) view.getTag();
+                ToolsStrategy.getInstance().toolsClick(this, itemview, itemswitch, mSwipeLayout);
+                /**
+                 * 缺一不可，否则影响刷新界面
+                 */
+                mSwipeLayout.getAngleLayout().getAngleView().refreshToolsView();
+                mSwipeLayout.getAngleLayout().getAngleView().requestLayout();
+            }
         }
+    }
+
+    public boolean safeClick() {
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        if (currentTime - lastClickTime > 600) {
+            lastClickTime = currentTime;
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -380,6 +445,47 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
             mSwipeLayout.setEditToolsGone();
         }
     }
+
+    /**
+     * 监听Wifi变化
+     */
+    class ChangedReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                String action = intent.getAction();
+                if (action.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)
+                        || action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
+                    mSwipeLayout.getAngleLayout().getAngleView().refreshToolsView();
+                    mSwipeLayout.getAngleLayout().getAngleView().requestLayout();
+                } else if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                    mSwipeLayout.getAngleLayout().getAngleView().refreshToolsView();
+                    mSwipeLayout.getAngleLayout().getAngleView().requestLayout();
+                }
+            }
+        }
+    }
+
+    /**
+     * 监听gprs data变化
+     */
+    class MobileContentObserver extends ContentObserver {
+
+        private Context mContext;
+
+        public MobileContentObserver(Context context, Handler handler) {
+            super(handler);
+            mContext = context;
+        }
+
+        public void onChange(boolean paramBoolean) {
+            super.onChange(paramBoolean);
+            mSwipeLayout.getAngleLayout().getAngleView().refreshToolsView();
+            mSwipeLayout.getAngleLayout().getAngleView().requestLayout();
+        }
+    }
+
 
     private native void swipeDaemon(String serviceName, int sdkVersion);
 

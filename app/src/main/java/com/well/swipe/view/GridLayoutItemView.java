@@ -14,9 +14,9 @@ import com.well.swipe.R;
  */
 public class GridLayoutItemView extends AngleItemCommon {
 
-    private ImageView mImageView;
+    //private ImageView mImageView;
 
-    private TextView mTextView;
+    //private TextView mTextView;
 
     private CheckBox mCheckBox;
 
@@ -35,18 +35,18 @@ public class GridLayoutItemView extends AngleItemCommon {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mImageView = (ImageView) findViewById(R.id.appindex_item_icon);
-        mTextView = (TextView) findViewById(R.id.appindex_item_title);
+        //mImageView = (ImageView) findViewById(R.id.appindex_item_icon);
+        //mTextView = (TextView) findViewById(R.id.appindex_item_title);
         mCheckBox = (CheckBox) findViewById(R.id.appindex_item_check);
     }
 
-    public void setItemIcon(Drawable drawable) {
-        mImageView.setImageDrawable(drawable);
-    }
-
-    public void setItemTitle(String title) {
-        mTextView.setText(title);
-    }
+//    public void setItemIcon(Drawable drawable) {
+//        mImageView.setImageDrawable(drawable);
+//    }
+//
+//    public void setItemTitle(String title) {
+//        mTextView.setText(title);
+//    }
 
     public void setChecked(boolean check) {
         mCheckBox.setChecked(check);

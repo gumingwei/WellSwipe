@@ -64,13 +64,12 @@ public class AppsIndexView extends LinearLayout {
     }
 
     public void setContent(ArrayList<ItemApplication> infos, ArrayList<ItemApplication> headerlist) {
-
         mAppsGridLayout.removeAllViews();
         GridLayoutItemView itemview;
         for (int i = 0; i < infos.size(); i++) {
             itemview = (GridLayoutItemView) LayoutInflater.from(getContext()).inflate(R.layout.
                     gridlayout_item_layout, null);
-            itemview.setItemIcon(new FastBitmapDrawable(infos.get(i).mIconBitmap));
+
             if (headerlist != null) {
                 if (containApp(headerlist, infos.get(i))) {
                     itemview.setChecked(true);
@@ -79,8 +78,9 @@ public class AppsIndexView extends LinearLayout {
                     itemview.setChecked(false);
                 }
             }
+            itemview.setItemIcon(infos.get(i).mIconBitmap);
             itemview.setTag(infos.get(i));
-            itemview.setItemTitle(infos.get(i).mTitle.toString());
+            itemview.setTitle(infos.get(i).mTitle.toString());
             itemview.setOnClickListener(mSwipeEditFavoriteDialog);
             mAppsGridLayout.addView(itemview, Math.min(1, mAppsGridLayout.getChildCount()), new
                     LayoutParams(mSize, mSize));

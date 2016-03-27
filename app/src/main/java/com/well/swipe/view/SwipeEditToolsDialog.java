@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.well.swipe.ItemApplication;
 import com.well.swipe.ItemSwipeSwitch;
 import com.well.swipe.R;
+import com.well.swipe.tools.ToolsStrategy;
 
 import java.util.ArrayList;
 
@@ -161,8 +162,10 @@ public class SwipeEditToolsDialog extends SwipeDialog implements View.OnClickLis
             final GridLayoutItemView itemview = (GridLayoutItemView) LayoutInflater.from(getContext())
                     .inflate(R.layout.gridlayout_item_layout, null);
             itemview.setTag(i);
-            itemview.setItemTitle(mFixedList.get(i).mTitle.toString());
+            ToolsStrategy.getInstance().initView(getContext(), itemview, mFixedList.get(i));
+            itemview.setTitle(mFixedList.get(i).mTitle.toString());
             itemview.setOnClickListener(this);
+
             itemview.setChecked(mFixedList.get(i).isChecked);
             mGridLayout.addView(itemview, new LinearLayout.LayoutParams(mSize, mSize));
         }

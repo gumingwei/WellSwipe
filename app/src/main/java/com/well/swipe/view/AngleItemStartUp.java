@@ -19,10 +19,6 @@ import com.well.swipe.R;
  */
 public class AngleItemStartUp extends AngleItemCommon {
 
-    private TextView mText;
-
-    private ImageView mIcon;
-
     private ImageView mDelIcon;
 
     public RecentTag mRecentTag;
@@ -42,8 +38,6 @@ public class AngleItemStartUp extends AngleItemCommon {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mText = (TextView) findViewById(R.id.angle_item_title);
-        mIcon = (ImageView) findViewById(R.id.angle_item_icon);
         mDelIcon = (ImageView) findViewById(R.id.angle_item_delete);
     }
 
@@ -67,18 +61,6 @@ public class AngleItemStartUp extends AngleItemCommon {
                 break;
         }
         return super.onTouchEvent(event);
-    }
-
-    public void setTitle(String title) {
-        mText.setText(title);
-    }
-
-    public String getTitle() {
-        return mText.getText().toString();
-    }
-
-    public void setItemIcon(Bitmap icon) {
-        mIcon.setImageBitmap(icon);
     }
 
     public void showDelBtn() {

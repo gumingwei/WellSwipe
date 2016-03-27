@@ -198,10 +198,10 @@ public class SwipeEditFavoriteDialog extends SwipeDialog implements View.OnClick
             //final
             for (int i = 0; i < mHeaderDataList.size(); i++) {
                 final GridLayoutItemView itemview = (GridLayoutItemView) LayoutInflater.from(getContext()).inflate(R.layout.gridlayout_item_layout, null);
-                itemview.setItemIcon(new FastBitmapDrawable(mHeaderDataList.get(i).mIconBitmap));
+                itemview.setItemIcon(mHeaderDataList.get(i).mIconBitmap);
                 itemview.setTag(mHeaderDataList.get(i));
                 itemview.getCheckBox().setVisibility(GONE);
-                itemview.setItemTitle(mHeaderDataList.get(i).mTitle.toString());
+                itemview.setTitle(mHeaderDataList.get(i).mTitle.toString());
                 itemview.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {

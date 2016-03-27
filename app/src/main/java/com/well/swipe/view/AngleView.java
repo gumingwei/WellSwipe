@@ -26,6 +26,8 @@ import android.view.animation.DecelerateInterpolator;
 import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
 import com.well.swipe.ItemSwipeSwitch;
+import com.well.swipe.tools.FlashLight;
+import com.well.swipe.tools.ToolsStrategy;
 import com.well.swipe.utils.FastBitmapDrawable;
 
 import java.util.ArrayList;
@@ -252,13 +254,15 @@ public class AngleView extends ViewGroup {
         mMap.put(2, mFavoriteAppList);
     }
 
+    /**
+     * 刷新AngleView数据
+     */
     public void refresh() {
         removeAllViews();
         Iterator<Map.Entry<Integer, ArrayList<View>>> it = mMap.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<Integer, ArrayList<View>> arraylist = it.next();
             ArrayList<View> views = arraylist.getValue();
-
             for (View view : views) {
                 if (view.getParent() == null) {
                     addView(view);
@@ -295,6 +299,7 @@ public class AngleView extends ViewGroup {
         for (ItemSwipeSwitch appitem : itemlist) {
             itemview = (AngleItemStartUp) LayoutInflater.from(getContext()).inflate(R.layout.angle_item_startup, null);
             itemview.setTitle(appitem.mTitle.toString());
+            ToolsStrategy.getInstance().initView(getContext(), itemview, appitem);
             itemview.setTag(appitem);
             mSwitchList.add(itemview);
         }
@@ -305,7 +310,23 @@ public class AngleView extends ViewGroup {
         mSwitchList.add(mTargetItem);
     }
 
-    public void putRecentTask(List<ActivityManager.RecentTaskInfo> activityInfoList) {
+    public void refreshToolsView() {
+        int index = getViewsIndex();
+        for (int i = 0; i < mMap.get(index).size(); i++) {
+            AngleItemCommon itemview = (AngleItemCommon) mMap.get(index).get(i);
+            if (itemview instanceof AngleItemStartUp) {
+                ItemSwipeSwitch item = (ItemSwipeSwitch) itemview.getTag();
+                ToolsStrategy.getInstance().initView(getContext(), itemview, item);
+            }
+        }
+    }
+
+    /**
+     * 设置RecentTask数据
+     *
+     * @param activityInfoList
+     */
+    public void putRecentTask(List<ActivityManager.RecentTaskInfo> activityInfoList, ArrayList<ItemApplication> extralist) {
         if (mRecentAppList.size() > 0) {
             mRecentAppList.clear();
         }
@@ -346,7 +367,42 @@ public class AngleView extends ViewGroup {
                 }
             }
         }
+        if (mRecentAppList.size() < 10) {
+            /**
+             * 需要补充的额外数目
+             */
+            if (extralist.size() > 0) {
+                for (int i = 0; i < 9; i++) {
+                    AngleItemStartUp itemview = (AngleItemStartUp) LayoutInflater.from(getContext())
+                            .inflate(R.layout.angle_item_startup, null);
+                    itemview.setTitle(extralist.get(i).mTitle.toString());
+                    itemview.setItemIcon(extralist.get(i).mIconBitmap);
+                    itemview.setTag(extralist.get(i));
+                    if (contains(activityInfoList, extralist.get(i))) {
+                        break;
+                    } else {
+                        mRecentAppList.add(itemview);
+                    }
+
+                }
+            }
+        }
         refresh();
+    }
+
+    public boolean contains(List<ActivityManager.RecentTaskInfo> activityInfoList, ItemApplication app) {
+        for (int i = 0; i < activityInfoList.size(); i++) {
+            ActivityManager.RecentTaskInfo info = activityInfoList.get(i);
+            Intent intent = new Intent(info.baseIntent);
+            if (info.origActivity != null) {
+                intent.setComponent(info.origActivity);
+            }
+            if (intent.getComponent().getPackageName().equals(app.mIntent.getComponent().getPackageName()) &&
+                    intent.getComponent().getClassName().equals(app.mIntent.getComponent().getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
