@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 /**
  * Created by mingwei on 3/27/16.
  */
-public class SwipeBrightness {
+public class SwipeBrightness extends SwipeTools {
 
     private static final int LIGHT_NORMAL = 64;
 
@@ -182,6 +182,8 @@ public class SwipeBrightness {
                 value);
     }
 
+
+    @Override
     public BitmapDrawable getDrawableState(Context context) {
         switch (getBrightStatus(context)) {
             case LIGHT_NORMAL:
@@ -200,6 +202,7 @@ public class SwipeBrightness {
         return null;
     }
 
+    @Override
     public String getTitleState(Context context) {
         switch (getBrightStatus(context)) {
             case LIGHT_NORMAL:
@@ -217,5 +220,4 @@ public class SwipeBrightness {
         }
         return "";
     }
-
 }

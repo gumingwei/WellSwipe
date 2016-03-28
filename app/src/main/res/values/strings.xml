@@ -55,4 +55,13 @@
     <string name="scene_mode_1">Muted</string>
     <string name="scene_mode_2">volume</string>
 
+    <string name="time_15">15s</string>
+    <string name="time_30">30s</string>
+    <string name="time_60">1m</string>
+    <string name="time_120">2m</string>
+    <string name="time_300">5m</string>
+    <string name="time_600">10m</string>
+    <string name="time_1800">30m</string>
+
+
 </resources>

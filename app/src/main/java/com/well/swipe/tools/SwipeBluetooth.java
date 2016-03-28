@@ -9,7 +9,7 @@ import com.well.swipe.R;
 /**
  * Created by mingwei on 3/27/16.
  */
-public class SwipeBluetooth {
+public class SwipeBluetooth extends SwipeTools {
 
     BluetoothAdapter adapter = null;
 
@@ -31,21 +31,34 @@ public class SwipeBluetooth {
     }
 
     public void changeState() {
-        if (adapter.getState() == BluetoothAdapter.STATE_OFF) {
-            adapter.enable();
-        } else if (adapter.getState() == BluetoothAdapter.STATE_ON) {
-            adapter.disable();
+        if (available()) {
+            if (adapter.getState() == BluetoothAdapter.STATE_OFF) {
+                adapter.enable();
+            } else if (adapter.getState() == BluetoothAdapter.STATE_ON) {
+                adapter.disable();
+            }
         }
     }
 
+    public boolean available() {
+        return adapter != null;
+    }
+
+    @Override
     public BitmapDrawable getDrawableState(Context context) {
-        switch (adapter.getState()) {
-            case BluetoothAdapter.STATE_OFF:
-                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_bluetooth_off);
-            case BluetoothAdapter.STATE_ON:
-                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_bluetooth_on);
+        if (available()) {
+            switch (adapter.getState()) {
+                case BluetoothAdapter.STATE_OFF:
+                    return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_bluetooth_off);
+                case BluetoothAdapter.STATE_ON:
+                    return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_bluetooth_on);
+            }
         }
         return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_bluetooth_off);
     }
 
+    @Override
+    public String getTitleState(Context context) {
+        return null;
+    }
 }

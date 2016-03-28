@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.widget.Toast;
@@ -14,7 +13,7 @@ import com.well.swipe.R;
 /**
  * Created by mingwei on 3/27/16.
  */
-public class FlashLight {
+public class FlashLight extends SwipeTools {
 
     private static FlashLight mFlash;
 
@@ -25,10 +24,6 @@ public class FlashLight {
     private static String previousFlashMode = null;
 
     private static boolean isOpen = false;
-
-    public Drawable mOnDrawable;
-
-    public Drawable mOffDrawable;
 
     private FlashLight() {
     }
@@ -116,7 +111,6 @@ public class FlashLight {
 
         }
         close();
-
     }
 
     public boolean isOpen() {
@@ -127,6 +121,7 @@ public class FlashLight {
         isOpen = flag;
     }
 
+    @Override
     public BitmapDrawable getDrawableState(Context context) {
         if (isOpen()) {
             return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_flashlight_on);
@@ -135,4 +130,8 @@ public class FlashLight {
         }
     }
 
+    @Override
+    public String getTitleState(Context context) {
+        return null;
+    }
 }

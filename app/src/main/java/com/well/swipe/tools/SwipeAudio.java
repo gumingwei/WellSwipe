@@ -9,7 +9,7 @@ import com.well.swipe.R;
 /**
  * Created by mingwei on 3/27/16.
  */
-public class SwipeAudio {
+public class SwipeAudio extends SwipeTools {
 
 
     private volatile static SwipeAudio mInstance;
@@ -52,6 +52,7 @@ public class SwipeAudio {
         return mAudioManager.getRingerMode();
     }
 
+    @Override
     public BitmapDrawable getDrawableState(Context context) {
         switch (getState()) {
             case AudioManager.RINGER_MODE_VIBRATE:
@@ -61,9 +62,10 @@ public class SwipeAudio {
             case AudioManager.RINGER_MODE_NORMAL:
                 return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_ringer_normal);
         }
-        return null;
+        return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_ringer_normal);
     }
 
+    @Override
     public String getTitleState(Context context) {
         switch (getState()) {
             case AudioManager.RINGER_MODE_VIBRATE:

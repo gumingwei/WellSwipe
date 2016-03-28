@@ -34,4 +34,12 @@
     <string name="scene_mode_0">震动</string>
     <string name="scene_mode_1">静音</string>
     <string name="scene_mode_2">音量</string>
+
+    <string name="time_15">15秒</string>
+    <string name="time_30">30秒</string>
+    <string name="time_60">1分</string>
+    <string name="time_120">2分</string>
+    <string name="time_300">5分</string>
+    <string name="time_600">10分</string>
+    <string name="time_1800">30分</string>
 </resources>

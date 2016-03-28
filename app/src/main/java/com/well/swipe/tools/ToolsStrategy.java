@@ -1,14 +1,18 @@
 package com.well.swipe.tools;
 
-import android.app.AlarmManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
-import android.os.PowerManager;
 import android.provider.AlarmClock;
+import android.provider.CalendarContract;
 import android.provider.Settings;
+import android.widget.Toast;
 
 import com.well.swipe.ItemSwipeSwitch;
 import com.well.swipe.R;
@@ -16,7 +20,9 @@ import com.well.swipe.view.AngleItemCommon;
 import com.well.swipe.view.AngleItemStartUp;
 import com.well.swipe.view.SwipeLayout;
 
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Created by mingwei on 3/27/16.
@@ -40,7 +46,6 @@ public class ToolsStrategy {
     }
 
     public void initView(Context context, AngleItemCommon itemview, ItemSwipeSwitch item) {
-
         if (item.mAction.equals(context.getString(R.string.swipe_flash))) {
             /**
              * 手电筒
@@ -67,6 +72,9 @@ public class ToolsStrategy {
              */
             itemview.setItemIcon(FlightMode.getDrawableState(context).getBitmap());
         } else if (item.mAction.equals(context.getString(R.string.swipe_mute))) {
+            /**
+             * 静音
+             */
             itemview.setItemIcon(SwipeAudio.getInstance(context).getDrawableState(context).getBitmap());
             itemview.setTitle(SwipeAudio.getInstance(context).getTitleState(context));
         } else if (item.mAction.equals(context.getString(R.string.swipe_autorotation))) {
@@ -82,6 +90,7 @@ public class ToolsStrategy {
             itemview.setItemIcon(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_clean_memory)).getBitmap());
         } else if (item.mAction.equals(context.getString(R.string.swipe_screenlock))) {
             itemview.setItemIcon(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_client_hide_when_screen_off)).getBitmap());
+            itemview.setTitle(LockTime.getInstance().getTitleState(context));
         } else if (item.mAction.equals(context.getString(R.string.swipe_calendar))) {
             itemview.setItemIcon(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_calendar)).getBitmap());
         } else if (item.mAction.equals(context.getString(R.string.swipe_calculator))) {
@@ -146,10 +155,17 @@ public class ToolsStrategy {
         } else if (item.mAction.equals(context.getString(R.string.swipe_speeder))) {
 
         } else if (item.mAction.equals(context.getString(R.string.swipe_screenlock))) {
-            PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-            //powerManager.goToSleep(SystemClock.uptimeMillis());
+            LockTime.getInstance().changeState(context);
         } else if (item.mAction.equals(context.getString(R.string.swipe_calendar))) {
-
+            try {
+                Intent intent = new Intent();
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setComponent((new ComponentName("com.android.calendar", "com.android.calendar.LaunchActivity")));
+                context.startActivity(intent);
+                mSwipeLayout.dismissAnimator();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         } else if (item.mAction.equals(context.getString(R.string.swipe_calculator))) {
             try {
