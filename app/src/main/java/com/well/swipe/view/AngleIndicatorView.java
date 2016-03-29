@@ -19,7 +19,7 @@ import com.well.swipe.R;
  * Created by mingwei on 3/4/16.
  * AngleLayout的指示器
  */
-public class AngleIndicatorView extends View {
+public class AngleIndicatorView extends PositionStateView {
 
     private TextPaint mPaint0 = new TextPaint();
 
@@ -44,12 +44,6 @@ public class AngleIndicatorView extends View {
     private int mRightOffset;
 
     private int OFFSET_Y = 15;
-
-    private int mPositionState = POSITION_STATE_LEFT;
-
-    public static final int POSITION_STATE_LEFT = 1;
-
-    public static final int POSITION_STATE_RIGHT = 2;
 
     private int mWidth;
 
@@ -144,10 +138,10 @@ public class AngleIndicatorView extends View {
         super.onDraw(canvas);
         int degree = DEGREES_90 / 4;
         if (mPositionState == POSITION_STATE_LEFT) {
-            RectF f = new RectF(-mRect, -mRect, mRect, mRect);
+            //RectF f = new RectF(-mRect, -mRect, mRect, mRect);
 
-            canvas.drawCircle(0, 0, mRect + mIndicatorWidth / 2, mInnerPaint);
-            canvas.drawArc(f, mLeftArcStart, mArcSweep, false, mArcPaint);
+            //canvas.drawCircle(0, 0, mRect + mIndicatorWidth / 2, mInnerPaint);
+            //canvas.drawArc(f, mLeftArcStart, mArcSweep, false, mArcPaint);
             canvas.save();
             canvas.rotate(degree, 0, 0);
             mPaint0.setTextAlign(Paint.Align.LEFT);
@@ -160,10 +154,10 @@ public class AngleIndicatorView extends View {
             canvas.drawText(getResources().getString(R.string.frequent), mLeftOffset, OFFSET_Y, mPaint2);
             canvas.restore();
         } else if (mPositionState == POSITION_STATE_RIGHT) {
-            RectF f = new RectF(mWidth - mRect, -mRect, mWidth + mRect, mRect);
+            //RectF f = new RectF(mWidth - mRect, -mRect, mWidth + mRect, mRect);
 
-            canvas.drawCircle(mWidth, 0, mRect + mIndicatorWidth / 2, mInnerPaint);
-            canvas.drawArc(f, mRightArcStart, mArcSweep, false, mArcPaint);
+            //canvas.drawCircle(mWidth, 0, mRect + mIndicatorWidth / 2, mInnerPaint);
+            //canvas.drawArc(f, mRightArcStart, mArcSweep, false, mArcPaint);
             canvas.save();
             canvas.rotate(-degree, mWidth, 0);
             mPaint0.setTextAlign(Paint.Align.RIGHT);
@@ -216,13 +210,12 @@ public class AngleIndicatorView extends View {
      * @param state
      */
     public void setPositionState(int state) {
-        this.mPositionState = state;
+        super.setPositionState(state);
         if (state == POSITION_STATE_LEFT) {
             setRotation(-DEGREES_90);
         } else if (state == POSITION_STATE_RIGHT) {
             setRotation(DEGREES_90);
         }
-        invalidate();
     }
 
     @Override

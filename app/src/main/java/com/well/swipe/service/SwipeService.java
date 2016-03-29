@@ -294,7 +294,6 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
              */
             mSwipeLayout.getAngleLayout().getAngleView().putRecentTask(mLauncherModel.loadRecentTask(this),
                     mLauncherModel.getAllAppsList().data);
-
         }
     }
 

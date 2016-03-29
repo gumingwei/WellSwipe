@@ -48,14 +48,14 @@ public class AngleItemStartUp extends AngleItemCommon {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        //requestFocus();
+
         int action = event.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                //og.i("Gmw", "AngleItem-onTouchEvent-down=" + mText.getText().toString());
+
                 break;
             case MotionEvent.ACTION_MOVE:
-                //requestDisallowInterceptTouchEvent(false);
+
                 break;
             case MotionEvent.ACTION_UP:
                 break;

@@ -31,11 +31,15 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
      */
     private AngleView mAngleView;
 
+    private AngleViewTheme mAngleViewTheme;
+
     private int mAngleSize;
     /**
      * 底部的指示器
      */
     private AngleIndicatorView mIndicator;
+
+    private AngleIndicatorViewTheme mIndicatorTheme;
 
     private int mIndicatorSize;
     /**
@@ -146,13 +150,13 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     protected void onFinishInflate() {
         super.onFinishInflate();
         mAngleView = (AngleView) findViewById(R.id.angleview);
+        mAngleViewTheme = (AngleViewTheme) findViewById(R.id.angleview_theme);
         mAngleView.setOnAngleChangeListener(this);
         mAngleView.setOnLongClickListener(this);
         mIndicator = (AngleIndicatorView) findViewById(R.id.indicator);
+        mIndicatorTheme = (AngleIndicatorViewTheme) findViewById(R.id.indicator_theme);
         mIndicator.setOnChangeListener(this);
         mIndicator.setCurrent(0);
-        //mIndicator.set(mAngleView);
-        //setPositionRight();
     }
 
     @Override
@@ -166,12 +170,14 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         mAngleSize = getResources().getDimensionPixelSize(R.dimen.angleview_size);
         LayoutParams params = new LayoutParams(mAngleSize, mAngleSize);
         mAngleView.setLayoutParams(params);
+        mAngleViewTheme.setLayoutParams(params);
         /**
          * IndicatorView的大小
          */
         mIndicatorSize = getResources().getDimensionPixelSize(R.dimen.angleindicator_size);
         LayoutParams indicatorParams = new LayoutParams(mIndicatorSize, mIndicatorSize);
         mIndicator.setLayoutParams(indicatorParams);
+        mIndicatorTheme.setLayoutParams(indicatorParams);
 
     }
 
@@ -183,10 +189,14 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
          */
         if (mAngleView.getPositionState() == AngleView.POSITION_STATE_LEFT) {
             mAngleView.layout(0, mHeight - mAngleSize, mAngleSize, mHeight);
+            mAngleViewTheme.layout(0, mHeight - mAngleSize, mAngleSize, mHeight);
             mIndicator.layout(0, mHeight - mIndicatorSize, mIndicatorSize, mHeight);
+            mIndicatorTheme.layout(0, mHeight - mIndicatorSize, mIndicatorSize, mHeight);
         } else if (mAngleView.getPositionState() == AngleView.POSITION_STATE_RIGHT) {
             mAngleView.layout(mWidth - mAngleSize, mHeight - mAngleSize, mWidth, mHeight);
+            mAngleViewTheme.layout(mWidth - mAngleSize, mHeight - mAngleSize, mWidth, mHeight);
             mIndicator.layout(mWidth - mIndicatorSize, mHeight - mIndicatorSize, mWidth, mHeight);
+            mIndicatorTheme.layout(mWidth - mIndicatorSize, mHeight - mIndicatorSize, mWidth, mHeight);
         }
 
     }
@@ -348,8 +358,10 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     public void setPositionLeft() {
         setPivotX(0);
         setPivotY(mContext.getResources().getDisplayMetrics().heightPixels - Utils.getStatusBarHeight(mContext));
-        mIndicator.setPositionState(AngleIndicatorView.POSITION_STATE_LEFT);
-        mAngleView.setPositionState(AngleView.POSITION_STATE_LEFT);
+        mIndicator.setPositionState(PositionStateView.POSITION_STATE_LEFT);
+        mIndicatorTheme.setPositionState(PositionStateView.POSITION_STATE_LEFT);
+        mAngleView.setPositionState(PositionStateViewGroup.POSITION_STATE_LEFT);
+        mAngleViewTheme.setPositionState(PositionStateViewGroup.POSITION_STATE_LEFT);
         /**
          * 左右两边的的角度一样，但是显示的限象不一样，通过一个公倍数12来换算成限象一样
          */
@@ -367,7 +379,9 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         setPivotX(mContext.getResources().getDisplayMetrics().widthPixels);
         setPivotY(mContext.getResources().getDisplayMetrics().heightPixels - Utils.getStatusBarHeight(mContext));
         mIndicator.setPositionState(AngleIndicatorView.POSITION_STATE_RIGHT);
-        mAngleView.setPositionState(AngleView.POSITION_STATE_RIGHT);
+        mIndicatorTheme.setPositionState(PositionStateView.POSITION_STATE_RIGHT);
+        mAngleView.setPositionState(PositionStateViewGroup.POSITION_STATE_RIGHT);
+        mAngleViewTheme.setPositionState(PositionStateViewGroup.POSITION_STATE_RIGHT);
         /**
          * 左右两百年的角度一样，但是显示的限象不一样，通过一个公倍数12来换算成限象一样
          */

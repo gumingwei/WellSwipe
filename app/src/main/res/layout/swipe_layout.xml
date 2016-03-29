@@ -6,6 +6,7 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
+    <!--android:background="#d3000000"-->
     <LinearLayout
         android:id="@+id/swipe_bg_layout"
         android:layout_width="match_parent"

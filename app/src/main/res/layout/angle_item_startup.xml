@@ -18,7 +18,7 @@
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:singleLine="true"
-        android:text="Test"
+        android:textColor="@color/white"
         android:textSize="@dimen/angle_item_text_size" />
 
     <ImageView

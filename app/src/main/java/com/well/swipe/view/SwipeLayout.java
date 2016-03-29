@@ -75,6 +75,9 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
         mHeight = getMeasuredHeight();
     }
 
+    /**
+     * 向左切换
+     */
     public void switchLeft() {
         show();
         if (isSwipeOff()) {
@@ -82,6 +85,9 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
         }
     }
 
+    /**
+     * 向右切换
+     */
     public void switchRight() {
         show();
         if (isSwipeOff()) {
@@ -90,6 +96,11 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
 
     }
 
+    /**
+     * 是否关闭
+     *
+     * @return
+     */
     public boolean isSwipeOff() {
         return mAngleLayout.getSwitchType() == AngleLayout.SWITCH_TYPE_OFF;
     }
@@ -148,6 +159,11 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
         setSwipeBackgroundViewAlpha(alpha);
     }
 
+    /**
+     * 改变背景的透明度
+     *
+     * @param a
+     */
     public void setSwipeBackgroundViewAlpha(float a) {
         mBgLayout.setAlpha(((int) (a * 10) / 10f));
     }

@@ -2,7 +2,6 @@ package com.well.swipe.view;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
@@ -10,13 +9,13 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Canvas;
+
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,9 +25,7 @@ import android.view.animation.DecelerateInterpolator;
 import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
 import com.well.swipe.ItemSwipeSwitch;
-import com.well.swipe.tools.FlashLight;
 import com.well.swipe.tools.ToolsStrategy;
-import com.well.swipe.utils.FastBitmapDrawable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +42,9 @@ import java.util.Map;
  * 4.给子控件设置扇形的布局坐标
  * 5.长按进入编辑模式
  */
-public class AngleView extends ViewGroup {
+public class AngleView extends PositionStateViewGroup {
+
+
     /**
      * 旋转的基数角度
      */
@@ -70,10 +69,6 @@ public class AngleView extends ViewGroup {
     private int mHeight;
 
     private int mWidth;
-
-    static int POSITION_STATE_LEFT = 1;
-
-    static int POSITION_STATE_RIGHT = 2;
 
     /**
      * 用于计算单击时间的X&Y
@@ -104,7 +99,11 @@ public class AngleView extends ViewGroup {
     /**
      * 容器在做右下角区分
      */
-    private int mPositionState = POSITION_STATE_LEFT;
+//    private int mPositionState = POSITION_STATE_LEFT;
+//
+//    static int POSITION_STATE_LEFT = 1;
+//
+//    static int POSITION_STATE_RIGHT = 2;
     /**
      * 顺时针/逆时针
      */
@@ -134,7 +133,7 @@ public class AngleView extends ViewGroup {
     /**
      * 判定范围
      */
-    public static final int DEGREES_OFFSET = 20;
+    public static final int DEGREES_OFFSET = 15;
     /**
      * 判定Fling动作的速度范围
      */
@@ -252,6 +251,7 @@ public class AngleView extends ViewGroup {
         mMap.put(0, mRecentAppList);
         mMap.put(1, mSwitchList);
         mMap.put(2, mFavoriteAppList);
+
     }
 
     /**
@@ -1121,7 +1121,7 @@ public class AngleView extends ViewGroup {
     }
 
     public void setPositionState(int position) {
-        mPositionState = position;
+        super.setPositionState(position);
     }
 
     public int getPositionState() {
@@ -1318,7 +1318,6 @@ public class AngleView extends ViewGroup {
         });
         valueAnimator.start();
     }
-
 
     public class LongClickRunable implements Runnable {
         @Override

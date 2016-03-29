@@ -11,15 +11,9 @@ import android.view.WindowManager;
  */
 public class SwipeWindowManager {
 
-    public Context mContext;
-
     private WindowManager mManager;
 
     private WindowManager.LayoutParams mParams;
-
-    private int mX;
-
-    private int mY;
 
     public SwipeWindowManager(int x, int y, Context context) {
         mParams = new WindowManager.LayoutParams();
