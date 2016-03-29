@@ -8,6 +8,7 @@
     <color name="white">#ffffff</color>
     <color name="swipe_header_title_color">#383838</color>
     <color name="swipe_bottom_gray">#cccccc</color>
-    <color name="angleview_arc_background">#aa3c3c3c</color>
-    <color name="indicator_arc_background">#ef03a9f4</color>
+    <color name="anglelayout_background">#55202020</color>
+    <color name="angleview_arc_background">#cf202020</color>
+    <color name="indicator_arc_background">#f103a9f4</color>
 </resources>
