@@ -1,8 +1,6 @@
 package com.well.swipe.view;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +8,6 @@ import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.well.swipe.ItemApplication;
 import com.well.swipe.ItemSwipeSwitch;
 import com.well.swipe.R;
 import com.well.swipe.tools.ToolsStrategy;
@@ -20,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Created by mingwei on 3/25/16.
  */
-public class SwipeEditToolsDialog extends SwipeDialog implements View.OnClickListener {
+public class SwipeEditToolsEditDialog extends SwipeEditDialog implements View.OnClickListener {
     /**
      * 内部的装item的
      */
@@ -32,15 +29,15 @@ public class SwipeEditToolsDialog extends SwipeDialog implements View.OnClickLis
 
     private ArrayList<ItemSwipeSwitch> mSelectedList;
 
-    public SwipeEditToolsDialog(Context context) {
+    public SwipeEditToolsEditDialog(Context context) {
         this(context, null);
     }
 
-    public SwipeEditToolsDialog(Context context, AttributeSet attrs) {
+    public SwipeEditToolsEditDialog(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SwipeEditToolsDialog(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SwipeEditToolsEditDialog(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

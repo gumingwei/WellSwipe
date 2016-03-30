@@ -64,13 +64,18 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     LauncherModel mLauncherModel;
 
     private BubbleView mBubble;
+
     /**
      * 屏幕底部负责捕获手势的试图
      */
-    private CatchView mView;
-    /**
-     * Swipe的根布局
-     */
+    private CatchView mCatchViewLeft0;
+
+    private CatchView mCatchViewLeft1;
+
+    private CatchView mCatchViewRight0;
+
+    private CatchView mCatchViewRight1;
+
     private SwipeLayout mSwipeLayout;
 
     public NotificationManager mNotificationManager;
@@ -107,25 +112,25 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         mSwipeApplication = (SwipeApplication) getApplication();
         mLauncherModel = mSwipeApplication.setLaunchr(this);
 
-        mView = new CatchView(getBaseContext(), 0, 0, 50, 300);
-        mView.setState(CatchView.POSITION_STATE_LEFT);
-        mView.setOnEdgeSlidingListener(this);
-        mView.show();
+        mCatchViewLeft0 = new CatchView(getBaseContext(), 0, 0, 50, 300);
+        mCatchViewLeft0.setState(CatchView.POSITION_STATE_LEFT);
+        mCatchViewLeft0.setOnEdgeSlidingListener(this);
+        mCatchViewLeft0.show();
 
-        mView = new CatchView(getBaseContext(), 0, 0, 100, 50);
-        mView.setState(CatchView.POSITION_STATE_LEFT);
-        mView.setOnEdgeSlidingListener(this);
-        mView.show();
+        mCatchViewLeft1 = new CatchView(getBaseContext(), 0, 0, 100, 50);
+        mCatchViewLeft1.setState(CatchView.POSITION_STATE_LEFT);
+        mCatchViewLeft1.setOnEdgeSlidingListener(this);
+        mCatchViewLeft1.show();
 
-        mView = new CatchView(getBaseContext(), 0, 0, 50, 300);
-        mView.setState(CatchView.POSITION_STATE_RIGHT);
-        mView.setOnEdgeSlidingListener(this);
-        mView.show();
+        mCatchViewRight0 = new CatchView(getBaseContext(), 0, 0, 50, 300);
+        mCatchViewRight0.setState(CatchView.POSITION_STATE_RIGHT);
+        mCatchViewRight0.setOnEdgeSlidingListener(this);
+        mCatchViewRight0.show();
 
-        mView = new CatchView(getBaseContext(), 0, 0, 100, 50);
-        mView.setState(CatchView.POSITION_STATE_RIGHT);
-        mView.setOnEdgeSlidingListener(this);
-        mView.show();
+        mCatchViewRight1 = new CatchView(getBaseContext(), 0, 0, 100, 50);
+        mCatchViewRight1.setState(CatchView.POSITION_STATE_RIGHT);
+        mCatchViewRight1.setOnEdgeSlidingListener(this);
+        mCatchViewRight1.show();
 
         mSwipeLayout = (SwipeLayout) LayoutInflater.from(getBaseContext()).inflate(R.layout.swipe_layout, null);
         /**
@@ -155,7 +160,8 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
 
         mObserver = new MobileContentObserver(this, mHandler);
-        getContentResolver().registerContentObserver(Settings.Secure.getUriFor("mobile_data"), false, mObserver);
+        getContentResolver().registerContentObserver(Settings.Secure.
+                getUriFor("mobile_data"), false, mObserver);
         getContentResolver().registerContentObserver(Settings.System
                 .getUriFor(Settings.System.ACCELEROMETER_ROTATION), false, mObserver);
         getContentResolver().registerContentObserver(Settings.System
@@ -173,16 +179,19 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         mLauncherModel.startLoadTask();
-
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Intent intent = new Intent();
-        intent.setClass(this, SwipeService.class);
-        startService(intent);
+        //Intent intent = new Intent();
+        //intent.setClass(this, SwipeService.class);
+        //startService(intent);
+        mCatchViewLeft0.dismiss();
+        mCatchViewLeft1.dismiss();
+        mCatchViewRight0.dismiss();
+        mCatchViewRight1.dismiss();
         unregisterReceiver(mReceiver);
         getContentResolver().unregisterContentObserver(mObserver);
 

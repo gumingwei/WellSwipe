@@ -9,11 +9,7 @@ import android.view.ViewGroup;
  */
 public class PositionStateViewGroup extends ViewGroup {
 
-    public int mPositionState = POSITION_STATE_LEFT;
-
-    public static final int POSITION_STATE_LEFT = 1;
-
-    public static final int POSITION_STATE_RIGHT = 2;
+    public int mPositionState = PositionState.POSITION_STATE_LEFT;
 
     public PositionStateViewGroup(Context context) {
         super(context);
@@ -34,5 +30,6 @@ public class PositionStateViewGroup extends ViewGroup {
 
     public void setPositionState(int state) {
         this.mPositionState = state;
+        requestLayout();
     }
 }

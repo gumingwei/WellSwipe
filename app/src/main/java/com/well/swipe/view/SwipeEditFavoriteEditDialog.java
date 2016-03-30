@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
-import com.well.swipe.utils.FastBitmapDrawable;
 import com.well.swipe.utils.Pinyin;
 
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ import java.util.regex.Pattern;
 /**
  * Created by mingwei on 3/19/16.
  */
-public class SwipeEditFavoriteDialog extends SwipeDialog implements View.OnClickListener {
+public class SwipeEditFavoriteEditDialog extends SwipeEditDialog implements View.OnClickListener {
 
     public static final String JING_INDEXER_SIGN = "#";
 
@@ -64,15 +63,15 @@ public class SwipeEditFavoriteDialog extends SwipeDialog implements View.OnClick
      */
     private ArrayList<ItemApplication> mFixedDataList;
 
-    public SwipeEditFavoriteDialog(Context context) {
+    public SwipeEditFavoriteEditDialog(Context context) {
         this(context, null);
     }
 
-    public SwipeEditFavoriteDialog(Context context, AttributeSet attrs) {
+    public SwipeEditFavoriteEditDialog(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SwipeEditFavoriteDialog(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SwipeEditFavoriteEditDialog(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mHeaderGridLayout = new GridLayout(context);
         mHeaderGridLayout.setColumnCount(4);
@@ -419,7 +418,7 @@ public class SwipeEditFavoriteDialog extends SwipeDialog implements View.OnClick
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.appsindexview_layout, null);
             }
             ((AppsIndexView) convertView).setKeyString(mKeys.get(position).toString());
-            ((AppsIndexView) convertView).setSwipeEditLayout(SwipeEditFavoriteDialog.this);
+            ((AppsIndexView) convertView).setSwipeEditLayout(SwipeEditFavoriteEditDialog.this);
             //((AppsIndexView) convertView).setMeasure(mKeyItem.get(stringsArray.get(position)).size());
             ((AppsIndexView) convertView).setContent(mDataList.get(mKeys.get(position)), mHeaderDataList);
             return convertView;

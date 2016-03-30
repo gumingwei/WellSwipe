@@ -70,12 +70,12 @@ public class AngleViewTheme extends PositionStateView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         mPaint.setColor(mColor);
-        if (mPositionState == POSITION_STATE_LEFT) {
+        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
             canvas.drawCircle(0, mHeight, mHeight, mPaint);
             mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
             mPaint.setColor(mColor);
             canvas.drawCircle(0, mHeight, mInnerSize + mDistance, mPaint);
-        } else if (mPositionState == POSITION_STATE_RIGHT) {
+        } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
             canvas.drawCircle(mWidth, mHeight, mHeight, mPaint);
             mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
             mPaint.setColor(mColor);

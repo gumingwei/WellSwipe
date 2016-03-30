@@ -63,5 +63,8 @@
     <string name="time_600">10m</string>
     <string name="time_1800">30m</string>
 
+    <string name="swipe_open_type0">Launcher</string>
+    <string name="swipe_open_type1">All App</string>
+
 
 </resources>

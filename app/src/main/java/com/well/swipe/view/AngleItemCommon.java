@@ -30,7 +30,7 @@ public abstract class AngleItemCommon extends RelativeLayout {
     public AngleItemCommon(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-
+    
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -48,10 +48,6 @@ public abstract class AngleItemCommon extends RelativeLayout {
 
     public void setItemIcon(Bitmap icon) {
         mIcon.setImageBitmap(icon);
-    }
-
-    public void setItemIcon(Drawable drawable) {
-
     }
 
 }

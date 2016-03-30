@@ -9,11 +9,7 @@ import android.view.View;
  */
 public class PositionStateView extends View {
 
-    public int mPositionState = POSITION_STATE_LEFT;
-
-    public static final int POSITION_STATE_LEFT = 1;
-
-    public static final int POSITION_STATE_RIGHT = 2;
+    public int mPositionState = PositionState.POSITION_STATE_LEFT;
 
     public PositionStateView(Context context) {
         super(context);

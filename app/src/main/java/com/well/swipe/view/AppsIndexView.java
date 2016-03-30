@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
-import com.well.swipe.utils.FastBitmapDrawable;
 
 import java.util.ArrayList;
 
@@ -23,7 +22,7 @@ public class AppsIndexView extends LinearLayout {
 
     private GridLayout mAppsGridLayout;
 
-    private SwipeEditFavoriteDialog mSwipeEditFavoriteDialog;
+    private SwipeEditFavoriteEditDialog mSwipeEditFavoriteDialog;
 
     private int mSize;
 
@@ -59,7 +58,7 @@ public class AppsIndexView extends LinearLayout {
         mAppsGridLayout.setBackgroundColor(c);
     }
 
-    public void setSwipeEditLayout(SwipeEditFavoriteDialog swipeEditFavoriteDialog) {
+    public void setSwipeEditLayout(SwipeEditFavoriteEditDialog swipeEditFavoriteDialog) {
         mSwipeEditFavoriteDialog = swipeEditFavoriteDialog;
     }
 

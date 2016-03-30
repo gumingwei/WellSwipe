@@ -8,7 +8,17 @@
     <color name="white">#ffffff</color>
     <color name="swipe_header_title_color">#383838</color>
     <color name="swipe_bottom_gray">#cccccc</color>
-    <color name="anglelayout_background">#55202020</color>
+    <color name="anglelayout_background">#99202020</color>
     <color name="angleview_arc_background">#cf202020</color>
     <color name="indicator_arc_background">#f103a9f4</color>
+
+    <color name="ksw_md_ripple_normal">#1E000000</color>
+    <color name="ksw_md_ripple_checked">#33019285</color>
+    <color name="ksw_md_solid_shadow">#33000000</color>
+    <color name="ksw_md_solid_normal">#ECECEC</color>
+    <color name="ksw_md_solid_checked">#019285</color>
+    <color name="ksw_md_solid_disable">#FFFFFF</color>
+    <color name="ksw_md_solid_checked_disable">#aaaaaa</color>
+
+    <color name="preference_divide">#d9d9d9</color>
 </resources>

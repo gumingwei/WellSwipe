@@ -5,4 +5,8 @@
     <item name="angleview_theme" type="id">angleview_theme</item>
     <item name="indicator_theme" type="id">indicator_theme</item>
 
+    <item name="preference_icon" type="id">preference_icon</item>
+    <item name="preference_title" type="id">preference_title</item>
+    <item name="preference_summary" type="id">preference_summary</item>
+    <item name="preference_switchbtn" type="id">preference_switchbtn</item>
 </resources>

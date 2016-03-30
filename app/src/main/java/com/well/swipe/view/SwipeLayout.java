@@ -28,9 +28,9 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
 
     private BubbleView mBubble;
 
-    private SwipeEditFavoriteDialog mFavoriteLayout;
+    private SwipeEditFavoriteEditDialog mFavoriteLayout;
 
-    private SwipeEditToolsDialog mToolsLayout;
+    private SwipeEditToolsEditDialog mToolsLayout;
 
     private int mWidth;
 
@@ -50,11 +50,11 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
         super(context, attrs, defStyleAttr);
 
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        mFavoriteLayout = (SwipeEditFavoriteDialog) LayoutInflater.from(context).inflate(R.layout.swipe_edit_favorite_layout, null);
+        mFavoriteLayout = (SwipeEditFavoriteEditDialog) LayoutInflater.from(context).inflate(R.layout.swipe_edit_favorite_layout, null);
         mFavoriteLayout.setVisibility(GONE);
         addView(mFavoriteLayout, params);
 
-        mToolsLayout = (SwipeEditToolsDialog) LayoutInflater.from(context).inflate(R.layout.swipe_edit_tools_layout, null);
+        mToolsLayout = (SwipeEditToolsEditDialog) LayoutInflater.from(context).inflate(R.layout.swipe_edit_tools_layout, null);
         mToolsLayout.setVisibility(GONE);
         addView(mToolsLayout, params);
     }
@@ -172,11 +172,11 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
         return mAngleLayout;
     }
 
-    public SwipeEditFavoriteDialog getEditFavoriteLayout() {
+    public SwipeEditFavoriteEditDialog getEditFavoriteLayout() {
         return mFavoriteLayout;
     }
 
-    public SwipeEditToolsDialog getEditToolsLayout() {
+    public SwipeEditToolsEditDialog getEditToolsLayout() {
         return mToolsLayout;
     }
 

@@ -14,7 +14,7 @@ import com.well.swipe.R;
 /**
  * Created by mingwei on 3/25/16.
  */
-public abstract class SwipeDialog extends RelativeLayout implements View.OnClickListener {
+public abstract class SwipeEditDialog extends RelativeLayout implements View.OnClickListener {
 
     public TextView mDialogTitle;
 
@@ -30,15 +30,15 @@ public abstract class SwipeDialog extends RelativeLayout implements View.OnClick
 
     OnDialogListener mOnDialogListener;
 
-    public SwipeDialog(Context context) {
+    public SwipeEditDialog(Context context) {
         this(context, null);
     }
 
-    public SwipeDialog(Context context, AttributeSet attrs) {
+    public SwipeEditDialog(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SwipeDialog(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SwipeEditDialog(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mSize = getResources().getDimensionPixelSize(R.dimen.angleitem_size);
         mTitleFormat = getResources().getString(R.string.swipe_edit_header_title);

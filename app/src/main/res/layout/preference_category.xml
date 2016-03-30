@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.well.swipe.preference.PreferenceCategory xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/preference_height">
+
+    <ImageView
+        android:id="@id/preference_icon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/ic_launcher" />
+
+    <TextView
+        android:id="@id/preference_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toLeftOf="@id/preference_switchbtn"
+        android:layout_toRightOf="@id/preference_icon"
+        android:text="开启"
+        android:textColor="@color/ksw_md_solid_checked"
+        android:textSize="16sp" />
+
+    <com.well.swipe.view.SwitchButton
+        android:id="@id/preference_switchbtn"
+        style="@style/SwitchButtonStyleMD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:checked="false"
+        android:gravity="center_vertical" />
+
+</com.well.swipe.preference.PreferenceCategory>

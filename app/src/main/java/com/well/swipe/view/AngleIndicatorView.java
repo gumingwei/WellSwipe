@@ -124,7 +124,7 @@ public class AngleIndicatorView extends PositionStateView {
         mInnerPaint.setAntiAlias(true);
         mInnerPaint.setStrokeWidth(5);
 
-        if (mPositionState == POSITION_STATE_LEFT) {
+        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
             setRotation(-90);
         }
         ViewConfiguration configuration = ViewConfiguration.get(context);
@@ -137,7 +137,7 @@ public class AngleIndicatorView extends PositionStateView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         int degree = DEGREES_90 / 4;
-        if (mPositionState == POSITION_STATE_LEFT) {
+        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
             //RectF f = new RectF(-mRect, -mRect, mRect, mRect);
 
             //canvas.drawCircle(0, 0, mRect + mIndicatorWidth / 2, mInnerPaint);
@@ -153,7 +153,7 @@ public class AngleIndicatorView extends PositionStateView {
             canvas.rotate(degree, 0, 0);
             canvas.drawText(getResources().getString(R.string.frequent), mLeftOffset, OFFSET_Y, mPaint2);
             canvas.restore();
-        } else if (mPositionState == POSITION_STATE_RIGHT) {
+        } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
             //RectF f = new RectF(mWidth - mRect, -mRect, mWidth + mRect, mRect);
 
             //canvas.drawCircle(mWidth, 0, mRect + mIndicatorWidth / 2, mInnerPaint);
@@ -211,9 +211,9 @@ public class AngleIndicatorView extends PositionStateView {
      */
     public void setPositionState(int state) {
         super.setPositionState(state);
-        if (state == POSITION_STATE_LEFT) {
+        if (state == PositionState.POSITION_STATE_LEFT) {
             setRotation(-DEGREES_90);
-        } else if (state == POSITION_STATE_RIGHT) {
+        } else if (state == PositionState.POSITION_STATE_RIGHT) {
             setRotation(DEGREES_90);
         }
     }
@@ -233,9 +233,9 @@ public class AngleIndicatorView extends PositionStateView {
                 float newy = event.getY();
                 if (Math.abs(newx - mLastX) < mTouchSlop || Math.abs(newy - mLastY) < mTouchSlop) {
                     double degree = 0;
-                    if (mPositionState == POSITION_STATE_LEFT) {
+                    if (mPositionState == PositionState.POSITION_STATE_LEFT) {
                         degree = Math.toDegrees(Math.atan(newy / newx));
-                    } else if (mPositionState == POSITION_STATE_RIGHT) {
+                    } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
                         degree = Math.toDegrees(Math.atan(newy / (mWidth - newx)));
                     }
                     if (degree > 0 && degree < DEGREES_U * 3) {
@@ -252,7 +252,7 @@ public class AngleIndicatorView extends PositionStateView {
     }
 
     public void setCurrentIndex(int index) {
-        if (mPositionState == POSITION_STATE_LEFT) {
+        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
             if (mLeftArcStart == START_ANGLE) {
                 if (index == 1) {
                     change(1, 3, 0, 1);
@@ -272,7 +272,7 @@ public class AngleIndicatorView extends PositionStateView {
                     change(5, 1, 2, 0);
                 }
             }
-        } else if (mPositionState == POSITION_STATE_RIGHT) {
+        } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
             if (mRightArcStart == DEGREES_90 + 5 * START_ANGLE) {
                 if (index == 1) {
                     change(5, 3, 0, 1);
@@ -303,9 +303,9 @@ public class AngleIndicatorView extends PositionStateView {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float v = (float) animation.getAnimatedValue();
-                if (mPositionState == POSITION_STATE_LEFT) {
+                if (mPositionState == PositionState.POSITION_STATE_LEFT) {
                     mLeftArcStart = START_ANGLE * start + (end - start) * START_ANGLE * v;
-                } else if (mPositionState == POSITION_STATE_RIGHT) {
+                } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
                     mRightArcStart = DEGREES_90 + START_ANGLE * start - (start - end) * START_ANGLE * v;
                 }
                 float p = (v / 1.1f);
@@ -327,7 +327,7 @@ public class AngleIndicatorView extends PositionStateView {
      */
     public void onAngleChanged2(int cur, float pre) {
         int index = (int) (pre * 10);
-        if (mPositionState == POSITION_STATE_LEFT) {
+        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
             if (cur == 0) {
                 mLeftArcStart = 5 * START_ANGLE + 28 * START_ANGLE * (1 - pre);
                 mPaint0.setColor(Color.parseColor(mColors[index]));
@@ -341,7 +341,7 @@ public class AngleIndicatorView extends PositionStateView {
                 mPaint2.setColor(Color.parseColor(mColors[index]));
                 mPaint1.setColor(Color.parseColor(mColors[9 - index]));
             }
-        } else if (mPositionState == POSITION_STATE_RIGHT) {
+        } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
             if (cur == 0) {
                 mRightArcStart = DEGREES_90 + 3 * START_ANGLE + 2 * START_ANGLE * (1 - pre);
                 mPaint0.setColor(Color.parseColor(mColors[index]));

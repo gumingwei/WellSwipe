@@ -20,8 +20,11 @@ import java.lang.reflect.Method;
 public class WifiAndData {
 
     public static final int TYPE_WIFI = 1;
+
     public static final int TYPE_MOBILE = 2;
+
     public static final int TYPE_NOT_CONNECTED = 0;
+
     private static final String WIFI_ID = "WI-FI";
 
     public static void setMobileDataEnabled(Context context, boolean enabled) {

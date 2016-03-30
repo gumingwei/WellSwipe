@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.well.swipe.ItemSwipeSwitch;
 import com.well.swipe.R;
+import com.well.swipe.activitys.SwipeSettingActivity;
 import com.well.swipe.view.AngleItemCommon;
 import com.well.swipe.view.AngleItemStartUp;
 import com.well.swipe.view.SwipeLayout;
@@ -78,26 +79,56 @@ public class ToolsStrategy {
             itemview.setItemIcon(SwipeAudio.getInstance(context).getDrawableState(context).getBitmap());
             itemview.setTitle(SwipeAudio.getInstance(context).getTitleState(context));
         } else if (item.mAction.equals(context.getString(R.string.swipe_autorotation))) {
+            /**
+             * 自动旋转屏幕
+             */
             itemview.setItemIcon(SwipeRotation.getDrawableState(context).getBitmap());
         } else if (item.mAction.equals(context.getString(R.string.swipe_setting))) {
+            /**
+             * 系统设置
+             */
             itemview.setItemIcon(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_setting_system)).getBitmap());
         } else if (item.mAction.equals(context.getString(R.string.swipe_alarm))) {
+            /**
+             * 闹钟
+             */
             itemview.setItemIcon(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_alarmclock)).getBitmap());
         } else if (item.mAction.equals(context.getString(R.string.swipe_screenbrightness))) {
+            /**
+             * 屏幕亮度
+             */
             itemview.setItemIcon(SwipeBrightness.getInstance(context).getDrawableState(context).getBitmap());
             itemview.setTitle(SwipeBrightness.getInstance(context).getTitleState(context));
         } else if (item.mAction.equals(context.getString(R.string.swipe_speeder))) {
+            /**
+             * 屏幕锁
+             */
             itemview.setItemIcon(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_clean_memory)).getBitmap());
         } else if (item.mAction.equals(context.getString(R.string.swipe_screenlock))) {
+            /**
+             * 日历
+             */
             itemview.setItemIcon(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_client_hide_when_screen_off)).getBitmap());
             itemview.setTitle(LockTime.getInstance().getTitleState(context));
         } else if (item.mAction.equals(context.getString(R.string.swipe_calendar))) {
+            /**
+             * 计算器
+             */
             itemview.setItemIcon(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_calendar)).getBitmap());
         } else if (item.mAction.equals(context.getString(R.string.swipe_calculator))) {
+            /**
+             * 闹钟
+             */
             itemview.setItemIcon(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_calculator)).getBitmap());
         } else if (item.mAction.equals(context.getString(R.string.swipe_swipesetting))) {
+            /**
+             * swipe设置
+             */
             itemview.setItemIcon(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_assistant_touch_enable)).getBitmap());
         } else if (item.mAction.equals(context.getString(R.string.swipe_bluetooth))) {
+            /**
+             * 蓝牙
+             */
             itemview.setItemIcon(SwipeBluetooth.getInstance().getDrawableState(context).getBitmap());
         }
 
@@ -179,6 +210,10 @@ public class ToolsStrategy {
             }
         } else if (item.mAction.equals(context.getString(R.string.swipe_swipesetting))) {
 
+            Intent intent = new Intent(context, SwipeSettingActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+            mSwipeLayout.dismissAnimator();
         } else if (item.mAction.equals(context.getString(R.string.swipe_bluetooth))) {
             SwipeBluetooth.getInstance().changeState();
         }
@@ -199,7 +234,7 @@ public class ToolsStrategy {
     private void launchCarmera(Context context) {
         try {
             Intent mIntent = new Intent("android.media.action.STILL_IMAGE_CAMERA");
-            // mIntent.addCategory(Intent.CATEGORY_DEFAULT);
+            //mIntent.addCategory(Intent.CATEGORY_DEFAULT);
             mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             context.startActivity(mIntent);
         } catch (Exception e) {

@@ -232,6 +232,7 @@ public class LauncherModel extends BroadcastReceiver {
 
             favorites.add(application);
         }
+        cursor.close();
         return favorites;
     }
 
@@ -251,6 +252,7 @@ public class LauncherModel extends BroadcastReceiver {
             //index.add(cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.Favorites.ITEM_INDEX)));
             switches.add(application);
         }
+        cursor.close();
         return switches;
     }
 
@@ -334,6 +336,8 @@ public class LauncherModel extends BroadcastReceiver {
                     BaseColumns.ITEM_TYPE + "=?", new String[]{String.valueOf(SwipeSettings.
                     BaseColumns.ITEM_TYPE_APPLICATION)}, null);
             ArrayList<ItemApplication> favorites = new ArrayList<>();
+            Intent intent = null;
+            Bitmap icon = null;
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 int type = cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TYPE));
                 String title = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TITLE));
@@ -342,8 +346,7 @@ public class LauncherModel extends BroadcastReceiver {
                 int packagenameIndex = cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ICON_PACKAGENAME);
                 int resourcenameIndex = cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ICON_RESOURCE);
                 int iconIndex = cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ICON_BITMAP);
-                Intent intent = null;
-                Bitmap icon = null;
+
                 try {
                     intent = Intent.parseUri(intentStr, 0);
                 } catch (URISyntaxException e) {
@@ -392,11 +395,10 @@ public class LauncherModel extends BroadcastReceiver {
                         application.isCustomIcon = false;
                         break;
                 }
-
                 application.mIconBitmap = icon;
-
                 favorites.add(application);
             }
+            cursor.close();
             mCallback.get().bindFavorites(favorites);
         }
 
@@ -419,6 +421,7 @@ public class LauncherModel extends BroadcastReceiver {
                 //index.add(cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.Favorites.ITEM_INDEX)));
                 switches.add(application);
             }
+            cursor.close();
             mCallback.get().bindSwitch(switches);
         }
 

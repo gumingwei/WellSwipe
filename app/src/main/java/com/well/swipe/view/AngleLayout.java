@@ -187,12 +187,12 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         /**
          * AngleView,IndicatorView的大小
          */
-        if (mAngleView.getPositionState() == AngleView.POSITION_STATE_LEFT) {
+        if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
             mAngleView.layout(0, mHeight - mAngleSize, mAngleSize, mHeight);
             mAngleViewTheme.layout(0, mHeight - mAngleSize, mAngleSize, mHeight);
             mIndicator.layout(0, mHeight - mIndicatorSize, mIndicatorSize, mHeight);
             mIndicatorTheme.layout(0, mHeight - mIndicatorSize, mIndicatorSize, mHeight);
-        } else if (mAngleView.getPositionState() == AngleView.POSITION_STATE_RIGHT) {
+        } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
             mAngleView.layout(mWidth - mAngleSize, mHeight - mAngleSize, mWidth, mHeight);
             mAngleViewTheme.layout(mWidth - mAngleSize, mHeight - mAngleSize, mWidth, mHeight);
             mIndicator.layout(mWidth - mIndicatorSize, mHeight - mIndicatorSize, mWidth, mHeight);
@@ -215,9 +215,9 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                 mLastMotionY = ev.getY();
                 mActivePointId = ev.getPointerId(0);
                 if (mEditState == STATE_NORMAL) {
-                    if (mAngleView.getPositionState() == AngleView.POSITION_STATE_LEFT) {
+                    if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
                         mAngleView.downAngle(mLastMotionX, mHeight - mLastMotionY);
-                    } else if (mAngleView.getPositionState() == AngleView.POSITION_STATE_RIGHT) {
+                    } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
                         mAngleView.downAngle(mWidth - mLastMotionX, mHeight - mLastMotionY);
                     }
                 }
@@ -261,10 +261,10 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                     //正在滚动的时候
                 }
                 if (mEditState == STATE_NORMAL) {
-                    if (mAngleView.getPositionState() == AngleView.POSITION_STATE_LEFT) {
+                    if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
                         mAngleView.downAngle(mLastMotionX, mHeight - mLastMotionY);
                         return true;
-                    } else if (mAngleView.getPositionState() == AngleView.POSITION_STATE_RIGHT) {
+                    } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
                         mAngleView.downAngle(mWidth - mLastMotionX, mHeight - mLastMotionY);
                         return true;
                     }
@@ -285,9 +285,9 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                  */
                 if (mEditState == STATE_NORMAL) {
                     if (mTouchState == TOUCH_STATE_WHIRLING && newY < mHeight) {
-                        if (mAngleView.getPositionState() == AngleView.POSITION_STATE_LEFT) {
+                        if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
                             mAngleView.changeAngle(newX, mHeight - newY);
-                        } else if (mAngleView.getPositionState() == AngleView.POSITION_STATE_RIGHT) {
+                        } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
                             mAngleView.changeAngle(mWidth - newX, mHeight - newY);
                         }
                     }
@@ -358,10 +358,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     public void setPositionLeft() {
         setPivotX(0);
         setPivotY(mContext.getResources().getDisplayMetrics().heightPixels - Utils.getStatusBarHeight(mContext));
-        mIndicator.setPositionState(PositionStateView.POSITION_STATE_LEFT);
-        mIndicatorTheme.setPositionState(PositionStateView.POSITION_STATE_LEFT);
-        mAngleView.setPositionState(PositionStateViewGroup.POSITION_STATE_LEFT);
-        mAngleViewTheme.setPositionState(PositionStateViewGroup.POSITION_STATE_LEFT);
+        setPositionState(PositionState.POSITION_STATE_LEFT);
         /**
          * 左右两边的的角度一样，但是显示的限象不一样，通过一个公倍数12来换算成限象一样
          */
@@ -378,10 +375,8 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     public void setPositionRight() {
         setPivotX(mContext.getResources().getDisplayMetrics().widthPixels);
         setPivotY(mContext.getResources().getDisplayMetrics().heightPixels - Utils.getStatusBarHeight(mContext));
-        mIndicator.setPositionState(AngleIndicatorView.POSITION_STATE_RIGHT);
-        mIndicatorTheme.setPositionState(PositionStateView.POSITION_STATE_RIGHT);
-        mAngleView.setPositionState(PositionStateViewGroup.POSITION_STATE_RIGHT);
-        mAngleViewTheme.setPositionState(PositionStateViewGroup.POSITION_STATE_RIGHT);
+        setPositionState(PositionState.POSITION_STATE_RIGHT);
+
         /**
          * 左右两百年的角度一样，但是显示的限象不一样，通过一个公倍数12来换算成限象一样
          */
@@ -389,6 +384,13 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
             mAngleView.setBaseAngle(mAngleView.getCurrentIndex() * AngleView.DEGREES_90);
         }
         requestLayout();
+    }
+
+    public void setPositionState(int state) {
+        mIndicator.setPositionState(state);
+        mIndicatorTheme.setPositionState(state);
+        mAngleView.setPositionState(state);
+        mAngleViewTheme.setPositionState(state);
     }
 
     public int getPositionState() {
