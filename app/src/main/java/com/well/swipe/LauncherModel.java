@@ -6,17 +6,14 @@ import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
 
 import com.well.swipe.utils.Utilities;
 
@@ -94,7 +91,7 @@ public class LauncherModel extends BroadcastReceiver {
          *
          * @param switchlist
          */
-        void bindSwitch(ArrayList<ItemSwipeSwitch> switchlist);
+        void bindSwitch(ArrayList<ItemSwipeTools> switchlist);
 
         /**
          * 加载完成式掉用
@@ -236,14 +233,14 @@ public class LauncherModel extends BroadcastReceiver {
         return favorites;
     }
 
-    public ArrayList<ItemSwipeSwitch> loadTools(Context context) {
+    public ArrayList<ItemSwipeTools> loadTools(Context context) {
         ContentResolver resolver = context.getContentResolver();
         Cursor cursor = resolver.query(SwipeSettings.Favorites.CONTENT_URI, null, SwipeSettings.
                 BaseColumns.ITEM_TYPE + "=?", new String[]{String.valueOf(SwipeSettings.
                 BaseColumns.ITEM_TYPE_SWITCH)}, null);
-        ArrayList<ItemSwipeSwitch> switches = new ArrayList<>();
+        ArrayList<ItemSwipeTools> switches = new ArrayList<>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            ItemSwipeSwitch application = new ItemSwipeSwitch();
+            ItemSwipeTools application = new ItemSwipeTools();
             application.mType = cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TYPE));
             application.mTitle = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TITLE));
             application.mAction = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_ACTION));
@@ -410,9 +407,9 @@ public class LauncherModel extends BroadcastReceiver {
             Cursor cursor = resolver.query(SwipeSettings.Favorites.CONTENT_URI, null, SwipeSettings.
                     BaseColumns.ITEM_TYPE + "=?", new String[]{String.valueOf(SwipeSettings.
                     BaseColumns.ITEM_TYPE_SWITCH)}, null);
-            ArrayList<ItemSwipeSwitch> switches = new ArrayList<>();
+            ArrayList<ItemSwipeTools> switches = new ArrayList<>();
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                ItemSwipeSwitch application = new ItemSwipeSwitch();
+                ItemSwipeTools application = new ItemSwipeTools();
                 application.mType = cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TYPE));
                 application.mTitle = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TITLE));
                 application.mAction = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_ACTION));

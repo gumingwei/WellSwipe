@@ -235,6 +235,8 @@ public class SwipeProvider extends ContentProvider {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                db.close();
             }
         }
 
@@ -309,7 +311,7 @@ public class SwipeProvider extends ContentProvider {
                     if (!hasIndex(database, item_index, SwipeSettings.BaseColumns.ITEM_TYPE_APPLICATION)) {
                         checkInsert(database, TAG_FAORITES, values);
                     }
-                    database.close();
+                    //database.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                     return false;
@@ -335,7 +337,7 @@ public class SwipeProvider extends ContentProvider {
             if (!hasIndex(database, item_index, SwipeSettings.BaseColumns.ITEM_TYPE_SWITCH)) {
                 checkInsert(database, TAG_FAORITES, values);
             }
-            database.close();
+            //database.close();
             return true;
         }
 

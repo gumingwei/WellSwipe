@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 public class AllToolsList {
 
-    public ArrayList<ItemSwipeSwitch> mSwipeDataList;
+    public ArrayList<ItemSwipeTools> mSwipeDataList;
 
     public String mSwipeActionArrAy[];
 
@@ -22,7 +22,7 @@ public class AllToolsList {
         mSwipeActionArrAy = context.getResources().getStringArray(R.array.swipe_tools_action_array);
         mSwipeTitleArrAy = context.getResources().getStringArray(R.array.swipe_tools_title_array);
         for (int i = 0; i < mSwipeActionArrAy.length; i++) {
-            ItemSwipeSwitch itemswitch = new ItemSwipeSwitch();
+            ItemSwipeTools itemswitch = new ItemSwipeTools();
             itemswitch.mTitle = mSwipeTitleArrAy[i];
             itemswitch.mAction = mSwipeActionArrAy[i];
             //itemswitch.

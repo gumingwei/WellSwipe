@@ -21,4 +21,6 @@
     <color name="ksw_md_solid_checked_disable">#aaaaaa</color>
 
     <color name="preference_divide">#d9d9d9</color>
+    <color name="seekbar_progress_color">#8e8e8e</color>
+    <color name="check_item_enable">#e5e5e5</color>
 </resources>

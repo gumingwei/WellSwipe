@@ -3,17 +3,12 @@ package com.well.swipe;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 
 /**
  * Created by mingwei on 3/16/16.
  */
-public class ItemSwipeSwitch extends ItemInfo {
+public class ItemSwipeTools extends ItemInfo {
     /**
      * 快捷开关的action
      */
@@ -23,11 +18,11 @@ public class ItemSwipeSwitch extends ItemInfo {
 
     public boolean isChecked;
 
-    ItemSwipeSwitch() {
+    ItemSwipeTools() {
         mType = SwipeSettings.BaseColumns.ITEM_TYPE_SWITCH;
     }
 
-    public ItemSwipeSwitch(ItemSwipeSwitch switchitem) {
+    public ItemSwipeTools(ItemSwipeTools switchitem) {
         super(switchitem);
         mAction = switchitem.mAction;
         mDefaultIcon = switchitem.mDefaultIcon;

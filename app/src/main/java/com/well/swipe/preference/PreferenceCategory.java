@@ -39,15 +39,19 @@ public class PreferenceCategory extends SwipePreference {
         mSwitchBtn = (SwitchButton) findViewById(R.id.preference_switchbtn);
     }
 
-    public void setPreferenceTitle(int title) {
-        setPreferenceTitle(getContext().getString(title));
+    public void setTitle(int title) {
+        setTitle(getContext().getString(title));
     }
 
-    public void setPreferenceTitle(String title) {
+    public void setTitle(String title) {
         mTitle.setText(title);
     }
 
     public SwitchButton getSwitchBtn() {
         return mSwitchBtn;
+    }
+
+    public void setToggleVisiable(int visiable) {
+        mSwitchBtn.setVisibility(visiable);
     }
 }

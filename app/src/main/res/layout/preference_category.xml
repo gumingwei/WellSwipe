@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.well.swipe.preference.PreferenceCategory xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/preference_height">
+    android:layout_height="@dimen/preference_height"
+    android:background="@drawable/check_item_selector">
 
     <ImageView
         android:id="@id/preference_icon"
@@ -21,9 +22,8 @@
         android:layout_marginLeft="10dp"
         android:layout_toLeftOf="@id/preference_switchbtn"
         android:layout_toRightOf="@id/preference_icon"
-        android:text="开启"
         android:textColor="@color/ksw_md_solid_checked"
-        android:textSize="16sp" />
+        android:textSize="@dimen/preference_category_title_size" />
 
     <com.well.swipe.view.SwitchButton
         android:id="@id/preference_switchbtn"

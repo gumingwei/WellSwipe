@@ -5,16 +5,12 @@ import android.content.SharedPreferences;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
-import com.well.swipe.R;
-
 /**
  * Created by mingwei on 3/30/16.
  */
 public class SwipePreference extends RelativeLayout {
 
     private static final String SETTING_PREFERENCE = "swipe_settings";
-
-    private int mMarginLeft;
 
     private String mKey;
 
@@ -32,7 +28,6 @@ public class SwipePreference extends RelativeLayout {
 
     public SwipePreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mMarginLeft = context.getResources().getDimensionPixelOffset(R.dimen.preference_category_title_marginleft);
         mPreference = context.getSharedPreferences(SETTING_PREFERENCE, Context.MODE_PRIVATE);
         mEditor = mPreference.edit();
     }

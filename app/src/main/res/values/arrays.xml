@@ -45,9 +45,15 @@
         <item>@string/swipe_alarm_title</item>
     </array>
 
-    <array name="swipe_open_type">
-        <item>@string/swipe_open_type0</item>
-        <item>@string/swipe_open_type1</item>
+    <array name="swipe_for_type">
+        <item>@string/swipe_for_type0</item>
+        <item>@string/swipe_for_type1</item>
+    </array>
+
+    <array name="swipe_area_type">
+        <item>@string/swipe_area_type0</item>
+        <item>@string/swipe_area_type1</item>
+        <item>@string/swipe_area_type2</item>
     </array>
 
 </resources>

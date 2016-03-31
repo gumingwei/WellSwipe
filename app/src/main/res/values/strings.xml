@@ -63,8 +63,20 @@
     <string name="time_600">10m</string>
     <string name="time_1800">30m</string>
 
-    <string name="swipe_open_type0">Launcher</string>
-    <string name="swipe_open_type1">All App</string>
-
+    <string name="swipe_toggle">Toggle</string>
+    <string name="swipe_for">Enable Well Swipe for</string>
+    <string name="swipe_for_type0">Homescreen only</string>
+    <string name="swipe_for_type1">Homescreen and all apps</string>
+    <string name="swipe_active_area">Active area position</string>
+    <string name="swipe_area_type0">Bottom left and Bottom right</string>
+    <string name="swipe_area_type1">Bottom left</string>
+    <string name="swipe_area_type2">Bottom right</string>
+    <string name="swipe_whitelist">Do not disturb settings(%1$s)</string>
+    <string name="swipe_whitelist_des">Choose apps that disable Well Swipe</string>
+    <string name="swipe_whitelist_title">Add app</string>
+    <string name="swipe_about">About</string>
+    <string name="swipe_about_rate5start">Love us?Rate 5 starts</string>
+    <string name="swipe_about_feedback">Feedback</string>
+    <string name="swipe_about_version">App Version</string>
 
 </resources>

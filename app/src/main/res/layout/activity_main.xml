@@ -28,9 +28,46 @@
     <include layout="@layout/preference_divide" />
 
     <include
-        android:id="@+id/swipe_opensetting"
-        layout="@layout/preference_item" />
+        android:id="@+id/swipe_for"
+        layout="@layout/preference_titlesummary" />
 
     <include layout="@layout/preference_divide" />
+
+    <include
+        android:id="@+id/swipe_area"
+        layout="@layout/preference_titlesummary" />
+
+    <include layout="@layout/preference_divide" />
+
+    <include
+        android:id="@+id/swipe_whitelist"
+        layout="@layout/preference_titlesummary" />
+
+    <include layout="@layout/preference_divide" />
+
+    <include
+        android:id="@+id/swipe_about"
+        layout="@layout/preference_category" />
+
+    <include layout="@layout/preference_divide" />
+
+    <include
+        android:id="@+id/swipe_rate"
+        layout="@layout/preference_title" />
+
+    <include layout="@layout/preference_divide" />
+
+    <include
+        android:id="@+id/swipe_feedback"
+        layout="@layout/preference_title" />
+
+    <include layout="@layout/preference_divide" />
+
+    <include
+        android:id="@+id/swipe_version"
+        layout="@layout/preference_title" />
+
+    <include layout="@layout/preference_divide" />
+
 
 </LinearLayout>

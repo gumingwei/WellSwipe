@@ -9,21 +9,23 @@ import com.well.swipe.R;
 /**
  * Created by mingwei on 3/30/16.
  */
-public class PreferenceItem extends SwipePreference {
+public class PreferenceTitleSummary extends SwipePreference {
 
     private TextView mTitle;
 
     private TextView mSummary;
 
-    public PreferenceItem(Context context) {
+    private String mSummaryArray[] = new String[]{};
+
+    public PreferenceTitleSummary(Context context) {
         this(context, null);
     }
 
-    public PreferenceItem(Context context, AttributeSet attrs) {
+    public PreferenceTitleSummary(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public PreferenceItem(Context context, AttributeSet attrs, int defStyleAttr) {
+    public PreferenceTitleSummary(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -39,12 +41,27 @@ public class PreferenceItem extends SwipePreference {
     }
 
     public void setTitle(String title) {
+        mTitle.setText(title);
     }
 
     public void setSummary(int summary) {
         setSummary(getContext().getString(summary));
     }
 
-    public void setSummary(String summary) {
+    public void setSummaryArray(String array[]) {
+        mSummaryArray = array;
     }
+
+    public void setSummary(String summary) {
+        mSummary.setText(summary);
+    }
+
+    public String[] getSummaryArray() {
+        return mSummaryArray;
+    }
+
+    public void refreshSummary() {
+        mSummary.setText(mSummaryArray[getIntValue()]);
+    }
+
 }

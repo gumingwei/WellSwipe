@@ -15,7 +15,7 @@ import com.well.swipe.R;
  */
 public class FlashLight extends SwipeTools {
 
-    private static FlashLight mFlash;
+    private static FlashLight mInstance;
 
     private static Camera mCamera = null;
 
@@ -29,10 +29,14 @@ public class FlashLight extends SwipeTools {
     }
 
     public static FlashLight getInstance() {
-        if (mFlash == null) {
-            mFlash = new FlashLight();
+        if (mInstance == null) {
+            synchronized (FlashLight.class) {
+                if (mInstance == null) {
+                    mInstance = new FlashLight();
+                }
+            }
         }
-        return mFlash;
+        return mInstance;
     }
 
     public synchronized void open(Context context) {

@@ -33,6 +33,10 @@
     <dimen name="preference_height">60dp</dimen>
     <dimen name="preference_category_icon_size">30dp</dimen>
     <dimen name="preference_category_title_marginleft">30dp</dimen>
+    <dimen name="preference_item_height">55dp</dimen>
+    <dimen name="preference_category_title_size">18sp</dimen>
+    <dimen name="preference_item_title_size">16sp</dimen>
+    <dimen name="preference_item_summary_size">12sp</dimen>
 
     <dimen name="ksw_md_thumb_ripple_size">42dp</dimen>
     <dimen name="ksw_md_thumb_solid_inset">11dp</dimen>
@@ -44,8 +48,11 @@
     <dimen name="ksw_md_thumb_shadow_size">21dp</dimen>
     <dimen name="ksw_md_thumb_shadow_offset">2dp</dimen>
 
-    <dimen name="dialog_width">280dp</dimen>
+    <dimen name="dialog_width">300dp</dimen>
+    <dimen name="check_item_margin">20dp</dimen>
 
     <dimen name="test">100dp</dimen>
+    <dimen name="one_dp">1dp</dimen>
+    <dimen name="default_margin">16dp</dimen>
 
 </resources>

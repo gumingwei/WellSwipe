@@ -8,7 +8,7 @@ import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.well.swipe.ItemSwipeSwitch;
+import com.well.swipe.ItemSwipeTools;
 import com.well.swipe.R;
 import com.well.swipe.tools.ToolsStrategy;
 
@@ -23,11 +23,11 @@ public class SwipeEditToolsEditDialog extends SwipeEditDialog implements View.On
      */
     private GridLayout mGridLayout;
 
-    private ArrayList<ItemSwipeSwitch> mDatalist;
+    private ArrayList<ItemSwipeTools> mDatalist;
 
-    private ArrayList<ItemSwipeSwitch> mFixedList;
+    private ArrayList<ItemSwipeTools> mFixedList;
 
-    private ArrayList<ItemSwipeSwitch> mSelectedList;
+    private ArrayList<ItemSwipeTools> mSelectedList;
 
     public SwipeEditToolsEditDialog(Context context) {
         this(context, null);
@@ -87,7 +87,7 @@ public class SwipeEditToolsEditDialog extends SwipeEditDialog implements View.On
      *
      * @param switches
      */
-    public void setGridData(ArrayList<ItemSwipeSwitch> switches) {
+    public void setGridData(ArrayList<ItemSwipeTools> switches) {
         mDatalist = new ArrayList<>();
         mDatalist.addAll(switches);
     }
@@ -97,7 +97,7 @@ public class SwipeEditToolsEditDialog extends SwipeEditDialog implements View.On
      *
      * @param switchs
      */
-    public void setSelectedData(ArrayList<ItemSwipeSwitch> switchs) {
+    public void setSelectedData(ArrayList<ItemSwipeTools> switchs) {
         mSelectedList = new ArrayList<>();
         mSelectedList.addAll(switchs);
         refreshGrid();
@@ -109,8 +109,8 @@ public class SwipeEditToolsEditDialog extends SwipeEditDialog implements View.On
     public void refreshGrid() {
         mGridLayout.removeAllViews();
 
-        ArrayList<ItemSwipeSwitch> select = new ArrayList<>();
-        ArrayList<ItemSwipeSwitch> normal = new ArrayList<>();
+        ArrayList<ItemSwipeTools> select = new ArrayList<>();
+        ArrayList<ItemSwipeTools> normal = new ArrayList<>();
 
         if (mDatalist != null && mDatalist.size() > 0) {
             for (int i = 0; i < mDatalist.size(); i++) {
@@ -141,7 +141,7 @@ public class SwipeEditToolsEditDialog extends SwipeEditDialog implements View.On
      * @param swipeSwitch 目标
      * @return
      */
-    public boolean contains(ArrayList<ItemSwipeSwitch> switches, ItemSwipeSwitch swipeSwitch) {
+    public boolean contains(ArrayList<ItemSwipeTools> switches, ItemSwipeTools swipeSwitch) {
         for (int i = 0; i < switches.size(); i++) {
             if (switches.get(i).mAction.equals(swipeSwitch.mAction)) {
                 return true;
@@ -175,9 +175,9 @@ public class SwipeEditToolsEditDialog extends SwipeEditDialog implements View.On
      * @param list
      * @param checked
      */
-    public void merge(ArrayList<ItemSwipeSwitch> list, boolean checked) {
+    public void merge(ArrayList<ItemSwipeTools> list, boolean checked) {
         for (int i = 0; i < list.size(); i++) {
-            ItemSwipeSwitch item = list.get(i);
+            ItemSwipeTools item = list.get(i);
             item.isChecked = checked;
             mFixedList.add(item);
         }
@@ -188,8 +188,8 @@ public class SwipeEditToolsEditDialog extends SwipeEditDialog implements View.On
      *
      * @return
      */
-    public ArrayList<ItemSwipeSwitch> getNewSelectList() {
-        ArrayList<ItemSwipeSwitch> newlist = new ArrayList<>();
+    public ArrayList<ItemSwipeTools> getNewSelectList() {
+        ArrayList<ItemSwipeTools> newlist = new ArrayList<>();
         for (int i = 0; i < mFixedList.size(); i++) {
             if (mFixedList.get(i).isChecked) {
                 newlist.add(mFixedList.get(i));
@@ -202,7 +202,7 @@ public class SwipeEditToolsEditDialog extends SwipeEditDialog implements View.On
         return compare(getContext(), mSelectedList, getNewSelectList());
     }
 
-    public boolean compare(Context context, ArrayList<ItemSwipeSwitch> oldlist, ArrayList<ItemSwipeSwitch> newlist) {
+    public boolean compare(Context context, ArrayList<ItemSwipeTools> oldlist, ArrayList<ItemSwipeTools> newlist) {
         /**
          * 长度相等的时候经一步比较，负责直接更新
          */
@@ -233,7 +233,7 @@ public class SwipeEditToolsEditDialog extends SwipeEditDialog implements View.On
      * @param context
      * @param oldlist 需要删除的list数据
      */
-    public void deleteList(Context context, ArrayList<ItemSwipeSwitch> oldlist) {
+    public void deleteList(Context context, ArrayList<ItemSwipeTools> oldlist) {
         for (int i = 0; i < oldlist.size(); i++) {
             oldlist.get(i).delete(context);
         }
@@ -246,7 +246,7 @@ public class SwipeEditToolsEditDialog extends SwipeEditDialog implements View.On
      * @param context
      * @param newlist
      */
-    public void addList(Context context, ArrayList<ItemSwipeSwitch> newlist) {
+    public void addList(Context context, ArrayList<ItemSwipeTools> newlist) {
         for (int i = 0; i < newlist.size(); i++) {
             newlist.get(i).insert(context, i);
         }

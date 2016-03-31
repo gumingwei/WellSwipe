@@ -6,23 +6,18 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.PowerManager;
-import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -30,13 +25,8 @@ import com.well.swipe.ItemApplication;
 import com.well.swipe.LauncherModel;
 import com.well.swipe.R;
 import com.well.swipe.SwipeApplication;
-import com.well.swipe.ItemSwipeSwitch;
-import com.well.swipe.tools.FlashLight;
-import com.well.swipe.tools.SwipeAudio;
-import com.well.swipe.tools.SwipeBrightness;
-import com.well.swipe.tools.SwipeRotation;
+import com.well.swipe.ItemSwipeTools;
 import com.well.swipe.tools.ToolsStrategy;
-import com.well.swipe.tools.WifiAndData;
 import com.well.swipe.view.AngleItemStartUp;
 import com.well.swipe.view.AngleLayout;
 import com.well.swipe.view.AngleView;
@@ -322,7 +312,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     }
 
     @Override
-    public void bindSwitch(ArrayList<ItemSwipeSwitch> switchlist) {
+    public void bindSwitch(ArrayList<ItemSwipeTools> switchlist) {
         mSwipeLayout.getAngleLayout().getAngleView().putItemQuickSwitch(switchlist);
     }
 
@@ -343,9 +333,9 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
             ItemApplication itemapp = (ItemApplication) view.getTag();
             startActivity(itemapp.mIntent);
             mSwipeLayout.dismissAnimator();
-        } else if (object instanceof ItemSwipeSwitch) {
+        } else if (object instanceof ItemSwipeTools) {
             if (safeClick()) {
-                ItemSwipeSwitch itemswitch = (ItemSwipeSwitch) view.getTag();
+                ItemSwipeTools itemswitch = (ItemSwipeTools) view.getTag();
                 ToolsStrategy.getInstance().toolsClick(this, itemview, itemswitch, mSwipeLayout);
                 /**
                  * 缺一不可，否则影响刷新界面
@@ -379,8 +369,8 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
                  */
                 mSwipeLayout.getAngleLayout().getAngleView().removeItem();
             }
-        } else if (tag instanceof ItemSwipeSwitch) {
-            int index = ((ItemSwipeSwitch) tag).delete(getBaseContext());
+        } else if (tag instanceof ItemSwipeTools) {
+            int index = ((ItemSwipeTools) tag).delete(getBaseContext());
             if (index > 0) {
                 mSwipeLayout.getAngleLayout().getAngleView().removeItem();
             }

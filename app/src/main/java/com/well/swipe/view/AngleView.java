@@ -19,12 +19,11 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 
 import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
-import com.well.swipe.ItemSwipeSwitch;
+import com.well.swipe.ItemSwipeTools;
 import com.well.swipe.tools.ToolsStrategy;
 
 import java.util.ArrayList;
@@ -96,14 +95,6 @@ public class AngleView extends PositionStateViewGroup {
      * AngleView点击时候找到的ItemView
      */
     private AngleItemCommon mTargetItem;
-    /**
-     * 容器在做右下角区分
-     */
-//    private int mPositionState = POSITION_STATE_LEFT;
-//
-//    static int POSITION_STATE_LEFT = 1;
-//
-//    static int POSITION_STATE_RIGHT = 2;
     /**
      * 顺时针/逆时针
      */
@@ -291,12 +282,12 @@ public class AngleView extends PositionStateViewGroup {
         mFavoriteAppList.add(mTargetItem);
     }
 
-    public void putItemQuickSwitch(ArrayList<ItemSwipeSwitch> itemlist) {
+    public void putItemQuickSwitch(ArrayList<ItemSwipeTools> itemlist) {
         if (mSwitchList.size() > 0) {
             mSwitchList.clear();
         }
         AngleItemStartUp itemview;
-        for (ItemSwipeSwitch appitem : itemlist) {
+        for (ItemSwipeTools appitem : itemlist) {
             itemview = (AngleItemStartUp) LayoutInflater.from(getContext()).inflate(R.layout.angle_item_startup, null);
             itemview.setTitle(appitem.mTitle.toString());
             ToolsStrategy.getInstance().initView(getContext(), itemview, appitem);
@@ -314,8 +305,8 @@ public class AngleView extends PositionStateViewGroup {
         int index = getViewsIndex();
         for (int i = 0; i < mMap.get(index).size(); i++) {
             AngleItemCommon itemview = (AngleItemCommon) mMap.get(index).get(i);
-            if (itemview instanceof AngleItemStartUp) {
-                ItemSwipeSwitch item = (ItemSwipeSwitch) itemview.getTag();
+            if (itemview instanceof AngleItemStartUp && itemview.getTag() instanceof ItemSwipeTools) {
+                ItemSwipeTools item = (ItemSwipeTools) itemview.getTag();
                 ToolsStrategy.getInstance().initView(getContext(), itemview, item);
             }
         }

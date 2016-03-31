@@ -3,26 +3,17 @@ package com.well.swipe.tools;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.provider.AlarmClock;
-import android.provider.CalendarContract;
 import android.provider.Settings;
-import android.widget.Toast;
 
-import com.well.swipe.ItemSwipeSwitch;
+import com.well.swipe.ItemSwipeTools;
 import com.well.swipe.R;
 import com.well.swipe.activitys.SwipeSettingActivity;
 import com.well.swipe.view.AngleItemCommon;
 import com.well.swipe.view.AngleItemStartUp;
 import com.well.swipe.view.SwipeLayout;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -46,7 +37,7 @@ public class ToolsStrategy {
         return mInstance;
     }
 
-    public void initView(Context context, AngleItemCommon itemview, ItemSwipeSwitch item) {
+    public void initView(Context context, AngleItemCommon itemview, ItemSwipeTools item) {
         if (item.mAction.equals(context.getString(R.string.swipe_flash))) {
             /**
              * 手电筒
@@ -142,7 +133,7 @@ public class ToolsStrategy {
      * @param item         view的数据
      * @param mSwipeLayout SwipeLayout
      */
-    public void toolsClick(Context context, AngleItemStartUp itemview, ItemSwipeSwitch item, SwipeLayout mSwipeLayout) {
+    public void toolsClick(Context context, AngleItemStartUp itemview, ItemSwipeTools item, SwipeLayout mSwipeLayout) {
         if (item.mAction.equals(context.getString(R.string.swipe_flash))) {
             FlashLight.getInstance().onAndOff(context);
             itemview.setItemIcon(FlashLight.getInstance().getDrawableState(context).getBitmap());
