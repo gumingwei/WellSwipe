@@ -18,7 +18,7 @@ public class ItemSwipeTools extends ItemInfo {
 
     public boolean isChecked;
 
-    ItemSwipeTools() {
+    public ItemSwipeTools() {
         mType = SwipeSettings.BaseColumns.ITEM_TYPE_SWITCH;
     }
 
@@ -32,6 +32,12 @@ public class ItemSwipeTools extends ItemInfo {
         ContentResolver resolver = context.getContentResolver();
         return resolver.delete(SwipeSettings.Favorites.CONTENT_URI, SwipeSettings.BaseColumns.ITEM_ACTION +
                 "=?", new String[]{mAction});
+    }
+
+    public int deletedAll(Context context) {
+        ContentResolver resolver = context.getContentResolver();
+        return resolver.delete(SwipeSettings.Favorites.CONTENT_URI, SwipeSettings.BaseColumns.ITEM_TYPE +
+                "=?", new String[]{String.valueOf(SwipeSettings.BaseColumns.ITEM_TYPE_SWITCH)});
     }
 
     public void insert(Context context, int index) {

@@ -9,15 +9,19 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.ContentObserver;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -26,19 +30,23 @@ import com.well.swipe.LauncherModel;
 import com.well.swipe.R;
 import com.well.swipe.SwipeApplication;
 import com.well.swipe.ItemSwipeTools;
+import com.well.swipe.tools.SwipeSetting;
 import com.well.swipe.tools.ToolsStrategy;
+import com.well.swipe.utils.SettingHelper;
 import com.well.swipe.view.AngleItemStartUp;
 import com.well.swipe.view.AngleLayout;
 import com.well.swipe.view.AngleView;
 import com.well.swipe.view.BubbleView;
 import com.well.swipe.view.CatchView;
 import com.well.swipe.view.OnDialogListener;
+import com.well.swipe.view.PositionState;
 import com.well.swipe.view.SwipeLayout;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 
 /**
@@ -62,9 +70,19 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     private CatchView mCatchViewLeft1;
 
+    private CatchView mCatchViewLeft2;
+
     private CatchView mCatchViewRight0;
 
     private CatchView mCatchViewRight1;
+
+    private CatchView mCatchViewRight2;
+
+    private int mCatchViewHeight;
+
+    private int mCatchViewWidth;
+
+    private int mCatchViewBroadSize;
 
     private SwipeLayout mSwipeLayout;
 
@@ -92,35 +110,51 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     private Handler mHandler = new Handler();
 
+    IBinder mBinder = new ServiceBind();
+
+    public class ServiceBind extends Binder {
+
+        public SwipeService getService() {
+            return SwipeService.this;
+        }
+    }
+
     public SwipeService() {
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        mCatchViewWidth = getResources().getDimensionPixelSize(R.dimen.catch_view_width);
+        mCatchViewHeight = getResources().getDimensionPixelSize(R.dimen.catch_view_height);
+        mCatchViewBroadSize = getResources().getDimensionPixelSize(R.dimen.catch_view_broad_size_base);
         mBubble = new BubbleView(getBaseContext());
         mSwipeApplication = (SwipeApplication) getApplication();
         mLauncherModel = mSwipeApplication.setLaunchr(this);
+        float pre = (float) SettingHelper.getInstance(this).getInt(SwipeSetting.SWIPE_AREA_PROGRESS, 5) / 10;
 
-        mCatchViewLeft0 = new CatchView(getBaseContext(), 0, 0, 50, 300);
-        mCatchViewLeft0.setState(CatchView.POSITION_STATE_LEFT);
+        mCatchViewLeft0 = new CatchView(getBaseContext());
         mCatchViewLeft0.setOnEdgeSlidingListener(this);
-        mCatchViewLeft0.show();
 
-        mCatchViewLeft1 = new CatchView(getBaseContext(), 0, 0, 100, 50);
-        mCatchViewLeft1.setState(CatchView.POSITION_STATE_LEFT);
+        mCatchViewLeft1 = new CatchView(getBaseContext());
         mCatchViewLeft1.setOnEdgeSlidingListener(this);
-        mCatchViewLeft1.show();
 
-        mCatchViewRight0 = new CatchView(getBaseContext(), 0, 0, 50, 300);
-        mCatchViewRight0.setState(CatchView.POSITION_STATE_RIGHT);
+        mCatchViewLeft2 = new CatchView(getBaseContext());
+        mCatchViewLeft2.setOnEdgeSlidingListener(this);
+
+        mCatchViewRight0 = new CatchView(getBaseContext());
         mCatchViewRight0.setOnEdgeSlidingListener(this);
-        mCatchViewRight0.show();
 
-        mCatchViewRight1 = new CatchView(getBaseContext(), 0, 0, 100, 50);
-        mCatchViewRight1.setState(CatchView.POSITION_STATE_RIGHT);
+        mCatchViewRight1 = new CatchView(getBaseContext());
         mCatchViewRight1.setOnEdgeSlidingListener(this);
-        mCatchViewRight1.show();
+
+        mCatchViewRight2 = new CatchView(getBaseContext());
+        mCatchViewRight2.setOnEdgeSlidingListener(this);
+
+        updataCatchView(pre);
+
+        initCacthView(SettingHelper.getInstance(this).getInt(SwipeSetting.SWIPE_AREA));
 
         mSwipeLayout = (SwipeLayout) LayoutInflater.from(getBaseContext()).inflate(R.layout.swipe_layout, null);
         /**
@@ -163,12 +197,13 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return mBinder;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         mLauncherModel.startLoadTask();
+
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -180,8 +215,10 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         //startService(intent);
         mCatchViewLeft0.dismiss();
         mCatchViewLeft1.dismiss();
+        mCatchViewLeft2.dismiss();
         mCatchViewRight0.dismiss();
         mCatchViewRight1.dismiss();
+        mCatchViewRight2.dismiss();
         unregisterReceiver(mReceiver);
         getContentResolver().unregisterContentObserver(mObserver);
 
@@ -252,47 +289,155 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         }
     }
 
+    /**
+     * 设置CatchView
+     * 0是两边都有
+     * 1是左边
+     * 2是右边
+     *
+     * @param area
+     */
+    public void initCacthView(int area) {
+        if (area == 0) {
+            mCatchViewLeft0.show();
+            mCatchViewLeft1.show();
+            mCatchViewLeft2.show();
+            mCatchViewRight0.show();
+            mCatchViewRight1.show();
+            mCatchViewRight2.show();
+        } else if (area == 1) {
+            mCatchViewLeft0.show();
+            mCatchViewLeft1.show();
+            mCatchViewLeft2.show();
+        } else if (area == 2) {
+            mCatchViewRight0.show();
+            mCatchViewRight1.show();
+            mCatchViewRight2.show();
+        }
+    }
+
+
+    public void changeCatchView(int area) {
+        if (area == 0) {
+            mCatchViewLeft0.show();
+            mCatchViewLeft1.show();
+            mCatchViewLeft2.show();
+            mCatchViewRight0.show();
+            mCatchViewRight1.show();
+            mCatchViewRight2.show();
+        } else if (area == 1) {
+            mCatchViewLeft0.show();
+            mCatchViewLeft1.show();
+            mCatchViewLeft2.show();
+            mCatchViewRight0.dismiss();
+            mCatchViewRight1.dismiss();
+            mCatchViewRight2.dismiss();
+        } else if (area == 2) {
+            mCatchViewLeft0.dismiss();
+            mCatchViewLeft1.dismiss();
+            mCatchViewLeft2.dismiss();
+            mCatchViewRight0.show();
+            mCatchViewRight1.show();
+            mCatchViewRight2.show();
+        }
+    }
+
+    /**
+     * 更新
+     *
+     * @param pre
+     */
+    public void updataCatchView(float pre) {
+        mCatchViewLeft0.setState(PositionState.POSITION_STATE_LEFT, 0, 0, (int) (mCatchViewBroadSize + mCatchViewBroadSize * pre),
+                (int) (mCatchViewHeight + (mCatchViewHeight * pre)));
+        mCatchViewLeft0.updata();
+        mCatchViewLeft1.setState(PositionState.POSITION_STATE_LEFT, 0, 0, (int) (mCatchViewWidth + (mCatchViewWidth * pre)),
+                (int) (mCatchViewBroadSize + mCatchViewBroadSize * pre));
+        mCatchViewLeft1.updata();
+        mCatchViewLeft2.setState(PositionState.POSITION_STATE_LEFT, 0, 0, (int) (mCatchViewBroadSize + mCatchViewBroadSize * pre) * 2,
+                (int) (mCatchViewBroadSize + mCatchViewBroadSize * pre) * 4);
+        mCatchViewLeft2.updata();
+        mCatchViewRight0.setState(PositionState.POSITION_STATE_RIGHT, 0, 0, (int) (mCatchViewBroadSize + mCatchViewBroadSize * pre),
+                (int) (mCatchViewHeight + (mCatchViewHeight * pre)));
+        mCatchViewRight0.updata();
+        mCatchViewRight1.setState(PositionState.POSITION_STATE_RIGHT, 0, 0, (int) (mCatchViewWidth + (mCatchViewWidth * pre)),
+                (int) (mCatchViewBroadSize + mCatchViewBroadSize * pre));
+        mCatchViewRight1.updata();
+        mCatchViewRight2.setState(PositionState.POSITION_STATE_RIGHT, 0, 0, (int) (mCatchViewBroadSize + mCatchViewBroadSize * pre) * 2,
+                (int) (mCatchViewBroadSize + mCatchViewBroadSize * pre) * 4);
+        mCatchViewRight2.updata();
+    }
+
+    /**
+     * 改变
+     *
+     * @param color
+     */
+    public void changColor(int color) {
+        mCatchViewLeft0.setColor(color);
+        mCatchViewLeft1.setColor(color);
+        mCatchViewLeft2.setColor(color);
+        mCatchViewRight0.setColor(color);
+        mCatchViewRight1.setColor(color);
+        mCatchViewRight2.setColor(color);
+    }
+
     @Override
     public void openLeft() {
-        mSwipeLayout.switchLeft();
+        /**
+         * 0 仅桌面的时候打开
+         */
+        if (swipeForHome()) {
+            mSwipeLayout.switchLeft();
+        }
+
     }
+
 
     @Override
     public void openRight() {
-        mSwipeLayout.switchRight();
-    }
-
-    @Override
-    public void change(float scale) {
-        if (mSwipeLayout.isSwipeOff()) {
-            mSwipeLayout.getAngleLayout().setAngleLayoutScale(scale);
-            mSwipeLayout.setSwipeBackgroundViewAlpha(scale);
+        if (swipeForHome()) {
+            mSwipeLayout.switchRight();
         }
     }
 
     @Override
+    public void change(float scale) {
+        if (swipeForHome()) {
+            if (mSwipeLayout.isSwipeOff()) {
+                mSwipeLayout.getAngleLayout().setAngleLayoutScale(scale);
+                mSwipeLayout.setSwipeBackgroundViewAlpha(scale);
+            }
+        }
+
+
+    }
+
+    @Override
     public void cancel(View view, boolean flag) {
-        if (mSwipeLayout.isSwipeOff()) {
-            int state = ((CatchView) view).getState();
-            if (state == CatchView.POSITION_STATE_LEFT) {
-                mSwipeLayout.switchLeft();
-            } else if (state == CatchView.POSITION_STATE_RIGHT) {
-                mSwipeLayout.switchRight();
+        if (swipeForHome()) {
+            if (mSwipeLayout.isSwipeOff()) {
+                int state = ((CatchView) view).getState();
+                if (state == PositionState.POSITION_STATE_LEFT) {
+                    mSwipeLayout.switchLeft();
+                } else if (state == PositionState.POSITION_STATE_RIGHT) {
+                    mSwipeLayout.switchRight();
+                }
+                /**
+                 * flag==true  速度满足时自动打开
+                 * flag==flase 根据当前的sacle判断是否打开
+                 */
+                if (flag) {
+                    mSwipeLayout.getAngleLayout().on();
+                } else {
+                    mSwipeLayout.getAngleLayout().switchAngleLayout();
+                }
+                /**
+                 * 设置RecentTask数据，如果新开机之后没有数据，就拿AllApps的数据做一个补充
+                 */
+                mSwipeLayout.getAngleLayout().getAngleView().putRecentTask(mLauncherModel.loadRecentTask(this),
+                        mLauncherModel.getAllAppsList().data);
             }
-            /**
-             * flag==true  速度满足时自动打开
-             * flag==flase 根据当前的sacle判断是否打开
-             */
-            if (flag) {
-                mSwipeLayout.getAngleLayout().on();
-            } else {
-                mSwipeLayout.getAngleLayout().switchAngleLayout();
-            }
-            /**
-             * 设置RecentTask数据，如果新开机之后没有数据，就拿AllApps的数据做一个补充
-             */
-            mSwipeLayout.getAngleLayout().getAngleView().putRecentTask(mLauncherModel.loadRecentTask(this),
-                    mLauncherModel.getAllAppsList().data);
         }
     }
 
@@ -335,6 +480,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
             mSwipeLayout.dismissAnimator();
         } else if (object instanceof ItemSwipeTools) {
             if (safeClick()) {
+
                 ItemSwipeTools itemswitch = (ItemSwipeTools) view.getTag();
                 ToolsStrategy.getInstance().toolsClick(this, itemview, itemswitch, mSwipeLayout);
                 /**
@@ -442,6 +588,48 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         } else if (view == mSwipeLayout.getEditToolsLayout()) {
             mSwipeLayout.setEditToolsGone();
         }
+    }
+
+    /**
+     * 判断当前的运行的app是否在桌面AppList中
+     *
+     * @return
+     */
+    private boolean isHomePackage() {
+        ActivityManager mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> infos = mActivityManager.getRunningTasks(1);
+        ItemApplication app = new ItemApplication();
+        ActivityManager.RunningTaskInfo info = infos.get(0);
+        String packagename = info.topActivity.getPackageName();
+        String classname = info.topActivity.getClassName();
+        for (int i = 0; i < mLauncherModel.getAllAppsList().homeapps.size(); i++) {
+            ItemApplication application = mLauncherModel.getAllAppsList().homeapps.get(i);
+            if (packagename.equals(application.mIntent.getComponent().getPackageName()) &&
+                    classname.equals(application.mIntent.getComponent().getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 判断是否SwipeSetting 的值0为仅在桌面打开，1为桌面和所有app
+     *
+     * @return
+     */
+    public boolean swipeForHome() {
+        if (SettingHelper.getInstance(this).getInt(SwipeSetting.SWIPE_FOR) == 0) {
+            if (isHomePackage()) {
+                return true;
+            }
+        } else {
+            return true;
+        }
+        return false;
+    }
+
+    public LauncherModel getLauncherMode() {
+        return mLauncherModel;
     }
 
     /**

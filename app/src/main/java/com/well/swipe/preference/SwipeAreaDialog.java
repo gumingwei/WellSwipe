@@ -1,6 +1,8 @@
 package com.well.swipe.preference;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -41,6 +43,7 @@ public class SwipeAreaDialog extends SwipeDialog {
         mTitle = (TextView) mContentView.findViewById(R.id.dialog_title);
         mItemContent = (LinearLayout) mContentView.findViewById(R.id.dialog_content_list);
         mSeekBak = (SeekBarCompat) mContentView.findViewById(R.id.materialSeekBar);
+        mSeekBak.setMax(10);
         mNegativeBtn = (Button) mContentView.findViewById(R.id.dialog_cancel);
         mPositiveBtn = (Button) mContentView.findViewById(R.id.dialog_ok);
         return mContentView;
@@ -77,7 +80,6 @@ public class SwipeAreaDialog extends SwipeDialog {
 
     public SwipeAreaDialog setOnSeekBarChangeListener(SeekBar.OnSeekBarChangeListener listener) {
         mSeekBak.setOnSeekBarChangeListener(listener);
-
         return this;
     }
 
@@ -90,9 +92,13 @@ public class SwipeAreaDialog extends SwipeDialog {
     }
 
     @Override
+    public void show() {
+        super.show();
+    }
+
+    @Override
     public void dissmis() {
         super.dissmis();
         mItemContent.removeAllViews();
     }
-
 }

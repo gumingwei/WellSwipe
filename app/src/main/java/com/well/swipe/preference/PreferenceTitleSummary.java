@@ -2,6 +2,7 @@ package com.well.swipe.preference;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.well.swipe.R;
@@ -64,4 +65,19 @@ public class PreferenceTitleSummary extends SwipePreference {
         mSummary.setText(mSummaryArray[getIntValue()]);
     }
 
+    public void refreshSummary(int def) {
+        mSummary.setText(mSummaryArray[getIntValue(def)]);
+    }
+
+    @Override
+    public void setClickable(boolean clickable) {
+        super.setClickable(clickable);
+        if (clickable) {
+            mTitle.setTextColor(getResources().getColor(R.color.preference_title_enable_color));
+            mSummary.setTextColor(getResources().getColor(R.color.preference_summary_enable_color));
+        } else {
+            mTitle.setTextColor(getResources().getColor(R.color.preference_title_unenable_color));
+            mSummary.setTextColor(getResources().getColor(R.color.preference_summary_unenable_color));
+        }
+    }
 }

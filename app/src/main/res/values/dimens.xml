@@ -17,6 +17,10 @@
     <dimen name="app_icon_size">48dp</dimen>
     <dimen name="angle_item_text_size">12sp</dimen>
     <dimen name="angleview_indicatorview_distance">3dp</dimen>
+    <dimen name="catch_view_height">100dp</dimen>
+    <dimen name="catch_view_width">50dp</dimen>
+    <dimen name="catch_view_broad_size_base">10dp</dimen>
+    <dimen name="catch_view_broad_size_change">40dp</dimen>
 
     <dimen name="angleview_item_delete_size">20dp</dimen>
     <dimen name="swipe_edit_header_height">48dp</dimen>

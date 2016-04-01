@@ -22,7 +22,7 @@
         android:layout_marginLeft="10dp"
         android:layout_toEndOf="@id/preference_icon"
         android:layout_toRightOf="@id/preference_icon"
-        android:textColor="@color/ksw_md_solid_checked"
+        android:textColor="@color/preference_title_enable_color"
         android:textSize="@dimen/preference_item_title_size" />
 
     <TextView
@@ -33,5 +33,6 @@
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@id/preference_icon"
         android:maxLines="1"
+        android:textColor="@color/preference_summary_enable_color"
         android:textSize="@dimen/preference_item_summary_size" />
 </com.well.swipe.preference.PreferenceTitleSummary>

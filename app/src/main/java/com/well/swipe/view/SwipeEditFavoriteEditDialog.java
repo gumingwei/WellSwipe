@@ -339,13 +339,15 @@ public class SwipeEditFavoriteEditDialog extends SwipeEditDialog implements View
                 }
             }
             if (bool) {
-                deleteList(context, oldlist);
+                //deleteList(context, oldlist);
+                deletedListAll(context);
                 addList(context, newlist);
                 return true;
             }
         } else {
             //替换
-            deleteList(context, oldlist);
+            //deleteList(context, oldlist);
+            deletedListAll(context);
             addList(context, newlist);
             return true;
         }
@@ -363,6 +365,10 @@ public class SwipeEditFavoriteEditDialog extends SwipeEditDialog implements View
         for (int i = 0; i < oldlist.size(); i++) {
             oldlist.get(i).delete(context);
         }
+    }
+
+    public void deletedListAll(Context context) {
+        new ItemApplication().deleteAll(context);
     }
 
     /**

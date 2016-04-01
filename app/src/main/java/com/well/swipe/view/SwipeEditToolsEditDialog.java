@@ -214,13 +214,15 @@ public class SwipeEditToolsEditDialog extends SwipeEditDialog implements View.On
                 }
             }
             if (bool) {
-                deleteList(context, oldlist);
+                //deleteList(context, oldlist);
+                deleteListAll(context);
                 addList(context, newlist);
                 return true;
             }
         } else {
             //替换
-            deleteList(context, oldlist);
+            //deleteList(context, oldlist);
+            deleteListAll(context);
             addList(context, newlist);
             return true;
         }
@@ -237,6 +239,10 @@ public class SwipeEditToolsEditDialog extends SwipeEditDialog implements View.On
         for (int i = 0; i < oldlist.size(); i++) {
             oldlist.get(i).delete(context);
         }
+    }
+
+    public void deleteListAll(Context context) {
+        new ItemSwipeTools().deletedAll(context);
     }
 
 

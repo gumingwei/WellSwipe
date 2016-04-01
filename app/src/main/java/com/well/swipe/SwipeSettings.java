@@ -46,5 +46,7 @@ public class SwipeSettings {
 
         public static final Uri CONTENT_URI = Uri.parse("content://" + SwipeProvider.AUTHORITY + "/" + SwipeProvider.TABLE_FAVORITES);
 
+        public static final Uri CONTENT_URI_WHITELIST = Uri.parse("content://" + SwipeProvider.AUTHORITY + "/" + SwipeProvider.TABLE_WHITELIST);
+
     }
 }

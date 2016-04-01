@@ -14,7 +14,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 
+import com.well.swipe.tools.SwipeSetting;
 import com.well.swipe.utils.Utilities;
 
 import java.lang.ref.WeakReference;
@@ -47,6 +49,7 @@ public class LauncherModel extends BroadcastReceiver {
      * 所有的Tools数据
      */
     private AllToolsList mAllToolsList;
+
     /**
      * 图片缓存
      */
@@ -179,7 +182,7 @@ public class LauncherModel extends BroadcastReceiver {
             try {
                 intent = Intent.parseUri(intentStr, 0);
             } catch (URISyntaxException e) {
-
+                e.printStackTrace();
             }
             ItemApplication application = new ItemApplication();
             application.mType = type;
@@ -253,6 +256,26 @@ public class LauncherModel extends BroadcastReceiver {
         return switches;
     }
 
+    public ArrayList<ItemApplication> loadWhitelist(Context context) {
+        ContentResolver resolver = context.getContentResolver();
+        Cursor cursor = resolver.query(SwipeSettings.Favorites.CONTENT_URI_WHITELIST, null, null, null, null);
+        ArrayList<ItemApplication> whitelist = new ArrayList<>();
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            String intentStr = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_INTENT));
+            Intent intent = null;
+            try {
+                intent = Intent.parseUri(intentStr, 0);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+            ItemApplication application = new ItemApplication();
+            application.mIntent = intent;
+            whitelist.add(application);
+        }
+        cursor.close();
+        return whitelist;
+    }
+
     public List<ActivityManager.RecentTaskInfo> loadRecentTask(Context context) {
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RecentTaskInfo> activityInfoList = am.getRecentTasks(MAX_RECENT_TASKS, ActivityManager.RECENT_IGNORE_UNAVAILABLE);
@@ -291,6 +314,7 @@ public class LauncherModel extends BroadcastReceiver {
             bindSwitch();
             bindFinish();
             loadAndBindAllApps();
+            loadHomePackage();
         }
 
         private void loadDefaultWorkspace() {
@@ -322,6 +346,10 @@ public class LauncherModel extends BroadcastReceiver {
 
             mCallback.get().bindAllApps(applications);
 
+        }
+
+        private void loadHomePackage() {
+            mAllAppsList.addHomePackage(mContext);
         }
 
         /**

@@ -42,6 +42,8 @@ public class SwipeProvider extends ContentProvider {
 
     static final String TABLE_FAVORITES = "favorites";
 
+    static final String TABLE_WHITELIST = "whitelist";
+
     static final String PARAMETER_NOTIFY = "notify";
 
     static final String AUTHORITY = "com.well.swipe.favorites";
@@ -54,6 +56,8 @@ public class SwipeProvider extends ContentProvider {
 
     static {
         mUriMatcher.addURI("com.well.swipe.favorites", "favorites", 1);
+
+        mUriMatcher.addURI("com.well.swipe.favorites", "whitelist", 2);
     }
 
     public SwipeProvider() {
@@ -100,11 +104,12 @@ public class SwipeProvider extends ContentProvider {
         return 0;
     }
 
-    private static long dbInsertAndCheck(DatabaseHelper helper,
-                                         SQLiteDatabase db, String table, String nullColumnHack, ContentValues values) {
-        if (!values.containsKey(SwipeSettings.BaseColumns.ITEM_TYPE)) {
-            throw new RuntimeException("Error: attempting to add item without specifying an id");
-        }
+    private static long dbInsertAndCheck(DatabaseHelper helper, SQLiteDatabase db, String table,
+                                         String nullColumnHack, ContentValues values) {
+        //判断存App，Tools数据时使用，在判断白名单是没用了
+        //if (!values.containsKey(SwipeSettings.BaseColumns.ITEM_TYPE)) {
+        //throw new RuntimeException("Error: attempting to add item without specifying an id");
+        //}
         return db.insert(table, nullColumnHack, values);
     }
 
@@ -191,6 +196,9 @@ public class SwipeProvider extends ContentProvider {
                     "icon_package VARCHAR," +
                     "icon_resource VARCHAR," +
                     "icon_bitmap BLOB)");
+
+            db.execSQL("CREATE TABLE whitelist(_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "item_intent VARCHAR)");
         }
 
         @Override

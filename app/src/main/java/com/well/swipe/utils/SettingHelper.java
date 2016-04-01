@@ -12,7 +12,7 @@ public class SettingHelper {
 
     Context mContext;
 
-    private final String PREFERENCE_NAME = "setting_helper";
+    public static final String PREFERENCE_NAME = "com.well.swipe.setting";
 
     private SharedPreferences mSharedPreferences;
 
@@ -64,6 +64,10 @@ public class SettingHelper {
 
     public boolean getBoolean(String key) {
         return mSharedPreferences.getBoolean(key, false);
+    }
+
+    public boolean getBoolean(String key, boolean def) {
+        return mSharedPreferences.getBoolean(key, def);
     }
 
 

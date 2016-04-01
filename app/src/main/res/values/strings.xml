@@ -71,7 +71,7 @@
     <string name="swipe_area_type0">Bottom left and Bottom right</string>
     <string name="swipe_area_type1">Bottom left</string>
     <string name="swipe_area_type2">Bottom right</string>
-    <string name="swipe_whitelist">Do not disturb settings(%1$s)</string>
+    <string name="swipe_whitelist">Do not disturb settings(%1$d)</string>
     <string name="swipe_whitelist_des">Choose apps that disable Well Swipe</string>
     <string name="swipe_whitelist_title">Add app</string>
     <string name="swipe_about">About</string>

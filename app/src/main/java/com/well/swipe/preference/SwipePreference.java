@@ -5,12 +5,14 @@ import android.content.SharedPreferences;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
+import com.well.swipe.utils.SettingHelper;
+
 /**
  * Created by mingwei on 3/30/16.
  */
 public class SwipePreference extends RelativeLayout {
 
-    private static final String SETTING_PREFERENCE = "swipe_settings";
+    private static final String SETTING_PREFERENCE = SettingHelper.PREFERENCE_NAME;
 
     private String mKey;
 
@@ -59,8 +61,15 @@ public class SwipePreference extends RelativeLayout {
         return mPreference.getInt(mKey, 0);
     }
 
+    public int getIntValue(int def) {
+        return mPreference.getInt(mKey, def);
+    }
+
     public boolean getBooleanValue() {
         return mPreference.getBoolean(mKey, false);
     }
 
+    public String getKey() {
+        return mKey;
+    }
 }

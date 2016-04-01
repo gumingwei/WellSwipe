@@ -25,14 +25,13 @@ public class AllToolsList {
             ItemSwipeTools itemswitch = new ItemSwipeTools();
             itemswitch.mTitle = mSwipeTitleArrAy[i];
             itemswitch.mAction = mSwipeActionArrAy[i];
-            //itemswitch.
             mSwipeDataList.add(itemswitch);
         }
     }
 
     public void printF() {
         for (int i = 0; i < mSwipeDataList.size(); i++) {
-            Log.i("Gmw", "title=" + mSwipeDataList.get(i).mTitle);
+            
         }
     }
 

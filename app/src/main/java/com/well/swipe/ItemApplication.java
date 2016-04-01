@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -93,6 +94,12 @@ public class ItemApplication extends ItemInfo {
                 new String[]{mIntent.toUri(0)});
     }
 
+    public int deleteAll(Context context) {
+        ContentResolver resolver = context.getContentResolver();
+        return resolver.delete(SwipeSettings.Favorites.CONTENT_URI, SwipeSettings.BaseColumns.ITEM_TYPE + "=?",
+                new String[]{String.valueOf(SwipeSettings.BaseColumns.ITEM_TYPE_APPLICATION)});
+    }
+
 
     public void insert(Context context, int index, Intent intent, PackageManager packageManager) {
         ContentResolver resolver = context.getContentResolver();
@@ -113,6 +120,20 @@ public class ItemApplication extends ItemInfo {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+    }
 
+    public void insertWhitelist(Context context, Intent intent) {
+        ContentResolver resolver = context.getContentResolver();
+        intent.setComponent(mIntent.getComponent());
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        ContentValues values = new ContentValues();
+        values.put(SwipeSettings.BaseColumns.ITEM_INTENT, intent.toUri(0));
+        resolver.insert(SwipeSettings.Favorites.CONTENT_URI_WHITELIST, values);
+        //SwipeProvider.DatabaseHelper helper = new SwipeProvider.DatabaseHelper(context);
+    }
+
+    public int deleteWhitelist(Context context) {
+        ContentResolver resolver = context.getContentResolver();
+        return resolver.delete(SwipeSettings.Favorites.CONTENT_URI_WHITELIST, null, null);
     }
 }

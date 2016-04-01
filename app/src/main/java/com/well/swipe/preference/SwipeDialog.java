@@ -2,6 +2,7 @@ package com.well.swipe.preference;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -57,6 +58,21 @@ public abstract class SwipeDialog {
 
     public Context getContext() {
         return mContext;
+    }
+
+    public SwipeDialog setOnCancelListener(DialogInterface.OnCancelListener listener) {
+        mDialog.setOnCancelListener(listener);
+        return this;
+    }
+
+    public SwipeDialog setOnShowListener(DialogInterface.OnShowListener listener) {
+        mDialog.setOnShowListener(listener);
+        return this;
+    }
+
+    public SwipeDialog setOnDismissListener(DialogInterface.OnDismissListener listener) {
+        mDialog.setOnDismissListener(listener);
+        return this;
     }
 
     /**

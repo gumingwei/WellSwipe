@@ -51,7 +51,7 @@
     <string name="swipe_area_type0">左侧底部和右侧底部</string>
     <string name="swipe_area_type1">左侧底部</string>
     <string name="swipe_area_type2">右侧底部</string>
-    <string name="swipe_whitelist">免打扰设置(%1$s)</string>
+    <string name="swipe_whitelist">免打扰设置(%1$d)</string>
     <string name="swipe_whitelist_des">使用这些应用时Well Swipe不会被划出</string>
     <string name="swipe_whitelist_title">添加应用</string>
     <string name="swipe_about">关于</string>

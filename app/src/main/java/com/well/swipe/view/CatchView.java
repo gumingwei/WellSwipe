@@ -20,17 +20,11 @@ import com.well.swipe.utils.Utils;
  * Created by mingwei on 3/8/16.
  * 作为触发屏幕触摸事件的View
  */
-public class CatchView extends View {
+public class CatchView extends PositionStateView {
 
     private Paint mPaint;
 
     private Rect mRect = new Rect();
-
-    private int mPosition = POSITION_STATE_LEFT;
-
-    public static final int POSITION_STATE_LEFT = 0;
-
-    public static final int POSITION_STATE_RIGHT = 1;
 
     public int mTouchSlop;
 
@@ -53,8 +47,6 @@ public class CatchView extends View {
     private float mLastX;
 
     private float mLastY;
-
-    //private int mState;
 
     private int mTouchState = 2;
 
@@ -96,12 +88,9 @@ public class CatchView extends View {
 
     }
 
-    public CatchView(Context context, int left, int top, int width, int height) {
+    public CatchView(Context context) {
         this(context, null);
-        mRectLeft = left;
-        mRectTop = top;
-        mRectRight = mWidth = width;
-        mRectBottom = mHeight = height;
+
     }
 
     public CatchView(Context context, AttributeSet attrs) {
@@ -146,12 +135,12 @@ public class CatchView extends View {
             case MotionEvent.ACTION_MOVE:
                 float newx = event.getX();
                 float newy = event.getY();
-                if (mPosition == POSITION_STATE_LEFT) {
+                if (mPositionState == PositionState.POSITION_STATE_LEFT) {
                     if (newx - mLastX > mTouchSlop && Math.abs(newy - mLastY) > mTouchSlop && mTouchState != TOUCH_STATE_SLIDE) {
                         mTouchState = TOUCH_STATE_SLIDE;
                         mListener.openLeft();
                     }
-                } else if (mPosition == POSITION_STATE_RIGHT) {
+                } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
                     if (Math.abs(newx - mLastX) > mTouchSlop && Math.abs(newy - mLastY) > mTouchSlop && mTouchState != TOUCH_STATE_SLIDE) {
                         mTouchState = TOUCH_STATE_SLIDE;
                         mListener.openRight();
@@ -186,6 +175,22 @@ public class CatchView extends View {
         return true;
     }
 
+    /**
+     * 设置颜色
+     *
+     * @param color
+     */
+    public void setColor(int color) {
+        mPaint.setColor(color);
+        invalidate();
+    }
+
+    /**
+     * 初始化
+     *
+     * @param x
+     * @param y
+     */
     private void initManager(int x, int y) {
         mParams = new WindowManager.LayoutParams();
         mManager = (WindowManager) getContext().getSystemService(getContext().WINDOW_SERVICE);
@@ -195,9 +200,9 @@ public class CatchView extends View {
         mParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                 | WindowManager.LayoutParams.FLAG_FULLSCREEN;
         mParams.gravity = Gravity.LEFT | Gravity.TOP;
-        if (mPosition == POSITION_STATE_LEFT) {
+        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
             mParams.x = 0;
-        } else if (mPosition == POSITION_STATE_RIGHT) {
+        } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
             mParams.x = x;
         }
 
@@ -206,24 +211,26 @@ public class CatchView extends View {
         mParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
     }
 
-    public void setState(int state) {
-        mPosition = state;
+    public void setState(int state, int left, int top, int width, int height) {
+        mPositionState = state;
         initManager(mDisplayWidth, mDisplayHeight);
-        initRect();
-        invalidate();
-
+        initRect(left, top, width, height);
     }
 
     public int getState() {
-        return mPosition;
+        return mPositionState;
     }
 
     /**
      * 初始化范围
      */
-    private void initRect() {
-
+    private void initRect(int left, int top, int width, int height) {
+        mRectLeft = left;
+        mRectTop = top;
+        mRectRight = mWidth = width;
+        mRectBottom = mHeight = height;
         mRect.set(mRectLeft, mRectTop, mRectRight, mRectBottom);
+        invalidate();
     }
 
     public boolean isManager() {
@@ -238,6 +245,15 @@ public class CatchView extends View {
         }
     }
 
+    public void updata() {
+        if (isManager()) {
+            if (this.getParent() != null) {
+                mManager.updateViewLayout(this, mParams);
+            }
+        }
+    }
+
+
     public void dismiss() {
         if (isManager()) {
             if (this.getParent() != null) {
@@ -250,10 +266,6 @@ public class CatchView extends View {
         mListener = listener;
     }
 
-    public void setPositionType(int type) {
-
-    }
-
     /**
      * 初始化VelocityTracker
      *
@@ -264,7 +276,6 @@ public class CatchView extends View {
             mVelocityTracker = VelocityTracker.obtain();
         }
         mVelocityTracker.addMovement(event);
-
     }
 
     /**
