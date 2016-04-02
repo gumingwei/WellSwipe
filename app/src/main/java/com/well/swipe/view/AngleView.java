@@ -362,8 +362,21 @@ public class AngleView extends PositionStateViewGroup {
             /**
              * 需要补充的额外数目
              */
-            if (extralist.size() > 0) {
-                for (int i = 0; i < 9; i++) {
+            if (extralist.size() > 10) {
+                for (int i = 0; i < 10; i++) {
+                    AngleItemStartUp itemview = (AngleItemStartUp) LayoutInflater.from(getContext())
+                            .inflate(R.layout.angle_item_startup, null);
+                    itemview.setTitle(extralist.get(i).mTitle.toString());
+                    itemview.setItemIcon(extralist.get(i).mIconBitmap);
+                    itemview.setTag(extralist.get(i));
+                    if (contains(activityInfoList, extralist.get(i))) {
+                        break;
+                    } else {
+                        mRecentAppList.add(itemview);
+                    }
+                }
+            } else {
+                for (int i = 0; i < extralist.size(); i++) {
                     AngleItemStartUp itemview = (AngleItemStartUp) LayoutInflater.from(getContext())
                             .inflate(R.layout.angle_item_startup, null);
                     itemview.setTitle(extralist.get(i).mTitle.toString());

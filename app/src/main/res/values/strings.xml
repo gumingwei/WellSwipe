@@ -79,4 +79,6 @@
     <string name="swipe_about_feedback">Feedback</string>
     <string name="swipe_about_version">App Version</string>
 
+    <string name="feedback_title">fill in the title</string>
+    <string name="feedback_content">fill in the content</string>
 </resources>

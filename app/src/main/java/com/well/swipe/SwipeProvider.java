@@ -26,6 +26,8 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Xml;
 
+import com.well.swipe.utils.Utils;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -290,7 +292,7 @@ public class SwipeProvider extends ContentProvider {
             /**
              * 判断是否安装
              */
-            if (!isApkInstalled(mContext, packageName)) {
+            if (!Utils.isApkInstalled(mContext, packageName)) {
                 hasPackage = false;
             }
             if (hasPackage) {
@@ -347,19 +349,6 @@ public class SwipeProvider extends ContentProvider {
             }
             //database.close();
             return true;
-        }
-
-        public boolean isApkInstalled(Context context, String packageName) {
-            if (TextUtils.isEmpty(packageName))
-                return false;
-            try {
-                @SuppressWarnings("unused")
-                ApplicationInfo info = context.getPackageManager().getApplicationInfo(packageName,
-                        PackageManager.GET_UNINSTALLED_PACKAGES);
-                return true;
-            } catch (PackageManager.NameNotFoundException e) {
-                return false;
-            }
         }
 
         /**

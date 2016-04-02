@@ -1,6 +1,9 @@
 package com.well.swipe.utils;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
@@ -11,6 +14,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 
 
@@ -22,7 +26,7 @@ import java.lang.reflect.Field;
  * Created by mingwei on 2/26/16.
  */
 public class Utils {
-    
+
 
     public static int dp2px(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
@@ -52,6 +56,42 @@ public class Utils {
             e.printStackTrace();
         }
         return h;
+    }
+
+    /**
+     * 判断程序是否安装
+     *
+     * @param context
+     * @param packageName
+     * @return
+     */
+    public static boolean isApkInstalled(Context context, String packageName) {
+        if (TextUtils.isEmpty(packageName))
+            return false;
+        try {
+            @SuppressWarnings("unused")
+            ApplicationInfo info = context.getPackageManager().getApplicationInfo(packageName,
+                    PackageManager.GET_UNINSTALLED_PACKAGES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    public static String getVersionName(Context context) {
+        PackageManager pm = context.getPackageManager();
+        try {
+            PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
+            return pi.versionName;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static String getMarketUrl(String packageName) {
+        String marketUrl = "market://details?id=" + packageName;
+        return marketUrl;
     }
 
 }

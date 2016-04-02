@@ -387,35 +387,32 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         /**
          * 0 仅桌面的时候打开
          */
-        if (swipeForHome()) {
+        if (swipeSwipeSetting()) {
             mSwipeLayout.switchLeft();
         }
-
     }
 
 
     @Override
     public void openRight() {
-        if (swipeForHome()) {
+        if (swipeSwipeSetting()) {
             mSwipeLayout.switchRight();
         }
     }
 
     @Override
     public void change(float scale) {
-        if (swipeForHome()) {
+        if (mSwipeLayout.isAdd()) {
             if (mSwipeLayout.isSwipeOff()) {
                 mSwipeLayout.getAngleLayout().setAngleLayoutScale(scale);
                 mSwipeLayout.setSwipeBackgroundViewAlpha(scale);
             }
         }
-
-
     }
 
     @Override
     public void cancel(View view, boolean flag) {
-        if (swipeForHome()) {
+        if (swipeSwipeSetting()) {
             if (mSwipeLayout.isSwipeOff()) {
                 int state = ((CatchView) view).getState();
                 if (state == PositionState.POSITION_STATE_LEFT) {
@@ -598,7 +595,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     private boolean isHomePackage() {
         ActivityManager mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> infos = mActivityManager.getRunningTasks(1);
-        ItemApplication app = new ItemApplication();
+        //ItemApplication app = new ItemApplication();
         ActivityManager.RunningTaskInfo info = infos.get(0);
         String packagename = info.topActivity.getPackageName();
         String classname = info.topActivity.getClassName();
@@ -617,13 +614,44 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
      *
      * @return
      */
-    public boolean swipeForHome() {
-        if (SettingHelper.getInstance(this).getInt(SwipeSetting.SWIPE_FOR) == 0) {
+    public boolean swipeSwipeSetting() {
+        /**
+         * 判断是仅桌面还是所有app
+         */
+        if (SettingHelper.getInstance(this).getInt(SwipeSetting.SWIPE_FOR, 1) == 0) {
+            /**
+             * 当前的app是不是桌面app
+             */
             if (isHomePackage()) {
-                return true;
+                /**
+                 * 过滤白名单
+                 */
+                if (!isWhitelistPackage()) {
+                    return true;
+                }
+
             }
         } else {
-            return true;
+            if (!isWhitelistPackage()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isWhitelistPackage() {
+        ActivityManager mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> infos = mActivityManager.getRunningTasks(1);
+        //ItemApplication app = new ItemApplication();
+        ActivityManager.RunningTaskInfo info = infos.get(0);
+        String packagename = info.topActivity.getPackageName();
+        String classname = info.topActivity.getClassName();
+        for (int i = 0; i < mLauncherModel.loadWhitelist(this).size(); i++) {
+            ItemApplication application = mLauncherModel.loadWhitelist(this).get(i);
+            if (packagename.equals(application.mIntent.getComponent().getPackageName()) &&
+                    classname.equals(application.mIntent.getComponent().getClassName())) {
+                return true;
+            }
         }
         return false;
     }

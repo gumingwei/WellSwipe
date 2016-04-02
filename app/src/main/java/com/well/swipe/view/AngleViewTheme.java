@@ -30,16 +30,6 @@ public class AngleViewTheme extends PositionStateView {
 
     private int mDistance;
 
-    private static final Xfermode[] sModes = {new PorterDuffXfermode(PorterDuff.Mode.CLEAR),
-            new PorterDuffXfermode(PorterDuff.Mode.SRC), new PorterDuffXfermode(PorterDuff.Mode.DST),
-            new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER), new PorterDuffXfermode(PorterDuff.Mode.DST_OVER),
-            new PorterDuffXfermode(PorterDuff.Mode.SRC_IN), new PorterDuffXfermode(PorterDuff.Mode.DST_IN),
-            new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT), new PorterDuffXfermode(PorterDuff.Mode.DST_OUT),
-            new PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP), new PorterDuffXfermode(PorterDuff.Mode.DST_ATOP),
-            new PorterDuffXfermode(PorterDuff.Mode.XOR), new PorterDuffXfermode(PorterDuff.Mode.DARKEN),
-            new PorterDuffXfermode(PorterDuff.Mode.LIGHTEN), new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY),
-            new PorterDuffXfermode(PorterDuff.Mode.SCREEN)};
-
     public AngleViewTheme(Context context) {
         this(context, null);
     }
@@ -50,6 +40,7 @@ public class AngleViewTheme extends PositionStateView {
 
     public AngleViewTheme(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
         mInnerSize = getResources().getDimensionPixelSize(R.dimen.angleindicator_size);
         mDistance = getResources().getDimensionPixelSize(R.dimen.angleview_indicatorview_distance);
         mColor = getResources().getColor(R.color.angleview_arc_background);

@@ -65,7 +65,7 @@
 
     <include
         android:id="@+id/swipe_version"
-        layout="@layout/preference_title" />
+        layout="@layout/preference_titlesummary" />
 
     <include layout="@layout/preference_divide" />
 

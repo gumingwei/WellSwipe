@@ -71,6 +71,8 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
     private float mLastMotionY;
 
+    private long mLastTime;
+
     private int mActivePointId;
     /**
      * 最小移动距离
@@ -178,7 +180,6 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         LayoutParams indicatorParams = new LayoutParams(mIndicatorSize, mIndicatorSize);
         mIndicator.setLayoutParams(indicatorParams);
         mIndicatorTheme.setLayoutParams(indicatorParams);
-
     }
 
     @Override
@@ -198,7 +199,6 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
             mIndicator.layout(mWidth - mIndicatorSize, mHeight - mIndicatorSize, mWidth, mHeight);
             mIndicatorTheme.layout(mWidth - mIndicatorSize, mHeight - mIndicatorSize, mWidth, mHeight);
         }
-
     }
 
     @Override
@@ -213,6 +213,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                 //mDownMotionX = ev.getX();
                 mLastMotionX = ev.getX();
                 mLastMotionY = ev.getY();
+
                 mActivePointId = ev.getPointerId(0);
                 if (mEditState == STATE_NORMAL) {
                     if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
@@ -238,6 +239,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 mTouchState = TOUCH_STATE_REST;
+
                 break;
         }
 
@@ -256,6 +258,8 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                 mTouchState = TOUCH_STATE_REST;
                 mLastMotionX = event.getX();
                 mLastMotionY = event.getY();
+                mLastTime = System.currentTimeMillis();
+                //Log.i("Gmw", "down=" + mLastMotionX + "," + mLastMotionY);
                 mActivePointId = event.getPointerId(0);
                 if (mTouchState == TOUCH_STATE_WHIRLING) {
                     //正在滚动的时候
@@ -272,7 +276,6 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
                 break;
             case MotionEvent.ACTION_MOVE:
-
                 float newX = event.getX();
                 float newY = event.getY();
                 float diffX = newX - mLastMotionX;
@@ -293,7 +296,6 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                     }
                 }
 
-
                 break;
             case MotionEvent.ACTION_UP:
                 mTouchState = TOUCH_STATE_REST;
@@ -304,6 +306,22 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                     mAngleView.fling(vx, vy);
                 }
                 recyleVelocityTracker();
+                float upX = event.getX();
+                float upY = event.getY();
+                long upTime = System.currentTimeMillis();
+                if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
+                    float upDistance = (float) Math.sqrt(Math.pow((upX - 0), 2) + Math.pow((upY - mHeight), 2));
+                    if (Math.abs(upX - mLastMotionX) < 8 && Math.abs(upY - mLastMotionY) < 8 &&
+                            (upTime - mLastTime) < 200 && (upDistance > mAngleView.getMeasuredHeight())) {
+                        off();
+                    }
+                } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
+                    float upDistance = (float) Math.sqrt(Math.pow((upX - mWidth), 2) + Math.pow((upY - mHeight), 2));
+                    if (Math.abs(upX - mLastMotionX) < 8 && Math.abs(upY - mLastMotionY) < 8 &&
+                            (upTime - mLastTime) < 200 && (upDistance > mAngleView.getMeasuredHeight())) {
+                        off();
+                    }
+                }
                 break;
             case MotionEvent.ACTION_CANCEL:
                 recyleVelocityTracker();
@@ -462,7 +480,6 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     }
 
     public void on(float start) {
-
         if (isAnimator) {
             mSwitchType = SWITCH_TYPE_ON;
             animator(start, 1.0f);
@@ -550,6 +567,10 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
      */
     public int getSwitchType() {
         return mSwitchType;
+    }
+
+    public void setSwitchType(int type) {
+        mSwitchType = type;
     }
 
 }

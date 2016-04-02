@@ -37,6 +37,7 @@ public class AngleIndicatorViewTheme extends PositionStateView {
 
     public AngleIndicatorViewTheme(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
         mDistance = getResources().getDimensionPixelSize(R.dimen.angleview_indicatorview_distance);
         mIndicatorInnerSize = getResources().getDimensionPixelSize(R.dimen.angleindicator_arc_inner_size);
         mColor = getResources().getColor(R.color.indicator_arc_background);

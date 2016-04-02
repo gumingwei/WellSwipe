@@ -58,4 +58,7 @@
     <string name="swipe_about_rate5start">喜欢就请5星好评吧</string>
     <string name="swipe_about_feedback">意见回报</string>
     <string name="swipe_about_version">版本</string>
+
+    <string name="feedback_title">填写标题</string>
+    <string name="feedback_content">填写内容</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.well.swipe.activitys;
 
 
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,6 +10,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
@@ -30,6 +33,7 @@ import com.well.swipe.preference.SwipeWhitelistDialog;
 import com.well.swipe.service.SwipeService;
 import com.well.swipe.tools.SwipeSetting;
 import com.well.swipe.utils.SettingHelper;
+import com.well.swipe.utils.Utils;
 import com.well.swipe.view.CheckItemLayout;
 
 import java.util.ArrayList;
@@ -49,6 +53,8 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
      */
     private PreferenceTitleSummary mSwipeFor;
 
+    private SwipeForDialog mDialogFor;
+
     /**
      * 用来存滑出时机
      * 0左侧底部和右侧底部
@@ -56,6 +62,8 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
      * 2仅右侧底部
      */
     private PreferenceTitleSummary mSwipeArea;
+
+    private SwipeAreaDialog mDialogArea;
     /**
      * Swipe划出的三种方式
      */
@@ -68,6 +76,8 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
      * 白名单
      */
     private PreferenceTitleSummary mSwipeWhitelist;
+
+    private SwipeWhitelistDialog mDialogWhitelist;
     /**
      * 关于
      */
@@ -83,7 +93,7 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
     /**
      * 版本
      */
-    private PreferenceTitle mVersion;
+    private PreferenceTitleSummary mVersion;
     /**
      * Service实例
      */
@@ -147,10 +157,9 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
         mFeedback.setTitle(getResources().getString(R.string.swipe_about_feedback));
         mFeedback.setOnClickListener(this);
 
-        mVersion = (PreferenceTitle) findViewById(R.id.swipe_version);
+        mVersion = (PreferenceTitleSummary) findViewById(R.id.swipe_version);
         mVersion.setTitle(getResources().getString(R.string.swipe_about_version));
-        mVersion.setOnClickListener(this);
-
+        mVersion.setSummary(Utils.getVersionName(this));
         /**
          * 绑定Service
          */
@@ -190,14 +199,14 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onClick(View v) {
         if (v == mSwipeFor) {
-            final SwipeForDialog dialog = new SwipeForDialog(this);
-            dialog.setTitle(getString(R.string.swipe_for)).
+            mDialogFor = new SwipeForDialog(this);
+            mDialogFor.setTitle(getString(R.string.swipe_for)).
                     addItem(mSwipeFor.getSummaryArray()[0], new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             mSwipeFor.setValues(0);
                             mSwipeFor.refreshSummary();
-                            dialog.dissmis();
+                            mDialogFor.dissmis();
                         }
                     }, mSwipeFor.getIntValue(1) == 0).
                     addItem(mSwipeFor.getSummaryArray()[1], new View.OnClickListener() {
@@ -205,16 +214,16 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
                         public void onClick(View v) {
                             mSwipeFor.setValues(1);
                             mSwipeFor.refreshSummary();
-                            dialog.dissmis();
+                            mDialogFor.dissmis();
                         }
                     }, mSwipeFor.getIntValue(1) == 1).show();
 
         } else if (v == mSwipeArea) {
-            final SwipeAreaDialog dialog = new SwipeAreaDialog(this);
+            mDialogArea = new SwipeAreaDialog(this);
             mSwipAreaValue = mSwipeArea.getIntValue();
             mSeekBarProgress = SettingHelper.getInstance(this).getInt(SwipeSetting.SWIPE_AREA_PROGRESS, 5);
 
-            dialog.setTitle(getString(R.string.swipe_active_area)).
+            mDialogArea.setTitle(getString(R.string.swipe_active_area)).
                     addItem(mSwipeArea.getSummaryArray()[1], new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -279,13 +288,13 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
                             mSwipeArea.setValues(mSwipAreaValue);
                             mSwipeArea.refreshSummary();
                             SettingHelper.getInstance(getBaseContext()).putInt(SwipeSetting.SWIPE_AREA_PROGRESS, mSeekBarProgress);
-                            dialog.dissmis();
+                            mDialogArea.dissmis();
                         }
                     }).
                     onNegative(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            dialog.dissmis();
+                            mDialogArea.dissmis();
                         }
                     }).
                     setOnShowListener(new DialogInterface.OnShowListener() {
@@ -303,18 +312,18 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
                     }).show();
 
         } else if (v == mSwipeWhitelist) {
-            final SwipeWhitelistDialog dialog = new SwipeWhitelistDialog(this);
-            dialog.setTitle(getResources().getString(R.string.swipe_whitelist_title)).
+            mDialogWhitelist = new SwipeWhitelistDialog(this);
+            mDialogWhitelist.setTitle(getResources().getString(R.string.swipe_whitelist_title)).
                     onPositive(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            dialog.dissmis();
+                            mDialogWhitelist.dissmis();
                         }
                     }).
                     onNegative(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            dialog.dissmis();
+                            mDialogWhitelist.dissmis();
                         }
                     }).
                     setWhiteList(mService.getLauncherMode().loadWhitelist(this)).
@@ -322,26 +331,28 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
                     onPositive(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            dialog.dissmis();
+                            mDialogWhitelist.dissmis();
                             mSwipeWhitelist.setTitle(String.format(getResources().getString(R.string.swipe_whitelist),
-                                    dialog.getWhitelist().size()));
+                                    mDialogWhitelist.getWhitelist().size()));
                             deleteWhitelist(getBaseContext());
-                            addWhitelist(getBaseContext(), dialog.getWhitelist());
+                            addWhitelist(getBaseContext(), mDialogWhitelist.getWhitelist());
                         }
                     }).
                     onNegative(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            dialog.dissmis();
+                            mDialogWhitelist.dissmis();
                         }
                     }).show();
 
         } else if (v == mRoter5Star) {
-
+            openAppStore(this);
         } else if (v == mFeedback) {
-
-        } else if (v == mVersion) {
-
+            Intent data = new Intent(Intent.ACTION_SENDTO);
+            data.setData(Uri.parse("mailto:gmm283029@gmail.com"));
+            data.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.feedback_title));
+            data.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.feedback_content));
+            startActivity(data);
         }
     }
 
@@ -401,6 +412,29 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
 
     public void deleteWhitelist(Context context) {
         new ItemApplication().deleteWhitelist(context);
+    }
+
+    public static void openAppStore(Context mcontext) {
+        if (Utils.isApkInstalled(mcontext, "com.android.vending")) {
+            try {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Utils.getMarketUrl(mcontext
+                        .getPackageName())));
+                browserIntent.setClassName("com.android.vending", "com.android.vending.AssetBrowserActivity");
+                browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mcontext.startActivity(browserIntent);
+            } catch (Exception e) {
+
+            }
+        } else {
+            try {
+                Uri u = Uri.parse(Utils.getMarketUrl(mcontext.getPackageName()));
+                Intent market = new Intent(Intent.ACTION_VIEW, u);
+                market.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mcontext.startActivity(market);
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(mcontext, "not found", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     ServiceConnection mConnection = new ServiceConnection() {

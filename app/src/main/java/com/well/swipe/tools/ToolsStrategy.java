@@ -95,6 +95,7 @@ public class ToolsStrategy {
              * 屏幕锁
              */
             itemview.setItemIcon(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_clean_memory)).getBitmap());
+            itemview.setTitle(String.valueOf(ClearMemory.getInstance().getAvailMemory(context)));
         } else if (item.mAction.equals(context.getString(R.string.swipe_screenlock))) {
             /**
              * 日历
@@ -175,7 +176,7 @@ public class ToolsStrategy {
         } else if (item.mAction.equals(context.getString(R.string.swipe_screenbrightness))) {
             SwipeBrightness.getInstance(context).setBrightStatus(context);
         } else if (item.mAction.equals(context.getString(R.string.swipe_speeder))) {
-
+            ClearMemory.getInstance().cleanMemory(context);
         } else if (item.mAction.equals(context.getString(R.string.swipe_screenlock))) {
             LockTime.getInstance().changeState(context);
         } else if (item.mAction.equals(context.getString(R.string.swipe_calendar))) {
