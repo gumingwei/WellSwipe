@@ -116,7 +116,7 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
         mSwipeToggle = (PreferenceCategory) findViewById(R.id.swipe_toggle);
         mSwipeToggle.setTitle(getResources().getString(R.string.swipe_toggle));
         mSwipeToggle.setKey(SwipeSetting.SWIPE_TOGGLE);
-        mSwipeToggle.getSwitchBtn().setChecked(true);
+        mSwipeToggle.getSwitchBtn().setChecked(mSwipeToggle.getBooleanValue(true));
         if (SettingHelper.getInstance(this).getBoolean(SwipeSetting.SWIPE_TOGGLE, true)) {
             startService(new Intent(SwipeSettingActivity.this, SwipeService.class));
         }

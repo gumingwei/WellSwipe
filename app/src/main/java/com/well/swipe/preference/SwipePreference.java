@@ -69,6 +69,10 @@ public class SwipePreference extends RelativeLayout {
         return mPreference.getBoolean(mKey, false);
     }
 
+    public boolean getBooleanValue(boolean def) {
+        return mPreference.getBoolean(mKey, def);
+    }
+
     public String getKey() {
         return mKey;
     }
