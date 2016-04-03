@@ -32,6 +32,8 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
 
     private SwipeEditToolsEditDialog mToolsLayout;
 
+    private SwipeToast mSwipeToast;
+
     private int mWidth;
 
     private int mHeight;
@@ -57,6 +59,7 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
         mToolsLayout = (SwipeEditToolsEditDialog) LayoutInflater.from(context).inflate(R.layout.swipe_edit_tools_layout, null);
         mToolsLayout.setVisibility(GONE);
         addView(mToolsLayout, params);
+
     }
 
     @Override

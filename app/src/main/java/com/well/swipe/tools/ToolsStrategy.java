@@ -7,13 +7,19 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.provider.AlarmClock;
 import android.provider.Settings;
+import android.text.Html;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.widget.Toast;
 
 import com.well.swipe.ItemSwipeTools;
 import com.well.swipe.R;
 import com.well.swipe.activitys.SwipeSettingActivity;
+import com.well.swipe.utils.Utils;
 import com.well.swipe.view.AngleItemCommon;
 import com.well.swipe.view.AngleItemStartUp;
 import com.well.swipe.view.SwipeLayout;
+import com.well.swipe.view.SwipeToast;
 
 
 /**
@@ -122,6 +128,7 @@ public class ToolsStrategy {
              * 蓝牙
              */
             itemview.setItemIcon(SwipeBluetooth.getInstance().getDrawableState(context).getBitmap());
+
         }
 
     }
@@ -138,6 +145,11 @@ public class ToolsStrategy {
         if (item.mAction.equals(context.getString(R.string.swipe_flash))) {
             FlashLight.getInstance().onAndOff(context);
             itemview.setItemIcon(FlashLight.getInstance().getDrawableState(context).getBitmap());
+            if (FlashLight.getInstance().isOpen()) {
+                Utils.swipeToast(context, "手电筒已打开");
+            } else {
+                Utils.swipeToast(context, "手电筒已关闭");
+            }
         } else if (item.mAction.equals(context.getString(R.string.swipe_wifi))) {
             WifiAndData.setWifiEnable(context, !WifiAndData.isWifiEnable(context));
         } else if (item.mAction.equals(context.getString(R.string.swipe_data))) {
@@ -146,6 +158,7 @@ public class ToolsStrategy {
             } else {
                 WifiAndData.setMobileDataEnabled(context, !WifiAndData.isMobileDataEnable(context));
             }
+
         } else if (item.mAction.equals(context.getString(R.string.swipe_camere))) {
             launchCarmera(context);
             mSwipeLayout.dismissAnimator();
@@ -176,7 +189,9 @@ public class ToolsStrategy {
         } else if (item.mAction.equals(context.getString(R.string.swipe_screenbrightness))) {
             SwipeBrightness.getInstance(context).setBrightStatus(context);
         } else if (item.mAction.equals(context.getString(R.string.swipe_speeder))) {
-            ClearMemory.getInstance().cleanMemory(context);
+            float clearm = ClearMemory.getInstance().cleanMemory(context);
+            Utils.swipeToast(context, context.getString(R.string.clearmemary_title) + "<font color=\"#019285\">"
+                    + Math.abs(clearm) + "M</font>");
         } else if (item.mAction.equals(context.getString(R.string.swipe_screenlock))) {
             LockTime.getInstance().changeState(context);
         } else if (item.mAction.equals(context.getString(R.string.swipe_calendar))) {

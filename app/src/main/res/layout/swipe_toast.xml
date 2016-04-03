@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.well.swipe.view.SwipeToast xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:id="@+id/swipe_toast_content"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/swipe_edit_header_height"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/swipe_toast_normal"
+        android:gravity="center"
+        android:paddingLeft="@dimen/swipe_toast_padding"
+        android:paddingRight="@dimen/swipe_toast_padding"
+        android:text="AAAAAA"
+        android:textColor="@color/swipe_header_title_color"
+        android:textSize="@dimen/swipe_toast_title_size" />
+
+</com.well.swipe.view.SwipeToast>

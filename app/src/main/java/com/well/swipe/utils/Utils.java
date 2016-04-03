@@ -16,9 +16,13 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.widget.Toast;
 
 
 import com.well.swipe.R;
+import com.well.swipe.view.SwipeToast;
 
 import java.lang.reflect.Field;
 
@@ -92,6 +96,15 @@ public class Utils {
     public static String getMarketUrl(String packageName) {
         String marketUrl = "market://details?id=" + packageName;
         return marketUrl;
+    }
+
+    public static void swipeToast(Context context, String text) {
+        SwipeToast toastview = (SwipeToast) LayoutInflater.from(context).inflate(R.layout.swipe_toast, null);
+        toastview.setHtmlText(text);
+        Toast toast = new Toast(context);
+        toast.setGravity(Gravity.TOP, 0, 0);
+        toast.setView(toastview);
+        toast.show();
     }
 
 }

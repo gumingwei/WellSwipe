@@ -40,6 +40,13 @@ public class SwipeBluetooth extends SwipeTools {
         }
     }
 
+    public boolean getState() {
+        if (available()) {
+            return adapter.isEnabled();
+        }
+        return false;
+    }
+
     public boolean available() {
         return adapter != null;
     }

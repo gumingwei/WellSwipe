@@ -34,7 +34,7 @@ public class ClearMemory {
         return mInstance;
     }
 
-    public void cleanMemory(Context context) {
+    public float cleanMemory(Context context) {
         long beforeCleanMemory = getAvailMemory(context);
         Log.i(TAG, "beforeCleanMemory=" + beforeCleanMemory);
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -51,6 +51,7 @@ public class ClearMemory {
         Log.i(TAG, "afterCleanMemory=" + afterCleanMemory);
         Log.i(TAG, "(afterCleanMemory - beforeCleanMemory)=" + (afterCleanMemory - beforeCleanMemory));
         //editText.setText("共清理:" + (afterCleanMemory - beforeCleanMemory) + "M");
+        return (afterCleanMemory - beforeCleanMemory);
     }
 
     /**

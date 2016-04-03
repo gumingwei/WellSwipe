@@ -414,25 +414,26 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
         new ItemApplication().deleteWhitelist(context);
     }
 
-    public static void openAppStore(Context mcontext) {
-        if (Utils.isApkInstalled(mcontext, "com.android.vending")) {
+    public static void openAppStore(Context context) {
+        if (Utils.isApkInstalled(context, "com.android.vending")) {
             try {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Utils.getMarketUrl(mcontext
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Utils.getMarketUrl(context
                         .getPackageName())));
                 browserIntent.setClassName("com.android.vending", "com.android.vending.AssetBrowserActivity");
                 browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mcontext.startActivity(browserIntent);
+                context.startActivity(browserIntent);
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         } else {
             try {
-                Uri u = Uri.parse(Utils.getMarketUrl(mcontext.getPackageName()));
+                Uri u = Uri.parse(Utils.getMarketUrl(context.getPackageName()));
                 Intent market = new Intent(Intent.ACTION_VIEW, u);
                 market.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mcontext.startActivity(market);
+                context.startActivity(market);
             } catch (ActivityNotFoundException e) {
-                Toast.makeText(mcontext, "not found", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.googleplay_not_found), Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
             }
         }
     }

@@ -76,9 +76,11 @@
     <string name="swipe_whitelist_title">Add app</string>
     <string name="swipe_about">About</string>
     <string name="swipe_about_rate5start">Love us?Rate 5 starts</string>
+    <string name="googleplay_not_found">Can not find Play Google</string>
     <string name="swipe_about_feedback">Feedback</string>
     <string name="swipe_about_version">App Version</string>
 
     <string name="feedback_title">fill in the title</string>
     <string name="feedback_content">fill in the content</string>
+    <string name="clearmemary_title">clear memary</string>
 </resources>

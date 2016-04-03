@@ -56,9 +56,11 @@
     <string name="swipe_whitelist_title">添加应用</string>
     <string name="swipe_about">关于</string>
     <string name="swipe_about_rate5start">喜欢就请5星好评吧</string>
+    <string name="googleplay_not_found">找不到Google Play</string>
     <string name="swipe_about_feedback">意见回报</string>
     <string name="swipe_about_version">版本</string>
 
     <string name="feedback_title">填写标题</string>
     <string name="feedback_content">填写内容</string>
+    <string name="clearmemary_title">释放内存</string>
 </resources>

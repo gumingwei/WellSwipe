@@ -30,9 +30,12 @@ import com.well.swipe.LauncherModel;
 import com.well.swipe.R;
 import com.well.swipe.SwipeApplication;
 import com.well.swipe.ItemSwipeTools;
+import com.well.swipe.tools.SwipeBluetooth;
 import com.well.swipe.tools.SwipeSetting;
 import com.well.swipe.tools.ToolsStrategy;
+import com.well.swipe.tools.WifiAndData;
 import com.well.swipe.utils.SettingHelper;
+import com.well.swipe.utils.Utils;
 import com.well.swipe.view.AngleItemStartUp;
 import com.well.swipe.view.AngleLayout;
 import com.well.swipe.view.AngleView;
@@ -669,13 +672,25 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
                 String action = intent.getAction();
-                if (action.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)
-                        || action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
+                if (action.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)) {
+                    mSwipeLayout.getAngleLayout().getAngleView().refreshToolsView();
+                    mSwipeLayout.getAngleLayout().getAngleView().requestLayout();
+                    if (WifiAndData.isWifiEnable(context)) {
+                        Utils.swipeToast(context, "Wifi打开");
+                    } else {
+                        Utils.swipeToast(context, "Wifi关闭");
+                    }
+                } else if (action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
                     mSwipeLayout.getAngleLayout().getAngleView().refreshToolsView();
                     mSwipeLayout.getAngleLayout().getAngleView().requestLayout();
                 } else if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
                     mSwipeLayout.getAngleLayout().getAngleView().refreshToolsView();
                     mSwipeLayout.getAngleLayout().getAngleView().requestLayout();
+                    if (SwipeBluetooth.getInstance().getState()) {
+                        Utils.swipeToast(context, "蓝牙已打开");
+                    } else {
+                        Utils.swipeToast(context, "蓝牙已关闭");
+                    }
                 }
             }
         }
