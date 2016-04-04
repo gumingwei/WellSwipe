@@ -63,4 +63,10 @@
     <string name="feedback_title">填写标题</string>
     <string name="feedback_content">填写内容</string>
     <string name="clearmemary_title">释放内存</string>
+    <string name="flash_on">手电筒已打开</string>
+    <string name="flash_off">手电筒关闭</string>
+    <string name="wifi_on">Wifi已连接</string>
+    <string name="wifi_off">Wifi断开连接</string>
+    <string name="bluetooth_on">蓝牙已打开</string>
+    <string name="bluetooth_off">蓝牙已关闭</string>
 </resources>

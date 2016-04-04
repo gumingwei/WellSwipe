@@ -43,6 +43,13 @@ public class ToolsStrategy {
         return mInstance;
     }
 
+    /**
+     * 根据Action获取图片
+     *
+     * @param context
+     * @param itemview
+     * @param item
+     */
     public void initView(Context context, AngleItemCommon itemview, ItemSwipeTools item) {
         if (item.mAction.equals(context.getString(R.string.swipe_flash))) {
             /**
@@ -74,7 +81,7 @@ public class ToolsStrategy {
              * 静音
              */
             itemview.setItemIcon(SwipeAudio.getInstance(context).getDrawableState(context).getBitmap());
-            itemview.setTitle(SwipeAudio.getInstance(context).getTitleState(context));
+            //itemview.setTitle(SwipeAudio.getInstance(context).getTitleState(context));
         } else if (item.mAction.equals(context.getString(R.string.swipe_autorotation))) {
             /**
              * 自动旋转屏幕
@@ -95,19 +102,19 @@ public class ToolsStrategy {
              * 屏幕亮度
              */
             itemview.setItemIcon(SwipeBrightness.getInstance(context).getDrawableState(context).getBitmap());
-            itemview.setTitle(SwipeBrightness.getInstance(context).getTitleState(context));
+            //itemview.setTitle(SwipeBrightness.getInstance(context).getTitleState(context));
         } else if (item.mAction.equals(context.getString(R.string.swipe_speeder))) {
             /**
-             * 屏幕锁
+             * 一键清理
              */
             itemview.setItemIcon(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_clean_memory)).getBitmap());
-            itemview.setTitle(String.valueOf(ClearMemory.getInstance().getAvailMemory(context)));
+            //itemview.setTitle(String.valueOf(ClearMemory.getInstance().getAvailMemory(context)));
         } else if (item.mAction.equals(context.getString(R.string.swipe_screenlock))) {
             /**
-             * 日历
+             * 屏幕锁定时间
              */
             itemview.setItemIcon(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_client_hide_when_screen_off)).getBitmap());
-            itemview.setTitle(LockTime.getInstance().getTitleState(context));
+            //itemview.setTitle(LockTime.getInstance().getTitleState(context));
         } else if (item.mAction.equals(context.getString(R.string.swipe_calendar))) {
             /**
              * 计算器
@@ -146,9 +153,9 @@ public class ToolsStrategy {
             FlashLight.getInstance().onAndOff(context);
             itemview.setItemIcon(FlashLight.getInstance().getDrawableState(context).getBitmap());
             if (FlashLight.getInstance().isOpen()) {
-                Utils.swipeToast(context, "手电筒已打开");
+                Utils.swipeToast(context, context.getResources().getString(R.string.flash_on));
             } else {
-                Utils.swipeToast(context, "手电筒已关闭");
+                Utils.swipeToast(context, context.getResources().getString(R.string.flash_off));
             }
         } else if (item.mAction.equals(context.getString(R.string.swipe_wifi))) {
             WifiAndData.setWifiEnable(context, !WifiAndData.isWifiEnable(context));
@@ -226,6 +233,9 @@ public class ToolsStrategy {
         }
     }
 
+    /**
+     * @param context
+     */
     private void launchDataUsageSettings(Context context) {
         try {
             Intent intent = new Intent(Intent.ACTION_MAIN);

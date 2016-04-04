@@ -1,73 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".activitys.SwipeSettingActivity">
-
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/test_text"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/test_btn"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/swipe_edit_bottom_left_sel"
-        android:focusable="true"
-        android:text="Btn" />
+        android:visibility="gone" />
 
-    <include
-        android:id="@+id/swipe_toggle"
-        layout="@layout/preference_category" />
+    <RelativeLayout
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        android:background="@color/preference_title_enable_color">
 
-    <include layout="@layout/preference_divide" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
 
-    <include
-        android:id="@+id/swipe_for"
-        layout="@layout/preference_titlesummary" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/title_bar_gradient" />
+    </RelativeLayout>
 
-    <include layout="@layout/preference_divide" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/content_top_gradient"></View>
 
-    <include
-        android:id="@+id/swipe_area"
-        layout="@layout/preference_titlesummary" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <include layout="@layout/preference_divide" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <include
-        android:id="@+id/swipe_whitelist"
-        layout="@layout/preference_titlesummary" />
+            <include
+                android:id="@+id/swipe_toggle"
+                layout="@layout/preference_category" />
 
-    <include layout="@layout/preference_divide" />
+            <include layout="@layout/preference_divide" />
 
-    <include
-        android:id="@+id/swipe_about"
-        layout="@layout/preference_category" />
+            <include
+                android:id="@+id/swipe_for"
+                layout="@layout/preference_titlesummary" />
 
-    <include layout="@layout/preference_divide" />
+            <include layout="@layout/preference_divide" />
 
-    <include
-        android:id="@+id/swipe_rate"
-        layout="@layout/preference_title" />
+            <include
+                android:id="@+id/swipe_area"
+                layout="@layout/preference_titlesummary" />
 
-    <include layout="@layout/preference_divide" />
+            <include layout="@layout/preference_divide" />
 
-    <include
-        android:id="@+id/swipe_feedback"
-        layout="@layout/preference_title" />
+            <include
+                android:id="@+id/swipe_whitelist"
+                layout="@layout/preference_titlesummary" />
 
-    <include layout="@layout/preference_divide" />
+            <include layout="@layout/preference_divide" />
 
-    <include
-        android:id="@+id/swipe_version"
-        layout="@layout/preference_titlesummary" />
+            <include
+                android:id="@+id/swipe_about"
+                layout="@layout/preference_category" />
 
-    <include layout="@layout/preference_divide" />
+            <include layout="@layout/preference_divide" />
 
+            <include
+                android:id="@+id/swipe_rate"
+                layout="@layout/preference_title" />
+
+            <include layout="@layout/preference_divide" />
+
+            <include
+                android:id="@+id/swipe_feedback"
+                layout="@layout/preference_title" />
+
+            <include layout="@layout/preference_divide" />
+
+            <include
+                android:id="@+id/swipe_version"
+                layout="@layout/preference_titlesummary" />
+
+            <include layout="@layout/preference_divide" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

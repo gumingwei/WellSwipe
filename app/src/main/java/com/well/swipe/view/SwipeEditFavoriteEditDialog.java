@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
 import com.well.swipe.utils.Pinyin;
+import com.well.swipe.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -282,16 +283,19 @@ public class SwipeEditFavoriteEditDialog extends SwipeEditDialog implements View
                 int index = findAppInHeader(itemapp);
                 if (index > -1) {
                     mHeaderDataList.remove(index);
+                    refreshHeader();
                 }
-                refreshHeader();
+
             } else {
                 if (mHeaderDataList.size() < 9) {
                     mHeaderDataList.add(itemapp);
+                    refreshHeader();
                 } else {
-                    Toast.makeText(getContext(), getResources().getString(R.string.favorite_up_to_9),
-                            Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getContext(), getResources().getString(R.string.favorite_up_to_9),
+//                            Toast.LENGTH_SHORT).show();
+                    Utils.swipeToast(getContext(), getResources().getString(R.string.favorite_up_to_9));
                 }
-                refreshHeader();
+
             }
         }
     }

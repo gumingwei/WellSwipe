@@ -49,7 +49,8 @@
             android:layout_weight="1"
             android:background="@drawable/swipe_edit_bottom_left_sel"
             android:text="@string/cancel_title"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/swipe_header_title_color"
+            android:textSize="@dimen/swipe_edit_ok_size" />
 
         <Button
             android:id="@+id/dialog_ok"
@@ -58,7 +59,8 @@
             android:layout_weight="1"
             android:background="@drawable/swipe_edit_bottom_right_sel"
             android:text="@string/ok_title"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/swipe_header_title_color"
+            android:textSize="@dimen/swipe_edit_ok_size" />
     </LinearLayout>
 
 </LinearLayout>

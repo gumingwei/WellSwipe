@@ -7,8 +7,8 @@
     <TextView
         android:id="@+id/swipe_toast_content"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/swipe_edit_header_height"
-        android:layout_marginTop="60dp"
+        android:layout_height="@dimen/swipe_toast_height"
+        android:layout_marginTop="50dp"
         android:background="@drawable/swipe_toast_normal"
         android:gravity="center"
         android:paddingLeft="@dimen/swipe_toast_padding"

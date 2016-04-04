@@ -107,19 +107,10 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
         test = (TextView) findViewById(R.id.test_text);
         test.setText("density=" + this.getResources().getDisplayMetrics().density + ",swipe_dialog_for=" +
                 getResources().getDimensionPixelSize(R.dimen.test));
-        findViewById(R.id.test_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
         mSwipeToggle = (PreferenceCategory) findViewById(R.id.swipe_toggle);
         mSwipeToggle.setTitle(getResources().getString(R.string.swipe_toggle));
         mSwipeToggle.setKey(SwipeSetting.SWIPE_TOGGLE);
         mSwipeToggle.getSwitchBtn().setChecked(mSwipeToggle.getBooleanValue(true));
-        if (SettingHelper.getInstance(this).getBoolean(SwipeSetting.SWIPE_TOGGLE, true)) {
-            startService(new Intent(SwipeSettingActivity.this, SwipeService.class));
-        }
         mSwipeToggle.getSwitchBtn().setOnCheckedChangeListener(this);
 
         mSwipeFor = (PreferenceTitleSummary) findViewById(R.id.swipe_for);

@@ -83,4 +83,10 @@
     <string name="feedback_title">fill in the title</string>
     <string name="feedback_content">fill in the content</string>
     <string name="clearmemary_title">clear memary</string>
+    <string name="flash_on">Flashlight is turned on</string>
+    <string name="flash_off">Flashlight is turned off</string>
+    <string name="wifi_on">WiFi is connected</string>
+    <string name="wifi_off">WiFi is disconnected</string>
+    <string name="data_on">Mobile data has been connected</string>
+    <string name="data_off">Mobile data has been disconnected</string>
 </resources>

@@ -2,18 +2,19 @@ package com.well.swipe.view;
 
 import android.content.Context;
 import android.text.Html;
-import android.text.Spannable;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.well.swipe.R;
-import com.well.swipe.utils.SwipeWindowManager;
 
 /**
  * Created by mingwei on 4/3/16.
  */
 public class SwipeToast extends RelativeLayout {
+
+    private Toast mToast;
 
     private TextView mTextContent;
 
@@ -27,6 +28,7 @@ public class SwipeToast extends RelativeLayout {
 
     public SwipeToast(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mToast = new Toast(context);
     }
 
     @Override

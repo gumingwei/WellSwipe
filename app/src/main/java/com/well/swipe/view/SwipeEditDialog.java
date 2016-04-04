@@ -14,7 +14,7 @@ import com.well.swipe.R;
 /**
  * Created by mingwei on 3/25/16.
  */
-public abstract class SwipeEditDialog extends RelativeLayout implements View.OnClickListener {
+public abstract class SwipeEditDialog extends RelativeLayout {
 
     public TextView mDialogTitle;
 
@@ -28,7 +28,7 @@ public abstract class SwipeEditDialog extends RelativeLayout implements View.OnC
 
     public String mTitleFormat;
 
-    OnDialogListener mOnDialogListener;
+    public OnDialogListener mOnDialogListener;
 
     public SwipeEditDialog(Context context) {
         this(context, null);
@@ -56,11 +56,6 @@ public abstract class SwipeEditDialog extends RelativeLayout implements View.OnC
 
     public void setOnDialogListener(OnDialogListener listener) {
         mOnDialogListener = listener;
-    }
-
-    @Override
-    public void onClick(View v) {
-
     }
 
     @Override

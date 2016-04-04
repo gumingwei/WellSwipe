@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.well.swipe.ItemSwipeTools;
 import com.well.swipe.R;
 import com.well.swipe.tools.ToolsStrategy;
+import com.well.swipe.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -68,8 +69,7 @@ public class SwipeEditToolsEditDialog extends SwipeEditDialog implements View.On
                     mFixedList.get(index).isChecked = true;
                     refreshView();
                 } else {
-                    Toast.makeText(getContext(), getResources().getString(R.string.favorite_up_to_9),
-                            Toast.LENGTH_SHORT).show();
+                    Utils.swipeToast(getContext(), getResources().getString(R.string.favorite_up_to_9));
                 }
             }
         }

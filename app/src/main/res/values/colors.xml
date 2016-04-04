@@ -28,4 +28,6 @@
     <color name="seekbar_progress_color">#8e8e8e</color>
     <color name="check_item_enable">#e5e5e5</color>
     <color name="catch_view_color_gary">#8e8e8e</color>
+
+    <color name="title_bar_gradient">#016960</color>
 </resources>

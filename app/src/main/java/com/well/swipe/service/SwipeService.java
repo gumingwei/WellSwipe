@@ -3,6 +3,7 @@ package com.well.swipe.service;
 import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
@@ -24,12 +25,14 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.RemoteViews;
 
 import com.well.swipe.ItemApplication;
 import com.well.swipe.LauncherModel;
 import com.well.swipe.R;
 import com.well.swipe.SwipeApplication;
 import com.well.swipe.ItemSwipeTools;
+import com.well.swipe.activitys.SwipeSettingActivity;
 import com.well.swipe.tools.SwipeBluetooth;
 import com.well.swipe.tools.SwipeSetting;
 import com.well.swipe.tools.ToolsStrategy;
@@ -44,6 +47,7 @@ import com.well.swipe.view.CatchView;
 import com.well.swipe.view.OnDialogListener;
 import com.well.swipe.view.PositionState;
 import com.well.swipe.view.SwipeLayout;
+import com.well.swipe.view.SwipeToast;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -174,8 +178,10 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
         mNotification = mBuilder.build();
         mNotification.flags = Notification.FLAG_ONGOING_EVENT;
-        initForeground();
-        startForegroundCompat(123, new Notification());
+        //initForeground();
+        initNotification();
+        startForeground(123, mNotification);
+        //startForegroundCompat(123, new Notification());
 
         mReceiver = new ChangedReceiver();
         IntentFilter filter = new IntentFilter();
@@ -663,6 +669,22 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         return mLauncherModel;
     }
 
+    public void initNotification() {
+        mNotification = new Notification();
+        mNotification.icon = R.drawable.ic_launcher;
+        mNotification.tickerText = "TickerText:您有新短消息，请注意查收！";
+        mNotification.when = System.currentTimeMillis();
+        mNotification.flags = Notification.FLAG_NO_CLEAR;// 不能够自动清除
+        RemoteViews rv = new RemoteViews(getPackageName(),
+                R.layout.notification_layout);
+        mNotification.contentView = rv;
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClass(this, SwipeSettingActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 1);
+        mNotification.contentIntent = contentIntent;
+        //mNotificationManager.notify(121, mNotification);
+    }
+
     /**
      * 监听Wifi变化
      */
@@ -676,9 +698,9 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
                     mSwipeLayout.getAngleLayout().getAngleView().refreshToolsView();
                     mSwipeLayout.getAngleLayout().getAngleView().requestLayout();
                     if (WifiAndData.isWifiEnable(context)) {
-                        Utils.swipeToast(context, "Wifi打开");
+                        Utils.swipeToast(context, getResources().getString(R.string.wifi_on));
                     } else {
-                        Utils.swipeToast(context, "Wifi关闭");
+                        Utils.swipeToast(context, getResources().getString(R.string.wifi_off));
                     }
                 } else if (action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
                     mSwipeLayout.getAngleLayout().getAngleView().refreshToolsView();
@@ -687,9 +709,9 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
                     mSwipeLayout.getAngleLayout().getAngleView().refreshToolsView();
                     mSwipeLayout.getAngleLayout().getAngleView().requestLayout();
                     if (SwipeBluetooth.getInstance().getState()) {
-                        Utils.swipeToast(context, "蓝牙已打开");
+                        Utils.swipeToast(context, getResources().getString(R.string.bluetooth_on));
                     } else {
-                        Utils.swipeToast(context, "蓝牙已关闭");
+                        Utils.swipeToast(context, getResources().getString(R.string.bluetooth_off));
                     }
                 }
             }
