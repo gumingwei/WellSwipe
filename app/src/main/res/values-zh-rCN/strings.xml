@@ -7,6 +7,27 @@
     <string name="ok_title">确定</string>
     <string name="cancel_title">取消</string>
 
+    <!--QuickSwitch_ACTION-->
+    <string name="swipe_flash">com.well.swipe.action.flash</string>
+    <string name="swipe_wifi">com.well.swipe.action.wifi</string>
+    <string name="swipe_screenbrightness">com.well.swipe.action.screenbrightness</string>
+    <string name="swipe_speeder">com.well.swipe.action.speeder</string>
+
+    <string name="swipe_screenlock">com.well.swipe.action.screenlock</string>
+    <string name="swipe_camere">com.well.swipe.action.camera</string>
+    <string name="swipe_calendar">com.well.swipe.action.calendar</string>
+    <string name="swipe_data">com.well.swipe.action.data</string>
+
+    <string name="swipe_calculator">com.well.swipe.action.calculator</string>
+    <string name="swipe_flightmode">com.well.swipe.action.flightmode</string>
+    <string name="swipe_swipesetting">com.well.swipe.action.swipesetting</string>
+    <string name="swipe_bluetooth">com.well.swipe.action.bluetooth</string>
+
+    <string name="swipe_mute">com.well.swipe.action.mute</string>
+    <string name="swipe_autorotation">com.well.swipe.action.autorotation</string>
+    <string name="swipe_setting">com.well.swipe.action.setting</string>
+    <string name="swipe_alarm">com.well.swipe.action.alarm</string>
+
     <!--QuickSwitch_ACTION_TITLE-->
     <string name="swipe_flash_title">手电筒</string>
     <string name="swipe_wifi_title">Wi-Fi</string>
@@ -63,10 +84,15 @@
     <string name="feedback_title">填写标题</string>
     <string name="feedback_content">填写内容</string>
     <string name="clearmemary_title">释放内存</string>
+    <string name="clearmemary_wait">等会再试试吧</string>
     <string name="flash_on">手电筒已打开</string>
     <string name="flash_off">手电筒关闭</string>
     <string name="wifi_on">Wifi已连接</string>
     <string name="wifi_off">Wifi断开连接</string>
     <string name="bluetooth_on">蓝牙已打开</string>
     <string name="bluetooth_off">蓝牙已关闭</string>
+    <string name="data_on">移动网络已连接</string>
+    <string name="data_off">移动网络已断开</string>
+    <string name="swipe_nitification_title">Well Swipe正在运行</string>
+    <string name="swipe_nitification_content">点击进入swipe设置</string>
 </resources>

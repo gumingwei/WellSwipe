@@ -1,6 +1,8 @@
 package com.well.swipe.view;
 
 import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -16,6 +18,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -290,7 +293,7 @@ public class AngleView extends PositionStateViewGroup {
         for (ItemSwipeTools appitem : itemlist) {
             itemview = (AngleItemStartUp) LayoutInflater.from(getContext()).inflate(R.layout.angle_item_startup, null);
             itemview.setTitle(appitem.mTitle.toString());
-            itemview.setItemIconBackground(getResources().getDrawable(R.drawable.angle_item_bg));
+            //itemview.setItemIconBackground(getResources().getDrawable(R.drawable.angle_item_bg));
             ToolsStrategy.getInstance().initView(getContext(), itemview, appitem);
             itemview.setTag(appitem);
             mSwitchList.add(itemview);
@@ -618,8 +621,6 @@ public class AngleView extends PositionStateViewGroup {
                 mMotionY = event.getY();
                 ArrayList<View> views = getData();
                 if (views != null) {
-
-
                     for (int index = 0; index < views.size(); index++) {
                         /**
                          * size按照当前views的总数，以4为区分，分别计算出<4,=4,超出4的部分剪掉4即从1，2，3重新开始计数
@@ -839,7 +840,21 @@ public class AngleView extends PositionStateViewGroup {
         });
         valueAnimator.start();
 
+    }
 
+    /**
+     * 删除之前找到是第几个Item
+     *
+     * @param item
+     * @return
+     */
+    public int findPosition(AngleItemCommon item) {
+        for (int i = 0; i < getData().size(); i++) {
+            if (item == getData().get(i)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public void setOnAngleChangeListener(OnAngleChangeListener listener) {

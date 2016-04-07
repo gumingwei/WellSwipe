@@ -91,7 +91,7 @@ public class ToolsStrategy {
             /**
              * 系统设置
              */
-            itemview.setItemIcon(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_setting_system)).getBitmap());
+            itemview.setItemIcon(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_setting_system_advanced)).getBitmap());
         } else if (item.mAction.equals(context.getString(R.string.swipe_alarm))) {
             /**
              * 闹钟
@@ -113,7 +113,7 @@ public class ToolsStrategy {
             /**
              * 屏幕锁定时间
              */
-            itemview.setItemIcon(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_client_hide_when_screen_off)).getBitmap());
+            itemview.setItemIcon(LockTime.getInstance().getDrawableState(context).getBitmap());
             //itemview.setTitle(LockTime.getInstance().getTitleState(context));
         } else if (item.mAction.equals(context.getString(R.string.swipe_calendar))) {
             /**
@@ -197,8 +197,13 @@ public class ToolsStrategy {
             SwipeBrightness.getInstance(context).setBrightStatus(context);
         } else if (item.mAction.equals(context.getString(R.string.swipe_speeder))) {
             float clearm = ClearMemory.getInstance().cleanMemory(context);
-            Utils.swipeToast(context, context.getString(R.string.clearmemary_title) + "<font color=\"#019285\">"
-                    + Math.abs(clearm) + "M</font>");
+            if (clearm > 0f) {
+                Utils.swipeToast(context, context.getString(R.string.clearmemary_title) + "<font color=\"#019285\">"
+                        + Math.abs(clearm) + "M</font>");
+            } else if (clearm == 0f) {
+                Utils.swipeToast(context, context.getString(R.string.clearmemary_wait));
+            }
+
         } else if (item.mAction.equals(context.getString(R.string.swipe_screenlock))) {
             LockTime.getInstance().changeState(context);
         } else if (item.mAction.equals(context.getString(R.string.swipe_calendar))) {

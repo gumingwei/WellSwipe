@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="angle_logo" type="id">angle_logo</item>
     <item name="angleview" type="id">angleview</item>
     <item name="indicator" type="id">indicator</item>
     <item name="angleview_theme" type="id">angleview_theme</item>

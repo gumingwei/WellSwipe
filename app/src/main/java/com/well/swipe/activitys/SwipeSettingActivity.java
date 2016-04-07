@@ -112,6 +112,7 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
         mSwipeToggle.setKey(SwipeSetting.SWIPE_TOGGLE);
         mSwipeToggle.getSwitchBtn().setChecked(mSwipeToggle.getBooleanValue(true));
         mSwipeToggle.getSwitchBtn().setOnCheckedChangeListener(this);
+        mSwipeToggle.setIcon(getResources().getDrawable(R.drawable.ic_setting_notify_toggle));
 
         mSwipeFor = (PreferenceTitleSummary) findViewById(R.id.swipe_for);
         mSwipeFor.setKey(SwipeSetting.SWIPE_FOR);
@@ -119,7 +120,6 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
         mSwipeFor.setSummaryArray(getResources().getStringArray(R.array.swipe_for_type));
         mSwipeFor.refreshSummary(1);
         mSwipeFor.setOnClickListener(this);
-
 
         mSwipeArea = (PreferenceTitleSummary) findViewById(R.id.swipe_area);
         mSwipeArea.setKey(SwipeSetting.SWIPE_AREA);
@@ -139,6 +139,7 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
         mAboutCategory = (PreferenceCategory) findViewById(R.id.swipe_about);
         mAboutCategory.setTitle(getResources().getString(R.string.swipe_about));
         mAboutCategory.setToggleVisiable(View.GONE);
+        mAboutCategory.setIcon(getResources().getDrawable(R.drawable.ic_setting_rate));
 
         mRoter5Star = (PreferenceTitle) findViewById(R.id.swipe_rate);
         mRoter5Star.setTitle(getResources().getString(R.string.swipe_about_rate5start));
@@ -340,7 +341,7 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
             openAppStore(this);
         } else if (v == mFeedback) {
             Intent data = new Intent(Intent.ACTION_SENDTO);
-            data.setData(Uri.parse("mailto:gmm283029@gmail.com"));
+            data.setData(Uri.parse("mailto:wellswipe.dev@foxmail.com"));
             data.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.feedback_title));
             data.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.feedback_content));
             startActivity(data);

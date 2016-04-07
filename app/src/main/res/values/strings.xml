@@ -3,7 +3,6 @@
     <string name="recent">Recent</string>
     <string name="frequent">Frequent</string>
     <string name="toolbox">Toolbox</string>
-    <string name="test_accessibility">test</string>
     <string name="ok_title">Ok</string>
     <string name="cancel_title">Cancel</string>
 
@@ -28,24 +27,24 @@
     <string name="swipe_setting">com.well.swipe.action.setting</string>
     <string name="swipe_alarm">com.well.swipe.action.alarm</string>
     <!--QuickSwitch_ACTION_TITLE-->
-    <string name="swipe_flash_title">Flash</string>
+    <string name="swipe_flash_title">Flashlight</string>
     <string name="swipe_wifi_title">Wi-Fi</string>
-    <string name="swipe_screenbrightness_title">light</string>
-    <string name="swipe_speeder_title">Speeder</string>
+    <string name="swipe_screenbrightness_title">Brightness</string>
+    <string name="swipe_speeder_title">Booster</string>
 
-    <string name="swipe_screenlock_title">ScreenLock</string>
+    <string name="swipe_screenlock_title">Timeout</string>
     <string name="swipe_camere_title">Camera</string>
     <string name="swipe_calendar_title">Calendar</string>
     <string name="swipe_data_title">Data</string>
 
     <string name="swipe_calculator_title">Calculator</string>
-    <string name="swipe_flightmode_title">Flight-Mode</string>
-    <string name="swipe_swipesetting_title">Swipesetting</string>
+    <string name="swipe_flightmode_title">Airplane mode</string>
+    <string name="swipe_swipesetting_title">Swipe Setting</string>
     <string name="swipe_bluetooth_title">Bluetooth</string>
 
-    <string name="swipe_mute_title">Mute</string>
-    <string name="swipe_autorotation_title">Autorotation</string>
-    <string name="swipe_setting_title">Setting</string>
+    <string name="swipe_mute_title">Sound</string>
+    <string name="swipe_autorotation_title">Rotation</string>
+    <string name="swipe_setting_title">Settings</string>
     <string name="swipe_alarm_title">Alarm</string>
 
 
@@ -83,10 +82,16 @@
     <string name="feedback_title">fill in the title</string>
     <string name="feedback_content">fill in the content</string>
     <string name="clearmemary_title">clear memary</string>
+    <string name="clearmemary_wait">Try again after a while</string>
     <string name="flash_on">Flashlight is turned on</string>
     <string name="flash_off">Flashlight is turned off</string>
     <string name="wifi_on">WiFi is connected</string>
     <string name="wifi_off">WiFi is disconnected</string>
+    <string name="bluetooth_on">bluetooth is turned on</string>
+    <string name="bluetooth_off">bluetooth is turned off</string>
     <string name="data_on">Mobile data has been connected</string>
     <string name="data_off">Mobile data has been disconnected</string>
+    <string name="swipe_nitification_title">Well Swipe is running</string>
+    <string name="swipe_nitification_content">touch to view swipe settings</string>
+
 </resources>

@@ -39,7 +39,6 @@ public class SwipeSettings {
 
         public static final int ICON_TYPE_BITMAP = 1;
 
-
     }
 
     public static class Favorites {

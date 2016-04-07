@@ -107,7 +107,23 @@ public class LockTime extends SwipeTools {
 
     @Override
     public BitmapDrawable getDrawableState(Context context) {
-        return null;
+        switch (getState(context)) {
+            case TIEM_15:
+                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_screen_timeout_15s);
+            case TIEM_30:
+                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_screen_timeout_30s);
+            case TIEM_60:
+                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_screen_timeout_60s);
+            case TIEM_120:
+                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_screen_timeout_2m);
+            case TIEM_300:
+                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_screen_timeout_5m);
+            case TIEM_600:
+                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_screen_timeout_10m);
+            case TIEM_1800:
+                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_screen_timeout_30m);
+        }
+        return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_screen_timeout_15s);
     }
 
     @Override

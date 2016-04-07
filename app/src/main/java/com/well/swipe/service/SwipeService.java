@@ -175,9 +175,6 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         mSwipeLayout.getEditToolsLayout().setOnDialogListener(this);
 
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
-        mNotification = mBuilder.build();
-        mNotification.flags = Notification.FLAG_ONGOING_EVENT;
         //initForeground();
         initNotification();
         startForeground(123, mNotification);
@@ -670,19 +667,16 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     }
 
     public void initNotification() {
-        mNotification = new Notification();
-        mNotification.icon = R.drawable.ic_launcher;
-        mNotification.tickerText = "TickerText:您有新短消息，请注意查收！";
-        mNotification.when = System.currentTimeMillis();
-        mNotification.flags = Notification.FLAG_NO_CLEAR;// 不能够自动清除
-        RemoteViews rv = new RemoteViews(getPackageName(),
-                R.layout.notification_layout);
-        mNotification.contentView = rv;
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClass(this, SwipeSettingActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 1);
-        mNotification.contentIntent = contentIntent;
-        //mNotificationManager.notify(121, mNotification);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, SwipeSettingActivity.class), 0);
+        mNotification = new Notification.Builder(this)
+                .setSmallIcon(R.drawable.ic_launcher_48)
+                .setTicker("")
+                .setContentTitle(getResources().getString(R.string.swipe_nitification_title))
+                .setContentText(getResources().getString(R.string.swipe_nitification_content))
+                .setContentIntent(pendingIntent)
+                .setNumber(1).getNotification();
+        mNotification.flags = Notification.FLAG_ONGOING_EVENT;
     }
 
     /**
@@ -738,10 +732,10 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     }
 
 
-    private native void swipeDaemon(String serviceName, int sdkVersion);
-
-    static {
-        System.loadLibrary("SwipeDaemon");
-    }
+//    private native void swipeDaemon(String serviceName, int sdkVersion);
+//
+//    static {
+//        System.loadLibrary("SwipeDaemon");
+//    }
 
 }

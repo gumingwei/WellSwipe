@@ -187,17 +187,17 @@ public class SwipeBrightness extends SwipeTools {
     public BitmapDrawable getDrawableState(Context context) {
         switch (getBrightStatus(context)) {
             case LIGHT_NORMAL:
-                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_selfile);
+                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_screen_lightness_normal);
             case LIGHT_50_PERCENT:
-                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_ringer_silent);
+                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_screen_lightness_50);
             case LIGHT_75_PERCENT:
-                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_ringer_normal);
+                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_screen_lightness_75);
             case LIGHT_100_PERCENT:
-                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_ringer_normal);
+                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_screen_lightness_100);
             case LIGHT_AUTO:
-                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_ringer_normal);
+                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_screen_lightness_auto);
             case LIGHT_ERR:
-                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_ringer_normal);
+                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_screen_lightness_normal);
         }
         return null;
     }
@@ -208,7 +208,7 @@ public class SwipeBrightness extends SwipeTools {
             case LIGHT_NORMAL:
                 return "nomal";
             case LIGHT_50_PERCENT:
-                return "59";
+                return "50";
             case LIGHT_75_PERCENT:
                 return "75";
             case LIGHT_100_PERCENT:

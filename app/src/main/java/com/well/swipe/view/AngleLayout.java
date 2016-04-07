@@ -13,6 +13,7 @@ import android.view.ViewConfiguration;
 import android.view.animation.AnticipateOvershootInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.well.swipe.R;
 import com.well.swipe.utils.Utils;
@@ -40,6 +41,10 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     private AngleIndicatorView mIndicator;
 
     private AngleIndicatorViewTheme mIndicatorTheme;
+
+    private ImageView mAngleLogo;
+
+    private int mAngleLogoSize;
 
     private int mIndicatorSize;
     /**
@@ -159,6 +164,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         mIndicatorTheme = (AngleIndicatorViewTheme) findViewById(R.id.indicator_theme);
         mIndicator.setOnChangeListener(this);
         mIndicator.setCurrent(0);
+        mAngleLogo = (ImageView) findViewById(R.id.angle_logo);
     }
 
     @Override
@@ -170,16 +176,18 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
          * AngleView的大小
          */
         mAngleSize = getResources().getDimensionPixelSize(R.dimen.angleview_size);
-        LayoutParams params = new LayoutParams(mAngleSize, mAngleSize);
-        mAngleView.setLayoutParams(params);
-        mAngleViewTheme.setLayoutParams(params);
+        //LayoutParams params = new LayoutParams(mAngleSize, mAngleSize);
+        //mAngleView.setLayoutParams(params);
+        //mAngleViewTheme.setLayoutParams(params);
         /**
          * IndicatorView的大小
          */
         mIndicatorSize = getResources().getDimensionPixelSize(R.dimen.angleindicator_size);
-        LayoutParams indicatorParams = new LayoutParams(mIndicatorSize, mIndicatorSize);
-        mIndicator.setLayoutParams(indicatorParams);
-        mIndicatorTheme.setLayoutParams(indicatorParams);
+//        LayoutParams indicatorParams = new LayoutParams(mIndicatorSize, mIndicatorSize);
+//        mIndicator.setLayoutParams(indicatorParams);
+//        mIndicatorTheme.setLayoutParams(indicatorParams);
+
+        mAngleLogoSize = getResources().getDimensionPixelSize(R.dimen.anglelogo_size);
     }
 
     @Override
@@ -193,11 +201,15 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
             mAngleViewTheme.layout(0, mHeight - mAngleSize, mAngleSize, mHeight);
             mIndicator.layout(0, mHeight - mIndicatorSize, mIndicatorSize, mHeight);
             mIndicatorTheme.layout(0, mHeight - mIndicatorSize, mIndicatorSize, mHeight);
+            mAngleLogo.layout(0, mHeight - mAngleLogoSize, mAngleLogoSize, mHeight);
+            mAngleLogo.setRotationY(0);
         } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
             mAngleView.layout(mWidth - mAngleSize, mHeight - mAngleSize, mWidth, mHeight);
             mAngleViewTheme.layout(mWidth - mAngleSize, mHeight - mAngleSize, mWidth, mHeight);
             mIndicator.layout(mWidth - mIndicatorSize, mHeight - mIndicatorSize, mWidth, mHeight);
             mIndicatorTheme.layout(mWidth - mIndicatorSize, mHeight - mIndicatorSize, mWidth, mHeight);
+            mAngleLogo.layout(mWidth - mAngleLogoSize, mHeight - mAngleLogoSize, mWidth, mHeight);
+            mAngleLogo.setRotationY(180);
         }
     }
 

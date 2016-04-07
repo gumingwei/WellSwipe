@@ -162,7 +162,7 @@ public class SwipeEditToolsEditDialog extends SwipeEditDialog implements View.On
             ToolsStrategy.getInstance().initView(getContext(), itemview, mFixedList.get(i));
             itemview.setTitle(mFixedList.get(i).mTitle.toString());
             itemview.setOnClickListener(this);
-
+            itemview.setItemIconBackground(getResources().getDrawable(R.drawable.angle_item_bg));
             itemview.setChecked(mFixedList.get(i).isChecked);
             mGridLayout.addView(itemview, new LinearLayout.LayoutParams(mSize, mSize));
         }

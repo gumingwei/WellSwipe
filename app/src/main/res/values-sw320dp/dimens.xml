@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--moto g 480*1280-->
+    <dimen name="anglelogo_size">53dp</dimen>
     <dimen name="angleview_size">325dp</dimen>
     <dimen name="angleview_inner_radius">195dp</dimen>
     <dimen name="angleview_outer_radius">275dp</dimen>

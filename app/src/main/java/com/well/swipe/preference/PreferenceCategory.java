@@ -1,6 +1,7 @@
 package com.well.swipe.preference;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -53,5 +54,9 @@ public class PreferenceCategory extends SwipePreference {
 
     public void setToggleVisiable(int visiable) {
         mSwitchBtn.setVisibility(visiable);
+    }
+
+    public void setIcon(Drawable drawable) {
+        mIcon.setImageDrawable(drawable);
     }
 }

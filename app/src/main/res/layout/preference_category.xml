@@ -11,8 +11,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="20dp"
-        android:src="@drawable/ic_launcher" />
+        android:layout_marginLeft="20dp" />
 
     <TextView
         android:id="@id/preference_title"

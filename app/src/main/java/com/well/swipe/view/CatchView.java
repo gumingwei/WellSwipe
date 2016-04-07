@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
+import com.well.swipe.R;
 import com.well.swipe.utils.Utils;
 
 /**
@@ -55,6 +57,8 @@ public class CatchView extends PositionStateView {
     public static final int TOUCH_STATE_SLIDE = 1;
 
     public static final int VELOCITY_2500 = 2500;
+
+    public int mAngleSize;
 
     private WindowManager.LayoutParams mParams;
 
@@ -109,6 +113,7 @@ public class CatchView extends PositionStateView {
         mTouchSlop = configuration.getScaledTouchSlop();
         mMaximumVelocity = ViewConfiguration.get(context).getScaledMaximumFlingVelocity();
         mMinmumVelocity = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
+        mAngleSize = getResources().getDimensionPixelSize(R.dimen.angleview_size);
     }
 
     @Override
@@ -147,12 +152,14 @@ public class CatchView extends PositionStateView {
                     }
                 }
                 if (mTouchState == TOUCH_STATE_SLIDE) {
-                    float perX = Math.abs(newx / mDisplayWidth);
-                    float preY = (float) Math.sqrt(Math.pow((newx - mLastX), 2) + Math.pow((newy - mLastY), 2)) / mDisplayHeight;
+                    //float perX = Math.abs(newx / mDisplayWidth);
+                    //float preY = (float) Math.sqrt(Math.pow((newx - mLastX), 2) + Math.pow((newy - mLastY), 2)) / mDisplayHeight;
                     /**
                      * 根据手指的滑动回传一个百分比，用于计算scale，取较大的值
                      */
-                    mListener.change(perX > preY ? perX : preY);
+                    //mListener.change(perX > preY ? perX : preY);
+                    float p = (float) Math.sqrt(Math.pow((newx - mLastX), 2) + Math.pow((newy - mLastY), 2));
+                    mListener.change(p < mAngleSize ? p / mAngleSize : ((p - mAngleSize) / 5) / mAngleSize + 1);
                 }
                 break;
             case MotionEvent.ACTION_UP:

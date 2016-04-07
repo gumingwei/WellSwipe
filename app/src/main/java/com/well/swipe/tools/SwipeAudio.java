@@ -56,7 +56,7 @@ public class SwipeAudio extends SwipeTools {
     public BitmapDrawable getDrawableState(Context context) {
         switch (getState()) {
             case AudioManager.RINGER_MODE_VIBRATE:
-                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_selfile);
+                return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_client_vibrate_setting);
             case AudioManager.RINGER_MODE_SILENT:
                 return (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_ringer_silent);
             case AudioManager.RINGER_MODE_NORMAL:

@@ -4,6 +4,8 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
 
+
+
     defaultConfig {
         applicationId "com.well.swipe"
         minSdkVersion 14
@@ -11,17 +13,16 @@ android {
         versionCode 1
         versionName "1.0"
 
-        ndk {
-            moduleName "SwipeDaemon"
-            ldLibs "log"
-        }
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
+    }
+    lintOptions {
+        abortOnError false
     }
 }
 
