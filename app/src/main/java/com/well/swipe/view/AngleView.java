@@ -293,7 +293,7 @@ public class AngleView extends PositionStateViewGroup {
         for (ItemSwipeTools appitem : itemlist) {
             itemview = (AngleItemStartUp) LayoutInflater.from(getContext()).inflate(R.layout.angle_item_startup, null);
             itemview.setTitle(appitem.mTitle.toString());
-            //itemview.setItemIconBackground(getResources().getDrawable(R.drawable.angle_item_bg));
+            itemview.setItemIconBackground(getResources().getDrawable(R.drawable.angle_item_bg));
             ToolsStrategy.getInstance().initView(getContext(), itemview, appitem);
             itemview.setTag(appitem);
             mSwitchList.add(itemview);

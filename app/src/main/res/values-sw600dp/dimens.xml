@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="angleview_size">335dp</dimen>
+    <dimen name="angleview_size">355dp</dimen>
     <dimen name="angleview_inner_radius">205dp</dimen>
     <dimen name="angleview_outer_radius">295dp</dimen>
     <dimen name="angleindicator_size">144dp</dimen>
@@ -13,5 +13,5 @@
     <dimen name="angleitem_size">64dp</dimen>
     <dimen name="angle_item_icon_size">40dp</dimen>
     <dimen name="app_icon_size">48dp</dimen>
-    <dimen name="test">100dp</dimen>
+    <dimen name="test">101dp</dimen>
 </resources>

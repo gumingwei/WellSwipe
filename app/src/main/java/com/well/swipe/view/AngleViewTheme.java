@@ -46,7 +46,6 @@ public class AngleViewTheme extends PositionStateView {
         mColor = getResources().getColor(R.color.angleview_arc_background);
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
-        mPaint.setColor(Color.BLUE);
         mPaint.setStyle(Paint.Style.FILL);
     }
 
@@ -66,12 +65,16 @@ public class AngleViewTheme extends PositionStateView {
             mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
             mPaint.setColor(mColor);
             canvas.drawCircle(0, mHeight, mInnerSize + mDistance, mPaint);
+            mPaint.setXfermode(null);
+            canvas.drawCircle(0, mHeight, mInnerSize, mPaint);
         } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
             canvas.drawCircle(mWidth, mHeight, mHeight, mPaint);
             mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
             mPaint.setColor(mColor);
             canvas.drawCircle(mWidth, mHeight, mInnerSize + mDistance, mPaint);
+            mPaint.setXfermode(null);
+            canvas.drawCircle(mWidth, mHeight, mInnerSize, mPaint);
         }
-        mPaint.setXfermode(null);
+        //mPaint.setXfermode(null);
     }
 }

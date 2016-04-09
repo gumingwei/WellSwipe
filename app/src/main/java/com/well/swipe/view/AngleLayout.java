@@ -176,16 +176,10 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
          * AngleView的大小
          */
         mAngleSize = getResources().getDimensionPixelSize(R.dimen.angleview_size);
-        //LayoutParams params = new LayoutParams(mAngleSize, mAngleSize);
-        //mAngleView.setLayoutParams(params);
-        //mAngleViewTheme.setLayoutParams(params);
         /**
          * IndicatorView的大小
          */
         mIndicatorSize = getResources().getDimensionPixelSize(R.dimen.angleindicator_size);
-//        LayoutParams indicatorParams = new LayoutParams(mIndicatorSize, mIndicatorSize);
-//        mIndicator.setLayoutParams(indicatorParams);
-//        mIndicatorTheme.setLayoutParams(indicatorParams);
 
         mAngleLogoSize = getResources().getDimensionPixelSize(R.dimen.anglelogo_size);
     }
@@ -345,6 +339,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     @Override
     public void onAngleChanged(int cur, float p) {
         mIndicator.onAngleChanged2(cur, p);
+        mIndicatorTheme.changeStartAngle(cur, p);
     }
 
     @Override
@@ -355,7 +350,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     @Override
     public void onIndexChanged(int index) {
         /**
-         * flag==true手动旋转
+         * 点击Indicator的时候自动旋转AngleView
          */
         if (mEditState == STATE_NORMAL) {
             mAngleView.setViewsIndex(index);

@@ -32,9 +32,6 @@ public class AngleIndicatorView extends PositionStateView {
     private String mColors[] = new String[]{"#ffffff", "#eaeaea", "#e1e1e1", "#d6d6d6", "#cac9c9",
             "#bfbebe", "#b6b5b5", "#aeadad", "#a5a4a4", "#9c9c9c"};
 
-//    private String mColors[] = new String[]{"#9c9c9c", "#a5a4a4", "#aeadad", "#b6b5b5", "#bfbebe",
-//            "#cac9c9", "#d6d6d6", "#e1e1e1", "#eaeaea", "#f0f0f0"};
-
     private Paint mArcPaint;
 
     private Paint mInnerPaint;
@@ -138,10 +135,6 @@ public class AngleIndicatorView extends PositionStateView {
         super.onDraw(canvas);
         int degree = DEGREES_90 / 4;
         if (mPositionState == PositionState.POSITION_STATE_LEFT) {
-            //RectF f = new RectF(-mRect, -mRect, mRect, mRect);
-
-            //canvas.drawCircle(0, 0, mRect + mIndicatorWidth / 2, mInnerPaint);
-            //canvas.drawArc(f, mLeftArcStart, mArcSweep, false, mArcPaint);
             canvas.save();
             canvas.rotate(degree, 0, 0);
             mPaint0.setTextAlign(Paint.Align.LEFT);
@@ -154,10 +147,6 @@ public class AngleIndicatorView extends PositionStateView {
             canvas.drawText(getResources().getString(R.string.frequent), mLeftOffset, OFFSET_Y, mPaint2);
             canvas.restore();
         } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
-            //RectF f = new RectF(mWidth - mRect, -mRect, mWidth + mRect, mRect);
-
-            //canvas.drawCircle(mWidth, 0, mRect + mIndicatorWidth / 2, mInnerPaint);
-            //canvas.drawArc(f, mRightArcStart, mArcSweep, false, mArcPaint);
             canvas.save();
             canvas.rotate(-degree, mWidth, 0);
             mPaint0.setTextAlign(Paint.Align.RIGHT);

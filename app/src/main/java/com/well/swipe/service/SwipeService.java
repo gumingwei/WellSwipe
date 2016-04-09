@@ -670,7 +670,6 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, SwipeSettingActivity.class), 0);
         mNotification = new Notification.Builder(this)
-                .setSmallIcon(R.drawable.ic_launcher_48)
                 .setTicker("")
                 .setContentTitle(getResources().getString(R.string.swipe_nitification_title))
                 .setContentText(getResources().getString(R.string.swipe_nitification_content))

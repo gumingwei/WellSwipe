@@ -12,12 +12,15 @@
     <dimen name="angleindicator_arc_rect">105dp</dimen>
     <dimen name="angleindicator_arc_width">75dp</dimen>
     <dimen name="angleindicator_arc_textsize">15sp</dimen>
+    <dimen name="angleindicator_arc_inner_size">55dp</dimen>
+    <dimen name="angleindicator_theme_innersize">62.5dp</dimen>
+    <dimen name="angleindicator_theme_outersize">135dp</dimen>
     <dimen name="angleitem_half_size">32dp</dimen>
     <dimen name="angleitem_size">64dp</dimen>
     <dimen name="angle_item_icon_size">40dp</dimen>
     <dimen name="app_icon_size">48dp</dimen>
     <dimen name="angle_item_text_size">12sp</dimen>
-    <dimen name="angleview_indicatorview_distance">3dp</dimen>
+    <dimen name="angleview_indicatorview_distance">2dp</dimen>
     <dimen name="catch_view_height">100dp</dimen>
     <dimen name="catch_view_width">50dp</dimen>
     <dimen name="catch_view_broad_size_base">10dp</dimen>
