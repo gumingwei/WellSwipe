@@ -26,14 +26,18 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     /**
      *
      */
-    Context mContext;
+    private Context mContext;
     /**
      * 旋转View
      */
     private AngleView mAngleView;
-
+    /**
+     *
+     */
     private AngleViewTheme mAngleViewTheme;
-
+    /**
+     *
+     */
     private int mAngleSize;
     /**
      * 底部的指示器
@@ -47,6 +51,10 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     private int mAngleLogoSize;
 
     private int mIndicatorSize;
+    /**
+     * 主题的小用像素，然后根据Indocator再做大小变化
+     */
+    private int mIndicatorThemeSize;
     /**
      * 当前的旋转状态
      */
@@ -181,6 +189,8 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
          */
         mIndicatorSize = getResources().getDimensionPixelSize(R.dimen.angleindicator_size);
 
+        mIndicatorThemeSize = getResources().getDimensionPixelSize(R.dimen.angleindicator_theme_size);
+
         mAngleLogoSize = getResources().getDimensionPixelSize(R.dimen.anglelogo_size);
     }
 
@@ -194,17 +204,27 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
             mAngleView.layout(0, mHeight - mAngleSize, mAngleSize, mHeight);
             mAngleViewTheme.layout(0, mHeight - mAngleSize, mAngleSize, mHeight);
             mIndicator.layout(0, mHeight - mIndicatorSize, mIndicatorSize, mHeight);
-            mIndicatorTheme.layout(0, mHeight - mIndicatorSize, mIndicatorSize, mHeight);
+            mIndicatorTheme.layout(0, mHeight - mIndicatorThemeSize, mIndicatorThemeSize, mHeight);
             mAngleLogo.layout(0, mHeight - mAngleLogoSize, mAngleLogoSize, mHeight);
             mAngleLogo.setRotationY(0);
+            mIndicatorTheme.setPivotX(0);
+            mIndicatorTheme.setPivotY(mIndicatorThemeSize);
         } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
             mAngleView.layout(mWidth - mAngleSize, mHeight - mAngleSize, mWidth, mHeight);
             mAngleViewTheme.layout(mWidth - mAngleSize, mHeight - mAngleSize, mWidth, mHeight);
             mIndicator.layout(mWidth - mIndicatorSize, mHeight - mIndicatorSize, mWidth, mHeight);
-            mIndicatorTheme.layout(mWidth - mIndicatorSize, mHeight - mIndicatorSize, mWidth, mHeight);
+            mIndicatorTheme.layout(mWidth - mIndicatorThemeSize, mHeight - mIndicatorThemeSize, mWidth, mHeight);
             mAngleLogo.layout(mWidth - mAngleLogoSize, mHeight - mAngleLogoSize, mWidth, mHeight);
             mAngleLogo.setRotationY(180);
+            mIndicatorTheme.setPivotX(mIndicatorThemeSize);
+            mIndicatorTheme.setPivotY(mIndicatorThemeSize);
         }
+        /**
+         * 根据Indicator来缩放IndicatorTheme保证Theme的质量
+         */
+        float scale = (float) mIndicatorSize / (float) mIndicatorThemeSize;
+        mIndicatorTheme.setScaleX(scale);
+        mIndicatorTheme.setScaleY(scale);
     }
 
     @Override

@@ -49,7 +49,6 @@
     <string name="swipe_setting_title">设置</string>
     <string name="swipe_alarm_title">闹钟</string>
 
-
     <string name="swipe_edit_header_title">已选(%1$s/%2$s)</string>
     <string name="favorite_up_to_9">最多只能添加9个</string>
     <string name="scene_mode_0">震动</string>
@@ -93,6 +92,7 @@
     <string name="bluetooth_off">蓝牙已关闭</string>
     <string name="data_on">移动网络已连接</string>
     <string name="data_off">移动网络已断开</string>
+
     <string name="swipe_nitification_title">Well Swipe正在运行</string>
     <string name="swipe_nitification_content">点击进入swipe设置</string>
 </resources>

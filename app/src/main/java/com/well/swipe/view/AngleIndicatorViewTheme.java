@@ -71,8 +71,8 @@ public class AngleIndicatorViewTheme extends PositionStateView {
         mPaint.setColor(mColor);
         mPaint.setStyle(Paint.Style.STROKE);
 
-        mWidth = getResources().getDimensionPixelSize(R.dimen.angleindicator_size);
-        mHeight = getResources().getDimensionPixelSize(R.dimen.angleindicator_size);
+        mWidth = getResources().getDimensionPixelSize(R.dimen.angleindicator_theme_size);
+        mHeight = getResources().getDimensionPixelSize(R.dimen.angleindicator_theme_size);
 
         mInnerSize = getResources().getDimensionPixelSize(R.dimen.angleindicator_theme_innersize);
         mOuterSize = getResources().getDimensionPixelSize(R.dimen.angleindicator_theme_outersize);
@@ -117,22 +117,19 @@ public class AngleIndicatorViewTheme extends PositionStateView {
             mMindRectF.right = mWidth + mMidSize;
             mMindRectF.bottom = mHeight + mMidSize;
             mPaint.setStrokeWidth(mOuterSize - mInnerSize);
-
-
         }
-
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (mPositionState == PositionState.POSITION_STATE_LEFT) {
-            canvas.drawArc(mInneRectF, 270 + mLeftStartAngle + 4.5f, mUtilAngle * 2 - 9.5f, false, mBoundPaint);
-            canvas.drawArc(mOuterRecF, 270 + mLeftStartAngle + 2.2f, mUtilAngle * 2 - 4.1f, false, mBoundPaint);
+            canvas.drawArc(mInneRectF, 270 + mLeftStartAngle + 6.4f, mUtilAngle * 1 - 2f, false, mBoundPaint);
+            canvas.drawArc(mOuterRecF, 270 + mLeftStartAngle + 3.1f, mUtilAngle * 2 - 6.0f, false, mBoundPaint);
             canvas.drawArc(mMindRectF, 270 + mLeftStartAngle, mUtilAngle * 2, false, mPaint);
         } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
-            canvas.drawArc(mInneRectF, 90 + mRightStartAngle + 4.5f, mUtilAngle * 2 - 9.5f, false, mBoundPaint);
-            canvas.drawArc(mOuterRecF, 90 + mRightStartAngle + 2.2f, mUtilAngle * 2 - 4.1f, false, mBoundPaint);
+            canvas.drawArc(mInneRectF, 90 + mRightStartAngle + 6.4f, mUtilAngle * 1 - 2f, false, mBoundPaint);
+            canvas.drawArc(mOuterRecF, 90 + mRightStartAngle + 3.1f, mUtilAngle * 2 - 6.0f, false, mBoundPaint);
             canvas.drawArc(mMindRectF, 90 + mRightStartAngle, mUtilAngle * 2, false, mPaint);
         }
     }

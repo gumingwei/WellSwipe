@@ -11,8 +11,8 @@
 
     <com.well.swipe.view.AngleIndicatorViewTheme
         android:id="@id/indicator_theme"
-        android:layout_width="@dimen/angleindicator_size"
-        android:layout_height="@dimen/angleindicator_size" />
+        android:layout_width="@dimen/angleindicator_theme_size"
+        android:layout_height="@dimen/angleindicator_theme_size" />
 
     <com.well.swipe.view.AngleIndicatorView
         android:id="@id/indicator"
