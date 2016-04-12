@@ -1,8 +1,6 @@
 package com.well.swipe.view;
 
 import android.animation.Animator;
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -18,7 +16,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -525,8 +522,6 @@ public class AngleView extends PositionStateViewGroup {
                         size = COUNT_4 + 1;
                         group = index - COUNT_4;
                         radius = mOuterRadius;
-
-
                     }
                 }
                 /**
@@ -735,8 +730,6 @@ public class AngleView extends PositionStateViewGroup {
                                 handler.postDelayed(mLongRunable, 600);
                             }
                             return true;
-                        } else {
-                            //Log.i("Gmw", "ev_x=" + event.getX() + ",y=" + event.getY());
                         }
                     }
                 }

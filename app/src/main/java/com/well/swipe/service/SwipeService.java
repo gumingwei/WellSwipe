@@ -730,11 +730,4 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         }
     }
 
-
-//    private native void swipeDaemon(String serviceName, int sdkVersion);
-//
-//    static {
-//        System.loadLibrary("SwipeDaemon");
-//    }
-
 }

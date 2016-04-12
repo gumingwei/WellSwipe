@@ -2,10 +2,13 @@ package com.well.swipe;
 
 import android.app.Application;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
-import android.os.Handler;
+import android.os.*;
+import android.os.Process;
+import android.telephony.TelephonyManager;
 
 import com.well.swipe.service.SwipeService;
 
