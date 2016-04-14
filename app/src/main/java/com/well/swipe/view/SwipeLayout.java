@@ -97,7 +97,7 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
         }
     }
 
-    public boolean isAdd() {
+    public boolean hasView() {
         return mManager.hasView(this);
     }
 

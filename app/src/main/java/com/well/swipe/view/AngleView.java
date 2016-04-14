@@ -211,9 +211,9 @@ public class AngleView extends PositionStateViewGroup {
         void onAddClick(int index);
     }
 
-    OnLongClickListener mOnLongClickListener;
+    OnAngleLongClickListener mOnLongClickListener;
 
-    public interface OnLongClickListener {
+    public interface OnAngleLongClickListener {
         /**
          * 本身的OnLongClick无效，所以自己根据在onTouch中定义一个OnLongClick
          * 本OnLongClick的作用是长安之后告诉上一层处理触摸事件的SwipeLayout的来更改当前为编辑模式
@@ -858,7 +858,7 @@ public class AngleView extends PositionStateViewGroup {
         mOnClickListener = listener;
     }
 
-    public void setOnLongClickListener(OnLongClickListener listener) {
+    public void setOnAngleLongClickListener(OnAngleLongClickListener listener) {
         mOnLongClickListener = listener;
     }
 

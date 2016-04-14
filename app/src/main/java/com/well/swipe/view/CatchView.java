@@ -106,7 +106,6 @@ public class CatchView extends PositionStateView {
         super(context, attrs, defStyleAttr);
         mPaint = new Paint();
         mPaint.setColor(Color.TRANSPARENT);
-        //mPaint.setColor(getResources().getColor(R.color.indicator_theme_purple));
         mDisplayWidth = context.getResources().getDisplayMetrics().widthPixels;
         mDisplayHeight = context.getResources().getDisplayMetrics().heightPixels + Utils.getStatusBarHeight(context);
         ViewConfiguration configuration = ViewConfiguration.get(context);
@@ -128,6 +127,14 @@ public class CatchView extends PositionStateView {
         canvas.drawRect(mRect, mPaint);
     }
 
+    private boolean dispatchInnerChild(MotionEvent ev) {
+        ev.setAction(MotionEvent.ACTION_CANCEL);
+        MotionEvent newMotionEvent = MotionEvent.obtain(ev);
+        dispatchTouchEvent(ev);
+        newMotionEvent.setAction(MotionEvent.ACTION_DOWN);
+        return dispatchTouchEvent(newMotionEvent);
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getAction();
@@ -144,20 +151,19 @@ public class CatchView extends PositionStateView {
                     if (newx - mLastX > mTouchSlop && Math.abs(newy - mLastY) > mTouchSlop && mTouchState != TOUCH_STATE_SLIDE) {
                         mTouchState = TOUCH_STATE_SLIDE;
                         mListener.openLeft();
+
                     }
                 } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
                     if (Math.abs(newx - mLastX) > mTouchSlop && Math.abs(newy - mLastY) > mTouchSlop && mTouchState != TOUCH_STATE_SLIDE) {
                         mTouchState = TOUCH_STATE_SLIDE;
                         mListener.openRight();
+
                     }
                 }
                 if (mTouchState == TOUCH_STATE_SLIDE) {
-                    //float perX = Math.abs(newx / mDisplayWidth);
-                    //float preY = (float) Math.sqrt(Math.pow((newx - mLastX), 2) + Math.pow((newy - mLastY), 2)) / mDisplayHeight;
                     /**
                      * 根据手指的滑动回传一个百分比，用于计算scale，取较大的值
                      */
-                    //mListener.change(perX > preY ? perX : preY);
                     float p = (float) Math.sqrt(Math.pow((newx - mLastX), 2) + Math.pow((newy - mLastY), 2));
                     mListener.change(p < mAngleSize ? p / mAngleSize : ((p - mAngleSize) / 5) / mAngleSize + 1);
                 }

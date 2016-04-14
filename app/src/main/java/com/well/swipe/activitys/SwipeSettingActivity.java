@@ -54,7 +54,6 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
     private PreferenceTitleSummary mSwipeFor;
 
     private SwipeForDialog mDialogFor;
-
     /**
      * 用来存滑出时机
      * 0左侧底部和右侧底部
@@ -98,7 +97,6 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
      * Service实例
      */
     SwipeService mService;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

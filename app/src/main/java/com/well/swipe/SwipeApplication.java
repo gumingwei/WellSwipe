@@ -10,6 +10,8 @@ import android.os.*;
 import android.os.Process;
 import android.telephony.TelephonyManager;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
 import com.well.swipe.service.SwipeService;
 
 import java.lang.ref.WeakReference;
@@ -24,6 +26,10 @@ public class SwipeApplication extends Application {
     private IconCache mIconCache;
 
     private WeakReference<SwipeProvider> mSwipeProvider;
+    /**
+     * GoogleAnlytatic
+     */
+    private Tracker mTracker;
 
     @Override
     public void onCreate() {
@@ -77,4 +83,12 @@ public class SwipeApplication extends Application {
             //mModel.startLoaderFromBackground();
         }
     };
+
+    synchronized public Tracker getDefaultTracker() {
+        if (mTracker == null) {
+            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+            mTracker = analytics.newTracker(R.xml.global_tracker);
+        }
+        return mTracker;
+    }
 }

@@ -22,7 +22,7 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         if (isEmulator(getApplicationContext())) {
-             Process.killProcess(android.os.Process.myPid());
+            //Process.killProcess(android.os.Process.myPid());
         }
         new Handler().postDelayed(new Runnable() {
             @Override

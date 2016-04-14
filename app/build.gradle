@@ -4,8 +4,6 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
 
-
-
     defaultConfig {
         applicationId "com.well.swipe"
         minSdkVersion 14
@@ -30,4 +28,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
+    // [START gms_compile]
+    compile 'com.google.android.gms:play-services-analytics:8.4.0'
+    // [END gms_compile]
 }
+apply plugin: 'com.google.gms.google-services'

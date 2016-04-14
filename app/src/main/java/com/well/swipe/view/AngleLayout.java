@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -20,7 +21,7 @@ import com.well.swipe.utils.Utils;
  * Created by mingwei on 2/26/16.
  */
 public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeListener,
-        AngleIndicatorView.OnIndexChangedLitener, AngleView.OnLongClickListener {
+        AngleIndicatorView.OnIndexChangedLitener, AngleView.OnAngleLongClickListener {
     /**
      *
      */
@@ -165,7 +166,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         mAngleView = (AngleView) findViewById(R.id.angleview);
         mAngleViewTheme = (AngleViewTheme) findViewById(R.id.angleview_theme);
         mAngleView.setOnAngleChangeListener(this);
-        mAngleView.setOnLongClickListener(this);
+        mAngleView.setOnAngleLongClickListener(this);
         mIndicator = (AngleIndicatorView) findViewById(R.id.indicator);
         mIndicatorTheme = (AngleIndicatorViewTheme) findViewById(R.id.indicator_theme);
         mIndicator.setOnChangeListener(this);

@@ -68,8 +68,6 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
      */
     LauncherModel mLauncherModel;
 
-    private BubbleView mBubble;
-
     /**
      * 屏幕底部负责捕获手势的试图
      */
@@ -136,7 +134,6 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         mCatchViewWidth = getResources().getDimensionPixelSize(R.dimen.catch_view_width);
         mCatchViewHeight = getResources().getDimensionPixelSize(R.dimen.catch_view_height);
         mCatchViewBroadSize = getResources().getDimensionPixelSize(R.dimen.catch_view_broad_size_base);
-        mBubble = new BubbleView(getBaseContext());
         mSwipeApplication = (SwipeApplication) getApplication();
         mLauncherModel = mSwipeApplication.setLaunchr(this);
         float pre = (float) SettingHelper.getInstance(this).getInt(SwipeSetting.SWIPE_AREA_PROGRESS, 5) / 10;
@@ -216,9 +213,6 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //Intent intent = new Intent();
-        //intent.setClass(this, SwipeService.class);
-        //startService(intent);
         mCatchViewLeft0.dismiss();
         mCatchViewLeft1.dismiss();
         mCatchViewLeft2.dismiss();
@@ -408,7 +402,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     @Override
     public void change(float scale) {
-        if (mSwipeLayout.isAdd()) {
+        if (mSwipeLayout.hasView()) {
             if (mSwipeLayout.isSwipeOff()) {
                 mSwipeLayout.getAngleLayout().setAngleLayoutScale(scale);
                 mSwipeLayout.setSwipeBackgroundViewAlpha(scale);
@@ -674,7 +668,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
                 .setContentTitle(getResources().getString(R.string.swipe_nitification_title))
                 .setContentText(getResources().getString(R.string.swipe_nitification_content))
                 .setContentIntent(pendingIntent)
-                .setNumber(1).getNotification();
+                .setNumber(1).build();
         mNotification.flags = Notification.FLAG_ONGOING_EVENT;
     }
 

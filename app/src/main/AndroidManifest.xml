@@ -40,7 +40,7 @@
         <activity
             android:name=".activitys.SwipeSettingActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
 
         <service android:name=".service.SwipeService" />
 
@@ -54,6 +54,9 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"></action>
             </intent-filter>
         </receiver>
+
+        <!--Google Analytics-->
+        <service android:name="com.google.android.gms.analytics.CampaignTrackingService"></service>
     </application>
 
 </manifest>
