@@ -10,8 +10,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.database.ContentObserver;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
@@ -21,11 +19,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.RemoteViews;
 
 import com.well.swipe.ItemApplication;
 import com.well.swipe.LauncherModel;
@@ -47,7 +42,6 @@ import com.well.swipe.view.CatchView;
 import com.well.swipe.view.OnDialogListener;
 import com.well.swipe.view.PositionState;
 import com.well.swipe.view.SwipeLayout;
-import com.well.swipe.view.SwipeToast;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -505,7 +499,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
             /**
              * 删除操作，删除成功之后会返回1，失败后返回-1
              */
-            int index = ((ItemApplication) tag).delete(getBaseContext());
+            int index = ((ItemApplication) tag).delete(this);
             if (index > 0) {
                 /**
                  *删除成功后更新戒面
@@ -513,7 +507,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
                 mSwipeLayout.getAngleLayout().getAngleView().removeItem();
             }
         } else if (tag instanceof ItemSwipeTools) {
-            int index = ((ItemSwipeTools) tag).delete(getBaseContext());
+            int index = ((ItemSwipeTools) tag).delete(this);
             if (index > 0) {
                 mSwipeLayout.getAngleLayout().getAngleView().removeItem();
             }

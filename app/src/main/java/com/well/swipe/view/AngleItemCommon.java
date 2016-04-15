@@ -13,11 +13,23 @@ import com.well.swipe.R;
 /**
  * Created by mingwei on 3/19/16.
  */
-public abstract class AngleItemCommon extends RelativeLayout {
+public class AngleItemCommon extends RelativeLayout {
 
     private ImageView mIcon;
 
     private TextView mText;
+    /**
+     * 存储的view索引
+     */
+    private int mIndex = -1;
+    /**
+     * 相对父控件的坐标X
+     */
+    private double mParentX;
+    /**
+     * 相对父控件的坐标Y
+     */
+    private double mParentY;
 
     public AngleItemCommon(Context context) {
         this(context, null);
@@ -52,6 +64,30 @@ public abstract class AngleItemCommon extends RelativeLayout {
 
     public void setItemIconBackground(Drawable drawable) {
         mIcon.setBackground(drawable);
+    }
+
+    public void setIndex(int index) {
+        mIndex = index;
+    }
+
+    public int getIndex() {
+        return mIndex;
+    }
+
+    public void setParentX(double x) {
+        mParentX = x;
+    }
+
+    public void setParentY(double y) {
+        mParentY = y;
+    }
+
+    public double getParentX() {
+        return mParentX;
+    }
+
+    public double getParentY() {
+        return mParentY;
     }
 
 }

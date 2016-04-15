@@ -2,13 +2,9 @@ package com.well.swipe.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import com.well.swipe.R;
 
@@ -170,4 +166,5 @@ public class AngleIndicatorViewTheme extends PositionStateView {
         }
         invalidate();
     }
+
 }
