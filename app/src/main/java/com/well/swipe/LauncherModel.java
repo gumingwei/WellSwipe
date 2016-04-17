@@ -250,6 +250,7 @@ public class LauncherModel extends BroadcastReceiver {
             application.mTitle = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TITLE));
             //#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10200000;component=com.android.camera/.Camera;end
             //index.add(cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.Favorites.ITEM_INDEX)));
+            Log.i("Gmw", "load=" + application.mTitle);
             switches.add(application);
         }
         cursor.close();

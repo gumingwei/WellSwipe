@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -13,14 +14,17 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.well.swipe.ItemApplication;
+import com.well.swipe.ItemSwipeTools;
 import com.well.swipe.R;
+import com.well.swipe.tools.ToolsStrategy;
 import com.well.swipe.utils.Utils;
 
 /**
  * Created by mingwei on 2/26/16.
  */
 public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeListener,
-        AngleIndicatorView.OnIndexChangedLitener, AngleView.OnAngleLongClickListener {
+        AngleIndicatorView.OnIndexChangedLitener, AngleView.OnEditModeChangeListener {
     /**
      *
      */
@@ -45,6 +49,16 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     private AngleIndicatorViewTheme mIndicatorTheme;
 
     private ImageView mAngleLogo;
+
+    private AngleItemStartUp mDragView;
+    /**
+     * 拖拽view内部触摸点到左left的距离
+     */
+    private float mDragOffsetLeft;
+    /**
+     * 拖拽view内部触摸点到上top的距离
+     */
+    private float mDragoffsetTop;
 
     private int mAngleLogoSize;
 
@@ -124,10 +138,6 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
      * 编辑模式
      */
     public static final int STATE_EDIT = 1;
-    /**
-     * 拖拽模式
-     */
-    public static final int STATE_DRAG = 2;
 
     private ValueAnimator mAnimator;
 
@@ -140,6 +150,18 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
          * 当Angle关闭的时候回调,目的是通知SwipeLayout去dissmis
          */
         void onOff();
+    }
+
+    public OnItemDragListener mItemDragListener;
+
+    public interface OnItemDragListener {
+
+        /**
+         * 拖拽结束时调用
+         *
+         * @param index 返回当前的数据索引index
+         */
+        void onDragEnd(int index);
     }
 
     public AngleLayout(Context context) {
@@ -157,6 +179,9 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         mTouchSlop = mConfig.getScaledTouchSlop();
         mMaximumVelocity = ViewConfiguration.get(context).getScaledMaximumFlingVelocity();
         mMinmumVelocity = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
+        mDragView = (AngleItemStartUp) LayoutInflater.from(context).inflate(R.layout.angle_item_startup, null);
+        mDragView.setVisibility(GONE);
+
     }
 
     @Override
@@ -166,11 +191,17 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         mAngleViewTheme = (AngleViewTheme) findViewById(R.id.angleview_theme);
         mAngleView.setOnAngleChangeListener(this);
         mAngleView.setOnAngleLongClickListener(this);
+
         mIndicator = (AngleIndicatorView) findViewById(R.id.indicator);
         mIndicatorTheme = (AngleIndicatorViewTheme) findViewById(R.id.indicator_theme);
         mIndicator.setOnChangeListener(this);
         mIndicator.setCurrent(0);
         mAngleLogo = (ImageView) findViewById(R.id.angle_logo);
+        /**
+         * 拖拽view
+         */
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams((int) mAngleView.getChildHalfSize() * 2, (int) mAngleView.getChildHalfSize() * 2);
+        addView(mDragView, params);
     }
 
     @Override
@@ -240,6 +271,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
                 mActivePointId = ev.getPointerId(0);
                 if (mEditState == STATE_NORMAL) {
+//                    Log.i("Gmw", "onInterceptTouchEvent_nromal_down");
                     if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
                         mAngleView.downAngle(mLastMotionX, mHeight - mLastMotionY);
                     } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
@@ -253,20 +285,25 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                 float newY = ev.getY();
                 float diffX = newX - mLastMotionX;
                 float diffY = newY - mLastMotionY;
-                if ((Math.abs(diffX) > mTouchSlop || Math.abs(diffY) > mTouchSlop) && isAllowAngle) {
-                    mTouchState = TOUCH_STATE_WHIRLING;
-                }
-                if (mTouchState == TOUCH_STATE_WHIRLING) {
+                if (mEditState == STATE_NORMAL) {
+                    if ((Math.abs(diffX) > mTouchSlop || Math.abs(diffY) > mTouchSlop) && isAllowAngle) {
+                        mTouchState = TOUCH_STATE_WHIRLING;
+                    }
+                    if (mTouchState == TOUCH_STATE_WHIRLING) {
+                        return true;
+                    }
+                } else if (mEditState == STATE_EDIT) {
+//                    onDrag(ev.getX(), ev.getY());
                     return true;
                 }
+
                 break;
             case MotionEvent.ACTION_UP:
+                break;
             case MotionEvent.ACTION_CANCEL:
                 mTouchState = TOUCH_STATE_REST;
-
                 break;
         }
-
         return super.onInterceptTouchEvent(ev);
     }
 
@@ -289,6 +326,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                     //正在滚动的时候
                 }
                 if (mEditState == STATE_NORMAL) {
+//                    Log.i("Gmw", "onTouchEvent_normal_down");
                     if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
                         mAngleView.downAngle(mLastMotionX, mHeight - mLastMotionY);
                         return true;
@@ -296,6 +334,12 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                         mAngleView.downAngle(mWidth - mLastMotionX, mHeight - mLastMotionY);
                         return true;
                     }
+                } else if (mEditState == STATE_EDIT) {
+//                  else if (mEditState == STATE_EDIT) {
+//                    Log.i("Gmw", "AngleLayout_onTouchEvent_edit_move=" + event.getX() + "," + event.getY());
+//                    mDragView.setTranslationX(event.getX() - mWidth / 2);
+//                    mDragView.setTranslationY(event.getY() - mAngleView.getChildHalfSize());
+                    return true;
                 }
 
                 break;
@@ -311,6 +355,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                  *转动AngleView
                  */
                 if (mEditState == STATE_NORMAL) {
+//                    Log.i("Gmw", "onTouchEvent_nromal_move");
                     if (mTouchState == TOUCH_STATE_WHIRLING && newY < mHeight) {
                         if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
                             mAngleView.changeAngle(newX, mHeight - newY);
@@ -318,6 +363,8 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                             mAngleView.changeAngle(mWidth - newX, mHeight - newY);
                         }
                     }
+                } else if (mEditState == STATE_EDIT) {
+                    onDrag(event.getX(), event.getY(), true);
                 }
 
                 break;
@@ -328,6 +375,9 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                 float vy = mVelocityTracker.getYVelocity();
                 if (mEditState == STATE_NORMAL) {
                     mAngleView.fling(vx, vy);
+                } else if (mEditState == STATE_EDIT) {
+                    float xy[] = findEndCoordinate();
+                    restoreDragView(event.getX(), xy[0], event.getY(), xy[1]);
                 }
                 recyleVelocityTracker();
                 float upX = event.getX();
@@ -337,13 +387,21 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                     float upDistance = (float) Math.sqrt(Math.pow((upX - 0), 2) + Math.pow((upY - mHeight), 2));
                     if (Math.abs(upX - mLastMotionX) < 8 && Math.abs(upY - mLastMotionY) < 8 &&
                             (upTime - mLastTime) < 200 && (upDistance > mAngleView.getMeasuredHeight())) {
-                        off();
+                        if (mEditState == STATE_EDIT) {
+                            setEditState(AngleLayout.STATE_NORMAL);
+                        } else {
+                            off();
+                        }
                     }
                 } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
                     float upDistance = (float) Math.sqrt(Math.pow((upX - mWidth), 2) + Math.pow((upY - mHeight), 2));
                     if (Math.abs(upX - mLastMotionX) < 8 && Math.abs(upY - mLastMotionY) < 8 &&
                             (upTime - mLastTime) < 200 && (upDistance > mAngleView.getMeasuredHeight())) {
-                        off();
+                        if (mEditState == STATE_EDIT) {
+                            setEditState(AngleLayout.STATE_NORMAL);
+                        } else {
+                            off();
+                        }
                     }
                 }
                 break;
@@ -361,11 +419,6 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     }
 
     @Override
-    public void end(int endIndex) {
-        //mIndicator.setCurrent(endIndex);
-    }
-
-    @Override
     public void onIndexChanged(int index) {
         /**
          * 点击Indicator的时候自动旋转AngleView
@@ -373,15 +426,182 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         if (mEditState == STATE_NORMAL) {
             mAngleView.setViewsIndex(index);
         }
-
     }
 
     @Override
-    public void onLongClick(View view) {
+    public void onEnterEditMode(View view) {
         /**
          * 长安之后进入编辑模式
          */
         mEditState = STATE_EDIT;
+    }
+
+    @Override
+    public void onExitEditMode() {
+        mEditState = STATE_NORMAL;
+    }
+
+    AngleItemCommon mTargetView;
+
+    @Override
+    public void onStartDrag(AngleItemCommon view, float newleft, float newtop, float offsetLeft, float offsetTop) {
+
+        mTargetView = view;
+        if (isRestoreFinish) {
+            Object object = view.getTag();
+            if (object instanceof ItemApplication) {
+                ItemApplication item = (ItemApplication) object;
+                mDragView.setTitle(item.mTitle.toString());
+                mDragView.setItemIcon(item.mIconBitmap);
+                mDragView.setItemIconBackground(null);
+                mDragView.setVisibility(VISIBLE);
+            } else if (object instanceof ItemSwipeTools) {
+                ItemSwipeTools item = (ItemSwipeTools) object;
+                mDragView.setTitle(item.mTitle.toString());
+                mDragView.setItemIconBackground(getResources().getDrawable(R.drawable.angle_item_bg));
+                ToolsStrategy.getInstance().initView(getContext(), mDragView, item);
+                mDragView.setVisibility(VISIBLE);
+            }
+            mAngleView.exchangePre();
+            mDragOffsetLeft = offsetLeft;
+            mDragoffsetTop = offsetTop;
+            if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
+                startDrag(newleft, newtop);
+            } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
+                startDrag(newleft + mWidth - mAngleSize, newtop);
+            }
+        }
+    }
+
+    /**
+     * 开始Drag是根据接口返回的X，Y设定View的初始位置
+     * 长按时调用一次
+     *
+     * @param x 初始X
+     * @param y 初始Y
+     */
+    public void startDrag(float x, float y) {
+        if (isRestoreFinish) {
+            onDragging(x, y + mHeight - mAngleSize, false);
+        }
+    }
+
+    /**
+     * 拖拽中,松开手自动复原时调用
+     *
+     * @param x    坐标X
+     * @param y    坐标Y
+     * @param drag 是否主动拖拽
+     */
+    public void onDrag(float x, float y, boolean drag) {
+        onDragging(x - mDragOffsetLeft, y - mDragoffsetTop, drag);
+    }
+
+    /**
+     * 拖拽中
+     *
+     * @param x    eventX
+     * @param y    eventY
+     * @param drag drag==true时检测AngleView的位置
+     */
+    public void onDragging(float x, float y, boolean drag) {
+        if (isRestoreFinish) {
+            mDragView.setTranslationX(x);
+            mDragView.setTranslationY(y);
+        }
+        if (drag) {
+            if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
+                mAngleView.checkAndChange(x, y - (mHeight - mAngleSize));
+            } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
+                mAngleView.checkAndChange(x - (mWidth - mAngleSize), y - (mHeight - mAngleSize));
+            }
+        } else {
+            mDragView.setTranslationX(x);
+            mDragView.setTranslationY(y);
+        }
+    }
+
+    /**
+     * 找到 松手之后要复原的view的位置坐标
+     *
+     * @return xy坐标数组
+     */
+    public float[] findEndCoordinate() {
+        AngleView.Coordinate coordinate = mAngleView.findEmpty();
+        float x = 0f;
+        float y = 0f;
+        if (coordinate != null) {
+            if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
+                x = (float) coordinate.x + mDragOffsetLeft - mAngleView.getChildHalfSize();
+            } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
+                x = (float) coordinate.x + mDragOffsetLeft - mAngleView.getChildHalfSize() + mWidth - mAngleSize;
+            }
+            y = (float) coordinate.y + mDragoffsetTop - mAngleView.getChildHalfSize() + mHeight - mAngleSize;
+        }
+        return new float[]{x, y};
+    }
+
+
+    @Override
+    public void onCancelDrag() {
+        float xy[] = findEndCoordinate();
+        restoreDragView(xy[0], xy[0], xy[1], xy[1]);
+    }
+
+    boolean isRestoreFinish = true;
+
+    /**
+     * 复原动画
+     *
+     * @param startX
+     * @param endX
+     * @param startY
+     * @param endY
+     */
+    public void restoreDragView(final float startX, final float endX, final float startY, final float endY) {
+        if (isRestoreFinish) {
+            isRestoreFinish = false;
+            mAngleView.isRestoreFinish = false;
+            ValueAnimator valueAnimator = ValueAnimator.ofFloat(1f, 0f);
+            valueAnimator.setDuration(180);
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float v = (float) animation.getAnimatedValue();
+                    onDrag((startX - endX) * v + endX, (startY - endY) * v + endY, false);
+                }
+            });
+            valueAnimator.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mDragView.setVisibility(GONE);
+                    if (null != mTargetView) {
+                        mTargetView.setVisibility(VISIBLE);
+                    }
+                    isRestoreFinish = true;
+                    mAngleView.isRestoreFinish = true;
+                    /**
+                     *最后检测数据，发生变化就跟新，否则忽略
+                     */
+                    mItemDragListener.onDragEnd(mAngleView.getViewsIndex());
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            valueAnimator.start();
+        }
 
     }
 
@@ -442,6 +662,10 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
     public void setOnOffListener(OnOffListener listener) {
         mOffListener = listener;
+    }
+
+    public void setOnDragItemListener(OnItemDragListener listener) {
+        mItemDragListener = listener;
     }
 
     /**

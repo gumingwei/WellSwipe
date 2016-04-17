@@ -16,16 +16,19 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
 import com.well.swipe.ItemApplication;
+import com.well.swipe.ItemInfo;
 import com.well.swipe.R;
 import com.well.swipe.ItemSwipeTools;
 import com.well.swipe.tools.ToolsStrategy;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,8 +45,6 @@ import java.util.Map;
  * 5.长按进入编辑模式
  */
 public class AngleView extends PositionStateViewGroup {
-
-
     /**
      * 旋转的基数角度
      */
@@ -91,10 +92,16 @@ public class AngleView extends PositionStateViewGroup {
     private static final int TYPE_ADDCLICK = 2;
 
     private static final int TYPE_LONGCLICK = 3;
+
+    private static final int TYPE_RECENT = 0;
+
+    private static final int TYPE_TOOLS = 1;
+
+    private static final int TYPE_FAVORITE = 2;
     /**
      * AngleView点击时候找到的ItemView
      */
-    private AngleItemCommon mTargetItem;
+    AngleItemCommon mTargetItem;
     /**
      * 顺时针/逆时针
      */
@@ -158,6 +165,15 @@ public class AngleView extends PositionStateViewGroup {
      */
     private ArrayList<Coordinate> mDelNext = new ArrayList<>();
 
+    /**
+     * 交换前
+     */
+    private ArrayList<Coordinate> mExchangePre = new ArrayList<>();
+    /**
+     * 交换后
+     */
+    private ArrayList<Coordinate> mExchangeNext = new ArrayList<>();
+
     private OnAngleChangeListener mAngleListener;
 
     private Handler handler = new Handler() {
@@ -186,16 +202,6 @@ public class AngleView extends PositionStateViewGroup {
          */
         void onAngleChanged(int cur, float p);
 
-        /**
-         * 旋转停止时调用
-         * 在快速点击切换Indicator的时候，由于设计机制的原因，比如：在indicator==0时点击了1，当动画还没有完全执行
-         * 完成的时候再点击2，此时执行的是0-2的动画过程，so...刚刚执行了一半的1就停在半路了，此方法的目的是动画执行
-         * 完成时强行校对选中状态
-         *
-         * @param endIndex 结束的当前数据索引Index
-         */
-        void end(int endIndex);
-
     }
 
     OnClickListener mOnClickListener;
@@ -221,17 +227,38 @@ public class AngleView extends PositionStateViewGroup {
         void onAddClick(int index);
     }
 
-    OnAngleLongClickListener mOnLongClickListener;
+    OnEditModeChangeListener mOnEditModeChangeListener;
 
-    public interface OnAngleLongClickListener {
+    public interface OnEditModeChangeListener {
         /**
-         * 本身的OnLongClick无效，所以自己根据在onTouch中定义一个OnLongClick
-         * 本OnLongClick的作用是长安之后告诉上一层处理触摸事件的SwipeLayout的来更改当前为编辑模式
+         * 进入编辑模式
          *
          * @param view
          */
-        void onLongClick(View view);
+        void onEnterEditMode(View view);
+
+        /**
+         * 退出编辑模式
+         */
+        void onExitEditMode();
+
+        /**
+         * 进入拖拽模式
+         *
+         * @param view       判定进行拖拽的当前view
+         * @param left       在父控件中的left值
+         * @param top        在父控件中的top值
+         * @param offsetLeft 触摸点在当前进行拖拽的view的left距离
+         * @param offsetTop  触摸点在当前进行拖拽的view的top距离
+         */
+        void onStartDrag(AngleItemCommon view, float left, float top, float offsetLeft, float offsetTop);
+
+        /**
+         * 取消拖拽
+         */
+        void onCancelDrag();
     }
+
 
     /**
      * 临时坐标信息
@@ -264,9 +291,9 @@ public class AngleView extends PositionStateViewGroup {
         mOuterRadius = getResources().getDimensionPixelSize(R.dimen.angleview_outer_radius);
         mDeleteBtnSize = getResources().getDimensionPixelSize(R.dimen.angleview_item_delete_size);
 
-        mMap.put(0, mRecentAppList);
-        mMap.put(1, mSwitchList);
-        mMap.put(2, mFavoriteAppList);
+        mMap.put(TYPE_RECENT, mRecentAppList);
+        mMap.put(TYPE_TOOLS, mSwitchList);
+        mMap.put(TYPE_FAVORITE, mFavoriteAppList);
 
     }
 
@@ -289,8 +316,8 @@ public class AngleView extends PositionStateViewGroup {
     }
 
     public void putItemApplications(ArrayList<ItemApplication> itemlist) {
-        if (mFavoriteAppList.size() > 0) {
-            mFavoriteAppList.clear();
+        if (mMap.get(TYPE_FAVORITE).size() > 0) {
+            mMap.get(TYPE_FAVORITE).clear();
         }
         AngleItemStartUp itemview;
         for (ItemApplication appitem : itemlist) {
@@ -298,18 +325,37 @@ public class AngleView extends PositionStateViewGroup {
             itemview.setTitle(appitem.mTitle.toString());
             itemview.setItemIcon(appitem.mIconBitmap);
             itemview.setTag(appitem);
-            mFavoriteAppList.add(itemview);
+            mMap.get(TYPE_FAVORITE).add(itemview);
         }
         /**
          * 添加额外的add按钮
          */
         AngleItemAddTo targetItem = (AngleItemAddTo) LayoutInflater.from(getContext()).inflate(R.layout.angle_item_addto, null);
-        mFavoriteAppList.add(targetItem);
+        mMap.get(TYPE_FAVORITE).add(targetItem);
+    }
+
+    /**
+     * 从Tag中拿出所有的Apps数据
+     *
+     * @return
+     */
+    public ArrayList<ItemApplication> getItemApplications() {
+        if (getViewsIndex() == 2) {
+            ArrayList<AngleItemCommon> views = getData();
+            if (views != null) {
+                ArrayList<ItemApplication> itemApplications = new ArrayList<>();
+                for (int i = 0; i < views.size() - 1; i++) {
+                    itemApplications.add((ItemApplication) views.get(i).getTag());
+                }
+                return itemApplications;
+            }
+        }
+        return null;
     }
 
     public void putItemQuickSwitch(ArrayList<ItemSwipeTools> itemlist) {
-        if (mSwitchList.size() > 0) {
-            mSwitchList.clear();
+        if (mMap.get(TYPE_TOOLS).size() > 0) {
+            mMap.get(TYPE_TOOLS).clear();
         }
         AngleItemStartUp itemview;
         for (ItemSwipeTools appitem : itemlist) {
@@ -318,19 +364,39 @@ public class AngleView extends PositionStateViewGroup {
             itemview.setItemIconBackground(getResources().getDrawable(R.drawable.angle_item_bg));
             ToolsStrategy.getInstance().initView(getContext(), itemview, appitem);
             itemview.setTag(appitem);
-            mSwitchList.add(itemview);
+            mMap.get(TYPE_TOOLS).add(itemview);
         }
         /**
          * 添加额外的add按钮
          */
         AngleItemAddTo targetItem = (AngleItemAddTo) LayoutInflater.from(getContext()).inflate(R.layout.angle_item_addto, null);
-        mSwitchList.add(targetItem);
+        mMap.get(TYPE_TOOLS).add(targetItem);
     }
+
+    /**
+     * 从Tag中拿出所有的Tools数据
+     *
+     * @return
+     */
+    public ArrayList<ItemSwipeTools> getToolsArrayList() {
+        if (getViewsIndex() == 1) {
+            ArrayList<AngleItemCommon> views = getData();
+            if (views != null) {
+                ArrayList<ItemSwipeTools> toolsArrayList = new ArrayList<>();
+                for (int i = 0; i < views.size() - 1; i++) {
+                    toolsArrayList.add((ItemSwipeTools) views.get(i).getTag());
+                }
+                return toolsArrayList;
+            }
+        }
+        return null;
+    }
+
 
     public void refreshToolsView() {
         int index = getViewsIndex();
         for (int i = 0; i < mMap.get(index).size(); i++) {
-            AngleItemCommon itemview = (AngleItemCommon) mMap.get(index).get(i);
+            AngleItemCommon itemview = mMap.get(index).get(i);
             if (itemview instanceof AngleItemStartUp && itemview.getTag() instanceof ItemSwipeTools) {
                 ItemSwipeTools item = (ItemSwipeTools) itemview.getTag();
                 ToolsStrategy.getInstance().initView(getContext(), itemview, item);
@@ -511,7 +577,8 @@ public class AngleView extends PositionStateViewGroup {
                 if (index < 9) {
                     views.get(index).setParentX((float) coordinate.x);
                     views.get(index).setParentY((float) coordinate.y);
-                    views.get(index).layout((int) (coordinate.x - mChildHalfSize), (int) (coordinate.y - mChildHalfSize), (int) (coordinate.x + mChildHalfSize), (int) (coordinate.y + mChildHalfSize));
+                    views.get(index).layout((int) (coordinate.x - mChildHalfSize), (int) (coordinate.y - mChildHalfSize),
+                            (int) (coordinate.x + mChildHalfSize), (int) (coordinate.y + mChildHalfSize));
                 }
             }
         }
@@ -519,7 +586,7 @@ public class AngleView extends PositionStateViewGroup {
     }
 
     /**
-     * 根据控件的索引Index计算坐标
+     * 根据所有控件的索引Index计算坐标
      *
      * @param views 控件集合
      * @param index 遍历控件时的索引
@@ -632,6 +699,99 @@ public class AngleView extends PositionStateViewGroup {
         return new Coordinate(x, y);
     }
 
+    /**
+     * 计算当前的数据的坐标
+     *
+     * @param views
+     * @param index
+     * @return
+     */
+    public Coordinate coordinate2(ArrayList<AngleItemCommon> views, int index) {
+        /**
+         * size按照当前views的总数，以4为区分，分别计算出<4,=4,超出4的部分剪掉4即从1，2，3重新开始计数
+         */
+        int size = 0;
+        /**
+         * group可认为是跟随环数而变化的一个值，用来计算index非0时的子控件的角度增长
+         * 角度增为只有一个子控件的时候：90/1=45；
+         * index非0的时候：(group＋0.5)*newdegree(按照当前环中子控件的总数平分90的值)
+         */
+        int group = 0;
+        /**
+         * 半径变化，环数增加，半径增加
+         */
+        int radius = 0;
+        if (views.size() <= COUNT_4) {
+            size = views.size();
+            group = index;
+            radius = mInnerRadius;
+        } else if (views.size() <= 9) {
+            if (index < COUNT_4) {
+                /**
+                 * 总数大于4时内环正好是4
+                 */
+                size = COUNT_4;
+                group = index;
+                radius = mInnerRadius;
+            } else if (index < 9) {
+                /**
+                 * 总数大于4时外环
+                 * size＝总数－4
+                 * group＝views(index)-4
+                 */
+                size = views.size() - COUNT_4;
+                group = index - COUNT_4;
+                radius = mOuterRadius;
+            }
+        } else {
+            if (index < COUNT_4) {
+                /**
+                 * 总数大于4时内环正好是4
+                 */
+                size = COUNT_4;
+                group = index;
+                radius = mInnerRadius;
+            } else if (index < 9) {
+                /**
+                 * 总数大于4时外环
+                 * size＝总数－4
+                 * group＝views(index)-4
+                 */
+                size = COUNT_4 + 1;
+                group = index - COUNT_4;
+                radius = mOuterRadius;
+            }
+        }
+        /**
+         * 按照views(index)所在的当前环的个数平分90度
+         */
+        float degree = (float) DEGREES_90 / (float) (size);
+        /**
+         * 得出一个新的递增的角度，用来后面按照三角函数计算子控的位置
+         */
+        float newdegree;
+        if (index == 0) {
+            newdegree = degree / 2;
+        } else {
+            newdegree = (int) ((group + 0.5) * degree);
+        }
+        /**
+         * 1.按照限象使用不同的三角函数计算所得x,y坐标
+         * 2.子控件根据不同的呃限象旋转位置满足在第0限象的正常显示效果
+         * 3.当整个控件的容器反转之后，为保证显示效果，要做一定的反转
+         */
+        double x = 0l;
+        double y = 0l;
+        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
+            x = Math.sin(Math.toRadians(newdegree)) * radius;
+            y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
+        } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
+            x = mWidth - Math.sin(Math.toRadians(newdegree)) * radius;
+            y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
+        }
+        return new Coordinate(x, y);
+    }
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
         canvas.save();
@@ -645,111 +805,31 @@ public class AngleView extends PositionStateViewGroup {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(final MotionEvent event) {
         int action = event.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-
                 mMotionX = event.getX();
                 mMotionY = event.getY();
                 ArrayList<AngleItemCommon> views = getData();
                 if (views != null) {
                     for (int index = 0; index < views.size(); index++) {
-                        /**
-                         * size按照当前views的总数，以4为区分，分别计算出<4,=4,超出4的部分剪掉4即从1，2，3重新开始计数
-                         */
-                        int size = 0;
-                        /**
-                         * group可认为是跟随环数而变化的一个值，用来计算index非0时的子控件的角度增长
-                         * 角度增为只有一个子控件的时候：90/1=45；
-                         * index非0的时候：(group＋0.5)*newdegree(按照当前环中子控件的总数平分90的值)
-                         */
-                        int group = 0;
-                        /**
-                         * 半径变化，环数增加，半径增加
-                         */
-                        int radius = 0;
-                        if (views.size() <= COUNT_4) {
-                            size = views.size();
-                            group = index;
-                            radius = mInnerRadius;
-                        } else if (views.size() <= 9) {
-                            if (index < COUNT_4) {
-                                /**
-                                 * 总数大于4时内环正好是4
-                                 */
-                                size = COUNT_4;
-                                group = index;
-                                radius = mInnerRadius;
-                            } else if (index < 9) {
-                                /**
-                                 * 总数大于4时外环
-                                 * size＝总数－4
-                                 * group＝views(index)-4
-                                 */
-                                size = views.size() - COUNT_4;
-                                group = index - COUNT_4;
-                                radius = mOuterRadius;
-                            }
-                        } else {
-                            if (index < COUNT_4) {
-                                /**
-                                 * 总数大于4时内环正好是4
-                                 */
-                                size = COUNT_4;
-                                group = index;
-                                radius = mInnerRadius;
-                            } else if (index < 9) {
-                                /**
-                                 * 总数大于4时外环
-                                 * size＝总数－4
-                                 * group＝views(index)-4
-                                 */
-                                size = COUNT_4 + 1;
-                                group = index - COUNT_4;
-                                radius = mOuterRadius;
-                            }
-                        }
-                        /**
-                         * 按照views(index)所在的当前环的个数平分90度
-                         */
-                        float degree = (float) DEGREES_90 / (float) (size);
-                        /**
-                         * 得出一个新的递增的角度，用来后面按照三角函数计算子控的位置
-                         */
-                        float newdegree;
-                        if (index == 0) {
-                            newdegree = degree / 2;
-                        } else {
-                            newdegree = (int) ((group + 0.5) * degree);
-                        }
-                        /**
-                         * 1.按照限象使用不同的三角函数计算所得x,y坐标
-                         * 2.子控件根据不同的呃限象旋转位置满足在第0限象的正常显示效果
-                         * 3.当整个控件的容器反转之后，为保证显示效果，要做一定的反转
-                         */
-                        double x = 0l;
-                        double y = 0l;
-                        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
-                            x = Math.sin(Math.toRadians(newdegree)) * radius;
-                            y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
-                        } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
-                            x = mWidth - Math.sin(Math.toRadians(newdegree)) * radius;
-                            y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
-                        }
 
-                        float newleft = (float) (x - mChildHalfSize);
-                        float newtop = (float) (y - mChildHalfSize);
-                        float newright = (float) (x + mChildHalfSize);
-                        float newbottom = (float) (y + mChildHalfSize);
+                        Coordinate coordinate = coordinate2(views, index);
+
+                        float newleft = (float) (coordinate.x - mChildHalfSize);
+                        float newtop = (float) (coordinate.y - mChildHalfSize);
+                        float newright = (float) (coordinate.x + mChildHalfSize);
+                        float newbottom = (float) (coordinate.y + mChildHalfSize);
 
                         if (mMotionX > newleft && mMotionX < newright && mMotionY > newtop && mMotionY < newbottom) {
                             mClickTime1 = System.currentTimeMillis();
-
                             /**
                              * 找到当前点击的那个item
+                             * 判断isDeletedAnimCompleted的目的是，连续快速点击删除按钮的时候，
+                             * 上一个刚点击正在执行删除的时候再点击的话会错误的判断删除的是后点击的Item
                              */
-                            mTargetItem = ((AngleItemCommon) views.get(index));
+                            mTargetItem = views.get(index);
                             mTargetItem.setIndex(index);
                             /**
                              *
@@ -761,12 +841,24 @@ public class AngleView extends PositionStateViewGroup {
                                         mMotionY < (newtop + mDeleteBtnSize) && ((AngleItemStartUp) mTargetItem).getDelBtn().
                                         getVisibility() == View.VISIBLE) {
                                     mClickType = TYPE_DELCLICK;
+                                } else if (((AngleItemStartUp) mTargetItem).getDelBtn().getVisibility() == View.VISIBLE) {
+                                    /**
+                                     * 最后一个view禁止拖动&在交换动画完成后才有效
+                                     */
+                                    if (index != views.size() - 1 && isRestoreFinish) {
+                                        mOnEditModeChangeListener.onStartDrag(mTargetItem, newleft, newtop, mMotionX - newleft, mMotionY - newtop);
+                                        /**
+                                         * 开始出发拖动的记住一个Index,用作复原动画的时候
+                                         */
+                                        mDragTargetIndex = index;
+                                        mTargetItem.setVisibility(GONE);
+                                    }
+                                }
+                                if (getViewsIndex() != 0 && ((AngleItemStartUp) mTargetItem).getDelBtn().getVisibility() == View.GONE) {
+                                    handler.postDelayed(mLongRunable, 600);
                                 }
                             } else if (mTargetItem instanceof AngleItemAddTo) {
                                 mClickType = TYPE_ADDCLICK;
-                            }
-                            if (getViewsIndex() != 0) {
-                                handler.postDelayed(mLongRunable, 600);
                             }
                             return true;
                         }
@@ -778,11 +870,15 @@ public class AngleView extends PositionStateViewGroup {
                 //handler.removeCallbacks(mLongRunable);
                 float movenewx = event.getX();
                 float movenewy = event.getY();
-                if (Math.abs(movenewx - mMotionX) > 5 || Math.abs(movenewy - mMotionY) > 4) {
+                if (Math.abs(movenewx - mMotionX) > 10 || Math.abs(movenewy - mMotionY) > 10) {
                     handler.removeCallbacks(mLongRunable);
                 }
                 break;
             case MotionEvent.ACTION_UP:
+
+                if ((mTargetItem).getVisibility() == View.GONE) {
+                    mOnEditModeChangeListener.onCancelDrag();
+                }
                 float clicknewx = event.getX();
                 float clicknewy = event.getY();
                 long clicktime = System.currentTimeMillis();
@@ -806,6 +902,7 @@ public class AngleView extends PositionStateViewGroup {
                                 public void run() {
                                     if (mOnClickListener != null) {
                                         mOnClickListener.onClick(mTargetItem);
+
                                     }
                                 }
                             }, 140);
@@ -831,14 +928,118 @@ public class AngleView extends PositionStateViewGroup {
                 mClickType = -1;
                 break;
         }
-
         return super.onTouchEvent(event);
 
     }
 
+    /**
+     * 准备拖动时临时生成一个位置数组
+     */
+    public void exchangePre() {
+        ArrayList<AngleItemCommon> views = getData();
+        if (views != null) {
+            mExchangePre.clear();
+            for (int index = 0; index < views.size(); index++) {
+                /**
+                 * size按照当前views的总数，以4为区分，分别计算出<4,=4,超出4的部分剪掉4即从1，2，3重新开始计数
+                 */
+                mExchangePre.add(coordinate2(views, index));
+            }
+        }
+    }
+
+
+    boolean isExChangeFinish = true;
+
+    boolean isRestoreFinish = true;
+
+    private int mDragTargetIndex;
+
+    /**
+     * 拖动的时候根据坐标判断进入那个范围了
+     *
+     * @param x
+     * @param y
+     */
+    public void checkAndChange(float x, float y) {
+        float centerX = x + mChildHalfSize;
+        float centerY = y + mChildHalfSize;
+        if (mTargetItem.getVisibility() == GONE) {
+            for (int index = 0; index < mExchangePre.size(); index++) {
+                if (index != mExchangePre.size() - 1) {
+                    Coordinate coordinate = mExchangePre.get(index);
+                    float newleft = (float) (coordinate.x - mChildHalfSize);
+                    float newtop = (float) (coordinate.y - mChildHalfSize);
+                    float newright = (float) (coordinate.x + mChildHalfSize);
+                    float newbottom = (float) (coordinate.y + mChildHalfSize);
+                    if (centerX > newleft && centerY > newtop && centerX < newright && centerY < newbottom) {
+
+                        if (index != mTargetItem.getIndex() && isExChangeFinish) {
+                            isExChangeFinish = false;
+                            /**
+                             * 出发交换的时候跟新index值
+                             */
+                            mDragTargetIndex = index;
+                            ArrayList<AngleItemCommon> arrayList = new ArrayList<>();
+                            arrayList.clear();
+                            arrayList.addAll(getData());
+                            /**
+                             * 交换数据
+                             */
+                            AngleItemCommon temp = arrayList.get(index);
+                            arrayList.set(index, arrayList.get(mTargetItem.getIndex()));
+                            arrayList.set(mTargetItem.getIndex(), temp);
+
+                            /**
+                             * 重置angleItem的Index
+                             */
+                            for (int i = 0; i < arrayList.size(); i++) {
+                                arrayList.get(i).setIndex(i);
+                            }
+
+                            ArrayList<AngleItemCommon> views = arrayList;
+                            if (views != null) {
+                                mExchangeNext.clear();
+                                for (int m = 0; m < views.size(); m++) {
+                                    /**
+                                     * size按照当前views的总数，以4为区分，分别计算出<4,=4,超出4的部分剪掉4即从1，2，3重新开始计数
+                                     */
+                                    mExchangeNext.add(coordinate(views, m, getQuaIndex()));
+                                }
+                            }
+
+                            exchangeAnimator(mExchangeNext, arrayList, index);
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 找view.visiable==gong 的view的坐标
+     *
+     * @return 返回(x, y)坐标
+     */
+    public Coordinate findEmpty() {
+        ArrayList<AngleItemCommon> views = getData();
+        if (views != null) {
+            for (int index = 0; index < views.size(); index++) {
+                if (index == mDragTargetIndex) {
+                    return coordinate2(views, index);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 移除动画
+     */
     public void removeItem() {
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(1.0f, 0f);
-        valueAnimator.setDuration(250);
+        valueAnimator.setDuration(150);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -851,12 +1052,10 @@ public class AngleView extends PositionStateViewGroup {
         valueAnimator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-
                 //getData().remove(mTargetItem);
                 mDelPre.clear();
                 mDelPre.addAll(getData());
@@ -877,7 +1076,6 @@ public class AngleView extends PositionStateViewGroup {
 
             @Override
             public void onAnimationCancel(Animator animation) {
-
             }
 
             @Override
@@ -891,14 +1089,14 @@ public class AngleView extends PositionStateViewGroup {
 
     /**
      * 移除item之后的过渡动画
+     * 从原始坐标移动到新坐标
      *
-     * @param resource
-     * @param targetView
+     * @param resource   移除控件之后计算产生的新的item坐标
+     * @param targetView 原始坐标
      */
     public void transAnimator(final ArrayList<Coordinate> resource, final ArrayList<AngleItemCommon> targetView) {
-
         ValueAnimator translation = ValueAnimator.ofFloat(0f, 1f);
-        translation.setDuration(300);
+        translation.setDuration(250);
         translation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -925,6 +1123,66 @@ public class AngleView extends PositionStateViewGroup {
                     targetView.get(i).setTranslationY(0);
                 }
                 getData().remove(mTargetItem);
+                /**
+                 * 判断最后一个Item，也就是只剩加号的时候退出编辑状态
+                 */
+                if (getData().size() == 1) {
+                    mOnEditModeChangeListener.onExitEditMode();
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        translation.start();
+    }
+
+    /**
+     * 交换动画
+     *
+     * @param resource   源坐标，也就是动画的起始坐标
+     * @param targetView 目标坐标，也就是动画的终点坐标
+     * @param index      当前view交换之后的目标位置的index索引，主要用来屏蔽动画，因为松手之后有动画，不需要这这里再加动画了
+     */
+    public void exchangeAnimator(final ArrayList<Coordinate> resource, final ArrayList<AngleItemCommon> targetView, final int index) {
+        ValueAnimator translation = ValueAnimator.ofFloat(0f, 1f);
+        translation.setDuration(180);
+        translation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float values = (float) animation.getAnimatedValue();
+                for (int i = 0; i < targetView.size(); i++) {
+                    if (i != index) {
+                        float x = (float) (resource.get(i).x - targetView.get(i).getParentX()) * values;
+                        float y = (float) (resource.get(i).y - targetView.get(i).getParentY()) * values;
+                        targetView.get(i).setTranslationX(x);
+                        targetView.get(i).setTranslationY(y);
+                        requestLayout();
+                    }
+                }
+            }
+        });
+        translation.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                for (int i = 0; i < targetView.size(); i++) {
+                    targetView.get(i).setTranslationX(0);
+                    targetView.get(i).setTranslationY(0);
+                }
+                putData(targetView);
+                isExChangeFinish = true;
 
             }
 
@@ -939,7 +1197,6 @@ public class AngleView extends PositionStateViewGroup {
             }
         });
         translation.start();
-
     }
 
     public void setOnAngleChangeListener(OnAngleChangeListener listener) {
@@ -950,8 +1207,8 @@ public class AngleView extends PositionStateViewGroup {
         mOnClickListener = listener;
     }
 
-    public void setOnAngleLongClickListener(OnAngleLongClickListener listener) {
-        mOnLongClickListener = listener;
+    public void setOnAngleLongClickListener(OnEditModeChangeListener listener) {
+        mOnEditModeChangeListener = listener;
     }
 
     /**
@@ -1206,9 +1463,9 @@ public class AngleView extends PositionStateViewGroup {
 
                 } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
                     itemLayout2(mIndex);
+
                 }
 
-                mAngleListener.end(getViewsIndex());
             }
 
             @Override
@@ -1352,6 +1609,12 @@ public class AngleView extends PositionStateViewGroup {
         return mMap.get(getViewsIndex());
     }
 
+    public void putData(ArrayList<AngleItemCommon> arrayList) {
+        mMap.put(getViewsIndex(), arrayList);
+        refresh();
+    }
+
+
     /**
      * mPositionState=Right
      *
@@ -1389,7 +1652,7 @@ public class AngleView extends PositionStateViewGroup {
         int index = getViewsIndex();
 
         for (int i = 0; i < mMap.get(index).size(); i++) {
-            AngleItemCommon item = (AngleItemCommon) mMap.get(index).get(i);
+            AngleItemCommon item = mMap.get(index).get(i);
             if (item instanceof AngleItemStartUp) {
                 ((AngleItemStartUp) item).showDelBtn();
             }
@@ -1402,12 +1665,19 @@ public class AngleView extends PositionStateViewGroup {
     public void endEditMode() {
         int index = getViewsIndex();
         for (int i = 0; i < mMap.get(index).size(); i++) {
-            AngleItemCommon item = (AngleItemCommon) mMap.get(index).get(i);
+            AngleItemCommon item = mMap.get(index).get(i);
             if (item instanceof AngleItemStartUp) {
                 ((AngleItemStartUp) item).hideDelBtn();
             }
-
         }
+    }
+
+    public float getChildHalfSize() {
+        return mChildHalfSize;
+    }
+
+    public AngleItemCommon getTargetItem() {
+        return mTargetItem;
     }
 
     /**
@@ -1436,12 +1706,12 @@ public class AngleView extends PositionStateViewGroup {
     public class LongClickRunable implements Runnable {
         @Override
         public void run() {
-            if (mOnLongClickListener != null) {
+            if (mOnEditModeChangeListener != null) {
                 if (getAngleValues() % DEGREES_90 == 0) {
                     mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
                     long[] pattern = {0, 35};
                     mVibrator.vibrate(pattern, -1);
-                    mOnLongClickListener.onLongClick(mTargetItem);
+                    mOnEditModeChangeListener.onEnterEditMode(mTargetItem);
                     startEditMode();
                 }
             } else {

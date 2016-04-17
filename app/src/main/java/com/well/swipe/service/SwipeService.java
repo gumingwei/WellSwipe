@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -34,6 +35,7 @@ import com.well.swipe.tools.ToolsStrategy;
 import com.well.swipe.tools.WifiAndData;
 import com.well.swipe.utils.SettingHelper;
 import com.well.swipe.utils.Utils;
+import com.well.swipe.view.AngleItemCommon;
 import com.well.swipe.view.AngleItemStartUp;
 import com.well.swipe.view.AngleLayout;
 import com.well.swipe.view.AngleView;
@@ -54,7 +56,7 @@ import java.util.List;
  * Created by mingwei on 3/6/16.
  */
 public class SwipeService extends Service implements CatchView.OnEdgeSlidingListener, LauncherModel.Callback,
-        AngleView.OnClickListener, OnDialogListener {
+        AngleView.OnClickListener, OnDialogListener, AngleLayout.OnItemDragListener {
 
     SwipeApplication mSwipeApplication;
     /**
@@ -164,6 +166,10 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
          */
         mSwipeLayout.getEditFavoriteLayout().setOnDialogListener(this);
         mSwipeLayout.getEditToolsLayout().setOnDialogListener(this);
+        /**
+         * AngleLayout的Item拖拽事件
+         */
+        mSwipeLayout.getAngleLayout().setOnDragItemListener(this);
 
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         //initForeground();
@@ -578,6 +584,17 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
             mSwipeLayout.setEditFavoriteGone();
         } else if (view == mSwipeLayout.getEditToolsLayout()) {
             mSwipeLayout.setEditToolsGone();
+        }
+    }
+
+    @Override
+    public void onDragEnd(int index) {
+        if (index == 1) {
+            ArrayList<ItemSwipeTools> tools = mSwipeLayout.getAngleLayout().getAngleView().getToolsArrayList();
+            mSwipeLayout.getEditToolsLayout().compare(this, mLauncherModel.loadTools(this), tools);
+        } else if (index == 2) {
+            ArrayList<ItemApplication> apps = mSwipeLayout.getAngleLayout().getAngleView().getItemApplications();
+            mSwipeLayout.getEditFavoriteLayout().compare(this, mLauncherModel.loadFavorite(this), apps);
         }
     }
 

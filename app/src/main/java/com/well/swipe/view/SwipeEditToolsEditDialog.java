@@ -2,6 +2,7 @@ package com.well.swipe.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.GridLayout;
@@ -121,12 +122,11 @@ public class SwipeEditToolsEditDialog extends SwipeEditDialog implements View.On
                 }
             }
         }
-
         mFixedList = new ArrayList<>();
         /**
          * 把select、normal的数据合并到mFixedList中
          */
-        merge(select, true);
+        merge(mSelectedList, true);
         merge(normal, false);
         /**
          * 刷新界面
@@ -254,6 +254,7 @@ public class SwipeEditToolsEditDialog extends SwipeEditDialog implements View.On
      */
     public void addList(Context context, ArrayList<ItemSwipeTools> newlist) {
         for (int i = 0; i < newlist.size(); i++) {
+            //Log.i("Gmw", "insert=" + newlist.get(i).mTitle);
             newlist.get(i).insert(context, i);
         }
     }
