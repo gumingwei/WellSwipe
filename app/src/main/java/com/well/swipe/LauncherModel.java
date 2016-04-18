@@ -16,7 +16,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
-import com.well.swipe.tools.SwipeSetting;
 import com.well.swipe.utils.Utilities;
 
 import java.lang.ref.WeakReference;
@@ -227,7 +226,6 @@ public class LauncherModel extends BroadcastReceiver {
                     application.isCustomIcon = false;
                     break;
             }
-
             application.mIconBitmap = icon;
 
             favorites.add(application);
@@ -250,7 +248,6 @@ public class LauncherModel extends BroadcastReceiver {
             application.mTitle = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TITLE));
             //#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10200000;component=com.android.camera/.Camera;end
             //index.add(cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.Favorites.ITEM_INDEX)));
-            Log.i("Gmw", "load=" + application.mTitle);
             switches.add(application);
         }
         cursor.close();

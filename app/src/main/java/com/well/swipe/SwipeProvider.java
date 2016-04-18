@@ -149,6 +149,33 @@ public class SwipeProvider extends ContentProvider {
     }
 
     /**
+     * 批量插入
+     *
+     * @param uri
+     * @param values
+     * @return
+     */
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        SqlArguments args = new SqlArguments(uri, null, null);
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+        try {
+            db.beginTransaction();
+            int count = values.length;
+            for (int i = 0; i < count; i++) {
+                if (db.insert(args.table, null, values[i]) < 0) {
+                    return 0;
+                }
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+
+        return values.length;
+    }
+
+    /**
      * 读取配置的app个开关数据
      *
      * @param resId

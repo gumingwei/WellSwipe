@@ -103,6 +103,19 @@ public class ItemApplication extends ItemInfo {
 
     public void insert(Context context, int index, Intent intent, PackageManager packageManager) {
         ContentResolver resolver = context.getContentResolver();
+        resolver.insert(SwipeSettings.Favorites.CONTENT_URI, assembleContentValues(context, index, intent, packageManager));
+    }
+
+    /**
+     * 组装ContentValues
+     *
+     * @param context
+     * @param index          索引index，在表中表示Item的顺序
+     * @param intent         App Intent
+     * @param packageManager
+     * @return
+     */
+    public ContentValues assembleContentValues(Context context, int index, Intent intent, PackageManager packageManager) {
         intent.setComponent(mIntent.getComponent());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         try {
@@ -116,10 +129,16 @@ public class ItemApplication extends ItemInfo {
             values.put(SwipeSettings.BaseColumns.ITEM_TYPE, SwipeSettings.BaseColumns.ITEM_TYPE_APPLICATION);
             values.put(SwipeSettings.BaseColumns.ICON_TYPE, SwipeSettings.BaseColumns.ICON_TYPE_BITMAP);
             values.put(SwipeSettings.BaseColumns.ICON_BITMAP, flattenBitmap(bd.getBitmap()));
-            resolver.insert(SwipeSettings.Favorites.CONTENT_URI, values);
+            return values;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+        return null;
+    }
+
+    public void bulkInsert(Context context, ContentValues values[]) {
+        ContentResolver resolver = context.getContentResolver();
+        resolver.bulkInsert(SwipeSettings.Favorites.CONTENT_URI, values);
     }
 
     public void insertWhitelist(Context context, Intent intent) {

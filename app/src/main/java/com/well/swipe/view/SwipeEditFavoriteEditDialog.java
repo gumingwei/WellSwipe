@@ -2,11 +2,13 @@ package com.well.swipe.view;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +16,6 @@ import android.widget.BaseAdapter;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
@@ -319,7 +320,7 @@ public class SwipeEditFavoriteEditDialog extends SwipeEditDialog implements View
     }
 
     public boolean compare() {
-        return compare(getContext(), getNewDataList(), getOldDataList());
+        return compare(getContext(), getOldDataList(), getNewDataList());
     }
 
     /**
@@ -330,7 +331,7 @@ public class SwipeEditFavoriteEditDialog extends SwipeEditDialog implements View
      * @param oldlist 就的数据集合
      * @return
      */
-    public boolean compare(Context context, ArrayList<ItemApplication> newlist, ArrayList<ItemApplication> oldlist) {
+    public boolean compare(Context context, ArrayList<ItemApplication> oldlist, ArrayList<ItemApplication> newlist) {
         /**
          * 长度相等的时候经一步比较，负责直接更新
          */
@@ -385,9 +386,11 @@ public class SwipeEditFavoriteEditDialog extends SwipeEditDialog implements View
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         PackageManager packageManager = context.getPackageManager();
+        ContentValues contentValues[] = new ContentValues[newlist.size()];
         for (int i = 0; i < newlist.size(); i++) {
-            newlist.get(i).insert(context, i, intent, packageManager);
+            contentValues[i] = newlist.get(i).assembleContentValues(context, i, intent, packageManager);
         }
+        long time2 = System.currentTimeMillis();
     }
 
     /**

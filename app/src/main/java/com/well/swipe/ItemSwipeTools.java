@@ -42,13 +42,21 @@ public class ItemSwipeTools extends ItemInfo {
 
     public void insert(Context context, int index) {
         ContentResolver resolver = context.getContentResolver();
+        resolver.insert(SwipeSettings.Favorites.CONTENT_URI, assembleContentValues(context, index));
+    }
+
+    public ContentValues assembleContentValues(Context context, int index) {
         ContentValues values = new ContentValues();
         values.put(SwipeSettings.BaseColumns.ITEM_TITLE, mTitle.toString());
         values.put(SwipeSettings.BaseColumns.ITEM_INDEX, index);
         values.put(SwipeSettings.BaseColumns.ITEM_TYPE, SwipeSettings.BaseColumns.ITEM_TYPE_SWITCH);
         values.put(SwipeSettings.BaseColumns.ITEM_ACTION, mAction);
-        resolver.insert(SwipeSettings.Favorites.CONTENT_URI, values);
+        return values;
     }
 
+    public void bulkInsert(Context context, ContentValues values[]) {
+        ContentResolver resolver = context.getContentResolver();
+        resolver.bulkInsert(SwipeSettings.Favorites.CONTENT_URI, values);
+    }
 
 }

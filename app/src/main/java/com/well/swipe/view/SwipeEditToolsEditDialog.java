@@ -1,13 +1,12 @@
 package com.well.swipe.view;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.well.swipe.ItemSwipeTools;
 import com.well.swipe.R;
@@ -253,10 +252,11 @@ public class SwipeEditToolsEditDialog extends SwipeEditDialog implements View.On
      * @param newlist
      */
     public void addList(Context context, ArrayList<ItemSwipeTools> newlist) {
+        ContentValues contentValues[] = new ContentValues[newlist.size()];
         for (int i = 0; i < newlist.size(); i++) {
-            //Log.i("Gmw", "insert=" + newlist.get(i).mTitle);
-            newlist.get(i).insert(context, i);
+            contentValues[i] = newlist.get(i).assembleContentValues(context, i);
         }
+        new ItemSwipeTools().bulkInsert(context, contentValues);
     }
 
 

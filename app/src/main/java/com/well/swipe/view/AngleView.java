@@ -16,19 +16,16 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
 import com.well.swipe.ItemApplication;
-import com.well.swipe.ItemInfo;
 import com.well.swipe.R;
 import com.well.swipe.ItemSwipeTools;
 import com.well.swipe.tools.ToolsStrategy;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -700,11 +697,11 @@ public class AngleView extends PositionStateViewGroup {
     }
 
     /**
-     * 计算当前的数据的坐标
+     * 计算当前的数据的坐标不考虑限象
      *
-     * @param views
-     * @param index
-     * @return
+     * @param views 当前的视图
+     * @param index 索引
+     * @return 返回(x, y)坐标
      */
     public Coordinate coordinate2(ArrayList<AngleItemCommon> views, int index) {
         /**
@@ -977,7 +974,7 @@ public class AngleView extends PositionStateViewGroup {
                         if (index != mTargetItem.getIndex() && isExChangeFinish) {
                             isExChangeFinish = false;
                             /**
-                             * 出发交换的时候跟新index值
+                             * 触发交换的时候更新index值
                              */
                             mDragTargetIndex = index;
                             ArrayList<AngleItemCommon> arrayList = new ArrayList<>();
@@ -998,6 +995,7 @@ public class AngleView extends PositionStateViewGroup {
                             }
 
                             ArrayList<AngleItemCommon> views = arrayList;
+                            //Coordinate coordinateTest;
                             if (views != null) {
                                 mExchangeNext.clear();
                                 for (int m = 0; m < views.size(); m++) {
@@ -1005,6 +1003,7 @@ public class AngleView extends PositionStateViewGroup {
                                      * size按照当前views的总数，以4为区分，分别计算出<4,=4,超出4的部分剪掉4即从1，2，3重新开始计数
                                      */
                                     mExchangeNext.add(coordinate(views, m, getQuaIndex()));
+
                                 }
                             }
 
