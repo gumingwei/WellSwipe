@@ -121,11 +121,11 @@ public class AngleIndicatorViewTheme extends PositionStateView {
         super.onDraw(canvas);
         if (mPositionState == PositionState.POSITION_STATE_LEFT) {
             canvas.drawArc(mInneRectF, 270 + mLeftStartAngle + 6.4f, mUtilAngle * 1 - 2f, false, mBoundPaint);
-            canvas.drawArc(mOuterRecF, 270 + mLeftStartAngle + 3.1f, mUtilAngle * 2 - 6.0f, false, mBoundPaint);
+            canvas.drawArc(mOuterRecF, 270 + mLeftStartAngle + 3.15f, mUtilAngle * 2 - 6.15f, false, mBoundPaint);
             canvas.drawArc(mMindRectF, 270 + mLeftStartAngle, mUtilAngle * 2, false, mPaint);
         } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
             canvas.drawArc(mInneRectF, 90 + mRightStartAngle + 6.4f, mUtilAngle * 1 - 2f, false, mBoundPaint);
-            canvas.drawArc(mOuterRecF, 90 + mRightStartAngle + 3.1f, mUtilAngle * 2 - 6.0f, false, mBoundPaint);
+            canvas.drawArc(mOuterRecF, 90 + mRightStartAngle + 3.15f, mUtilAngle * 2 - 6.15f, false, mBoundPaint);
             canvas.drawArc(mMindRectF, 90 + mRightStartAngle, mUtilAngle * 2, false, mPaint);
         }
     }

@@ -12,6 +12,7 @@
     <dimen name="angleindicator_arc_rect">148dp</dimen>
     <dimen name="angleindicator_arc_width">75dp</dimen>
     <dimen name="angleindicator_arc_textsize">15sp</dimen>
+    <dimen name="angleindicator_arc_textsize_offset_y">7dp</dimen>
     <dimen name="angleitem_half_size">48dp</dimen>
     <dimen name="angleitem_size">96dp</dimen>
     <dimen name="angle_item_icon_size">60dp</dimen>

@@ -21,8 +21,11 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
+import com.well.swipe.SwipeApplication;
 import com.well.swipe.preference.PreferenceCategory;
 import com.well.swipe.preference.PreferenceTitle;
 import com.well.swipe.preference.PreferenceTitleSummary;
@@ -98,6 +101,8 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
      */
     SwipeService mService;
 
+    private Tracker mTracker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +110,13 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
         test = (TextView) findViewById(R.id.test_text);
         test.setText("density=" + this.getResources().getDisplayMetrics().density + ",swipe_dialog_for=" +
                 getResources().getDimensionPixelSize(R.dimen.test));
+
+        //Google
+        SwipeApplication application = (SwipeApplication) getApplication();
+        mTracker = application.getDefaultTracker();
+
         mSwipeToggle = (PreferenceCategory) findViewById(R.id.swipe_toggle);
+
         mSwipeToggle.setTitle(getResources().getString(R.string.swipe_toggle));
         mSwipeToggle.setKey(SwipeSetting.SWIPE_TOGGLE);
         mSwipeToggle.getSwitchBtn().setChecked(mSwipeToggle.getBooleanValue(true));
@@ -164,6 +175,8 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
     protected void onResume() {
         super.onResume();
         //startService(new Intent(SwipeSettingActivity.this, SwipeService.class));
+        mTracker.setScreenName("SwipeSettingsActivity::onResume()");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     @Override

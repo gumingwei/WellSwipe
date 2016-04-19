@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="angleview_size">670dp</dimen>
-    <dimen name="angleview_inner_radius">410dp</dimen>
-    <dimen name="angleview_outer_radius">590dp</dimen>
-    <dimen name="angleindicator_size">288dp</dimen>
-    <dimen name="angleindicator_text_paddingleft">146dp</dimen>
-    <dimen name="angleindicator_text_paddingright">142dp</dimen>
-    <dimen name="angleindicator_arc_rect">210dp</dimen>
+    <dimen name="angleview_size">330dip</dimen>
+    <dimen name="angleview_inner_radius">200dp</dimen>
+    <dimen name="angleview_outer_radius">275dp</dimen>
+    <dimen name="angleindicator_size">144dp</dimen>
+    <dimen name="angleindicator_text_paddingleft">73dp</dimen>
+    <dimen name="angleindicator_text_paddingright">71dp</dimen>
+    <dimen name="angleindicator_arc_rect">105dp</dimen>
     <dimen name="angleindicator_arc_width">75dp</dimen>
     <dimen name="angleindicator_arc_textsize">15sp</dimen>
-    <dimen name="angleitem_half_size">72dp</dimen>
-    <dimen name="angleitem_size">128dp</dimen>
-    <dimen name="angle_item_icon_size">80dp</dimen>
-    <dimen name="app_icon_size">96dp</dimen>
-    <dimen name="angleview_item_delete_size">40dp</dimen>
-    <dimen name="test">100dp</dimen>
+    <dimen name="angleindicator_arc_textsize_offset_y">7dp</dimen>
+    <dimen name="angleitem_half_size">32dp</dimen>
+    <dimen name="angleitem_size">62dp</dimen>
+    <dimen name="angle_item_icon_size">40dp</dimen>
+    <dimen name="app_icon_size">48dp</dimen>
+    <dimen name="angleview_item_delete_size">20dp</dimen>
+    <dimen name="test">101dp</dimen>
 </resources>

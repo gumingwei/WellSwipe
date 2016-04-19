@@ -40,7 +40,7 @@ public class AngleIndicatorView extends PositionStateView {
 
     private int mRightOffset;
 
-    private int OFFSET_Y = 15;
+    private int OFFSET_Y;
 
     private int mWidth;
 
@@ -96,6 +96,7 @@ public class AngleIndicatorView extends PositionStateView {
         mRect = getResources().getDimensionPixelSize(R.dimen.angleindicator_arc_rect);
         mIndicatorWidth = getResources().getDimensionPixelSize(R.dimen.angleindicator_arc_width);
         mIndicatorTextSize = getResources().getDimensionPixelSize(R.dimen.angleindicator_arc_textsize);
+        OFFSET_Y = getResources().getDimensionPixelSize(R.dimen.angleindicator_arc_textsize_offset_y);
         mPaint0.setColor(Color.parseColor(mColors[9]));
         mPaint0.setTextSize(mIndicatorTextSize);
         mPaint0.setAntiAlias(true);

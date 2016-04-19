@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="@dimen/dialog_width"
+        android:layout_height="wrap_content"
+        android:background="@drawable/swipe_edit_header_normal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@id/dialog_title"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:textColor="@color/ksw_md_solid_checked"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:id="@id/dialog_content_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/dialog_content_des"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:textColor="@color/ksw_md_solid_checked"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="@dimen/dialog_width"
+        android:layout_height="@dimen/swipe_edit_header_height"
+        android:layout_below="@+id/swipe_edit_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/dialog_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/swipe_edit_bottom_left_sel"
+            android:text="@string/cancel_title"
+            android:textColor="@color/swipe_header_title_color"
+            android:textSize="@dimen/swipe_edit_ok_size" />
+
+        <Button
+            android:id="@+id/dialog_ok"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/swipe_edit_bottom_right_sel"
+            android:text="@string/ok_title"
+            android:textColor="@color/swipe_header_title_color"
+            android:textSize="@dimen/swipe_edit_ok_size" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,5 +1,6 @@
 package com.well.swipe.service;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.database.ContentObserver;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
@@ -19,16 +21,21 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.well.swipe.ItemApplication;
 import com.well.swipe.LauncherModel;
 import com.well.swipe.R;
 import com.well.swipe.SwipeApplication;
 import com.well.swipe.ItemSwipeTools;
 import com.well.swipe.activitys.SwipeSettingActivity;
+import com.well.swipe.preference.PreferenceCategory;
 import com.well.swipe.tools.SwipeBluetooth;
 import com.well.swipe.tools.SwipeSetting;
 import com.well.swipe.tools.ToolsStrategy;
@@ -111,6 +118,8 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     private Handler mHandler = new Handler();
 
+    private Tracker mTracker;
+
     IBinder mBinder = new ServiceBind();
 
     public class ServiceBind extends Binder {
@@ -123,9 +132,14 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     public SwipeService() {
     }
 
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        //Google
+        SwipeApplication application = (SwipeApplication) getApplication();
+        mTracker = application.getDefaultTracker();
 
         mCatchViewWidth = getResources().getDimensionPixelSize(R.dimen.catch_view_width);
         mCatchViewHeight = getResources().getDimensionPixelSize(R.dimen.catch_view_height);
@@ -384,6 +398,11 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     @Override
     public void openLeft() {
+        //google
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Action")
+                .setAction("SwipeService::openLeft()")
+                .build());
         /**
          * 0 仅桌面的时候打开
          */
@@ -395,6 +414,11 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     @Override
     public void openRight() {
+        //
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Action")
+                .setAction("SwipeService::openRight()")
+                .build());
         if (swipeSwipeSetting()) {
             mSwipeLayout.switchRight();
         }
@@ -672,15 +696,18 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     }
 
     public void initNotification() {
+
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, SwipeSettingActivity.class), 0);
         mNotification = new Notification.Builder(this)
-                .setTicker("")
-                .setContentTitle(getResources().getString(R.string.swipe_nitification_title))
-                .setContentText(getResources().getString(R.string.swipe_nitification_content))
-                .setContentIntent(pendingIntent)
-                .setNumber(1).build();
-        mNotification.flags = Notification.FLAG_ONGOING_EVENT;
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle(getResources().getString(R.string.swipe_nitification_title))// 设置在下拉status
+
+                .setContentText(getResources().getString(R.string.swipe_nitification_content))// TextView中显示的详细内容
+                .setContentIntent(pendingIntent) // 关联PendingIntent
+                .setNumber(1) // 在TextView的右方显示的数字，可放大图片看，在最右侧。这个number同时也起到一个序列号的左右，如果多个触发多个通知（同一ID），可以指定显示哪一个。
+                .getNotification(); // 需要注意build()是在API level
+        mNotification.flags |= Notification.FLAG_AUTO_CANCEL;
     }
 
     /**
@@ -696,9 +723,9 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
                     mSwipeLayout.getAngleLayout().getAngleView().refreshToolsView();
                     mSwipeLayout.getAngleLayout().getAngleView().requestLayout();
                     if (WifiAndData.isWifiEnable(context)) {
-                        Utils.swipeToast(context, getResources().getString(R.string.wifi_on));
+                        //Utils.swipeToast(context, getResources().getString(R.string.wifi_on));
                     } else {
-                        Utils.swipeToast(context, getResources().getString(R.string.wifi_off));
+                        //Utils.swipeToast(context, getResources().getString(R.string.wifi_off));
                     }
                 } else if (action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
                     mSwipeLayout.getAngleLayout().getAngleView().refreshToolsView();
@@ -707,9 +734,9 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
                     mSwipeLayout.getAngleLayout().getAngleView().refreshToolsView();
                     mSwipeLayout.getAngleLayout().getAngleView().requestLayout();
                     if (SwipeBluetooth.getInstance().getState()) {
-                        Utils.swipeToast(context, getResources().getString(R.string.bluetooth_on));
+                        //Utils.swipeToast(context, getResources().getString(R.string.bluetooth_on));
                     } else {
-                        Utils.swipeToast(context, getResources().getString(R.string.bluetooth_off));
+                        //Utils.swipeToast(context, getResources().getString(R.string.bluetooth_off));
                     }
                 }
             }

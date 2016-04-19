@@ -93,6 +93,11 @@
     <string name="data_on">移动网络已连接</string>
     <string name="data_off">移动网络已断开</string>
 
+    <string name="request_windows_title">悬浮窗授权</string>
+    <string name="request_windows_content">Well Swipe需要要打开使用悬浮窗授权才能正常使用</string>
+    <string name="request_windows_pos">开始授权</string>
+    <string name="request_windows_nev">退出</string>
+
     <string name="swipe_nitification_title">Well Swipe正在运行</string>
     <string name="swipe_nitification_content">点击进入swipe设置</string>
 </resources>

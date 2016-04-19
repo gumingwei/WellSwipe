@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.provider.AlarmClock;
 import android.provider.Settings;
@@ -189,12 +190,35 @@ public class ToolsStrategy {
             context.startActivity(intent);
             mSwipeLayout.dismissAnimator();
         } else if (item.mAction.equals(context.getString(R.string.swipe_alarm))) {
-            Intent alarmas = new Intent(AlarmClock.ACTION_SET_ALARM);
-            alarmas.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(alarmas);
-            mSwipeLayout.dismissAnimator();
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
+
+            } else {
+                try {
+                    Intent alarmas = new Intent(AlarmClock.ACTION_SET_ALARM);
+                    alarmas.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(alarmas);
+                    mSwipeLayout.dismissAnimator();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+
         } else if (item.mAction.equals(context.getString(R.string.swipe_screenbrightness))) {
-            SwipeBrightness.getInstance(context).setBrightStatus(context);
+
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
+                if (!Settings.System.canWrite(context)) {
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS,
+                            Uri.parse("package:" + context.getPackageName()));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                } else {
+                    SwipeBrightness.getInstance(context).setBrightStatus(context);
+                }
+            } else {
+                SwipeBrightness.getInstance(context).setBrightStatus(context);
+            }
+
         } else if (item.mAction.equals(context.getString(R.string.swipe_speeder))) {
             float clearm = ClearMemory.getInstance().cleanMemory(context);
             if (clearm > 0f) {
