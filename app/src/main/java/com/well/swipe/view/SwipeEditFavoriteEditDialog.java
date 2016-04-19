@@ -390,7 +390,7 @@ public class SwipeEditFavoriteEditDialog extends SwipeEditDialog implements View
         for (int i = 0; i < newlist.size(); i++) {
             contentValues[i] = newlist.get(i).assembleContentValues(context, i, intent, packageManager);
         }
-        long time2 = System.currentTimeMillis();
+        new ItemApplication().bulkInsert(context, contentValues);
     }
 
     /**
