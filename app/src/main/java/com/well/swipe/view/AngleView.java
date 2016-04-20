@@ -170,7 +170,7 @@ public class AngleView extends PositionStateViewGroup {
     /**
      * 交换后
      */
-    private ArrayList<Coordinate> mExchangeNext = new ArrayList<>();
+    //private ArrayList<Coordinate> mExchangeNext = new ArrayList<>();
 
     private OnAngleChangeListener mAngleListener;
 
@@ -962,7 +962,7 @@ public class AngleView extends PositionStateViewGroup {
     public void checkAndChange(float x, float y) {
         float centerX = x + mChildHalfSize;
         float centerY = y + mChildHalfSize;
-        if (mTargetItem.getVisibility() == GONE) {
+        if (mTargetItem.getVisibility() == GONE && isExChangeFinish) {
             for (int index = 0; index < mExchangePre.size(); index++) {
                 if (index != mExchangePre.size() - 1) {
                     Coordinate coordinate = mExchangePre.get(index);
@@ -972,7 +972,7 @@ public class AngleView extends PositionStateViewGroup {
                     float newbottom = (float) (coordinate.y + mChildHalfSize);
                     if (centerX > newleft && centerY > newtop && centerX < newright && centerY < newbottom) {
 
-                        if (index != mTargetItem.getIndex() && isExChangeFinish) {
+                        if (index != mTargetItem.getIndex()) {
                             isExChangeFinish = false;
                             /**
                              * 触发交换的时候更新index值
@@ -984,10 +984,12 @@ public class AngleView extends PositionStateViewGroup {
                             /**
                              * 交换数据
                              */
+
                             AngleItemCommon temp = arrayList.get(index);
                             arrayList.set(index, arrayList.get(mTargetItem.getIndex()));
                             arrayList.set(mTargetItem.getIndex(), temp);
 
+                            int targetIndex = mTargetItem.getIndex();
                             /**
                              * 重置angleItem的Index
                              */
@@ -996,19 +998,22 @@ public class AngleView extends PositionStateViewGroup {
                             }
 
                             ArrayList<AngleItemCommon> views = arrayList;
-                            //Coordinate coordinateTest;
+                            Coordinate coordinateTest = null;
                             if (views != null) {
-                                mExchangeNext.clear();
+                                //mExchangeNext.clear();
                                 for (int m = 0; m < views.size(); m++) {
                                     /**
                                      * size按照当前views的总数，以4为区分，分别计算出<4,=4,超出4的部分剪掉4即从1，2，3重新开始计数
                                      */
-                                    mExchangeNext.add(coordinate(views, m, getQuaIndex()));
-
+                                    //mExchangeNext.add(coordinate(views, m, getQuaIndex()));
+                                    if (m == targetIndex) {
+                                        coordinateTest = coordinate(views, m, getQuaIndex());
+                                        break;
+                                    }
                                 }
                             }
 
-                            exchangeAnimator(mExchangeNext, arrayList, index);
+                            exchangeAnimator(coordinateTest, arrayList, targetIndex);
 
                         }
                     }
@@ -1144,6 +1149,10 @@ public class AngleView extends PositionStateViewGroup {
         translation.start();
     }
 
+    public void exchange(final Coordinate recource, AngleItemCommon targetview, final int index) {
+
+    }
+
     /**
      * 交换动画
      *
@@ -1151,22 +1160,18 @@ public class AngleView extends PositionStateViewGroup {
      * @param targetView 目标坐标，也就是动画的终点坐标
      * @param index      当前view交换之后的目标位置的index索引，主要用来屏蔽动画，因为松手之后有动画，不需要这这里再加动画了
      */
-    public void exchangeAnimator(final ArrayList<Coordinate> resource, final ArrayList<AngleItemCommon> targetView, final int index) {
+    public void exchangeAnimator(final Coordinate resource, final ArrayList<AngleItemCommon> targetView, final int index) {
         ValueAnimator translation = ValueAnimator.ofFloat(0f, 1f);
         translation.setDuration(180);
         translation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float values = (float) animation.getAnimatedValue();
-                for (int i = 0; i < targetView.size(); i++) {
-                    if (i != index) {
-                        float x = (float) (resource.get(i).x - targetView.get(i).getParentX()) * values;
-                        float y = (float) (resource.get(i).y - targetView.get(i).getParentY()) * values;
-                        targetView.get(i).setTranslationX(x);
-                        targetView.get(i).setTranslationY(y);
-                        requestLayout();
-                    }
-                }
+                float x = (float) (resource.x - targetView.get(index).getParentX()) * values;
+                float y = (float) (resource.y - targetView.get(index).getParentY()) * values;
+                targetView.get(index).setTranslationX(x);
+                targetView.get(index).setTranslationY(y);
+                requestLayout();
             }
         });
         translation.addListener(new Animator.AnimatorListener() {

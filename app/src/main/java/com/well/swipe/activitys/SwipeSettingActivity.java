@@ -354,7 +354,7 @@ public class SwipeSettingActivity extends AppCompatActivity implements View.OnCl
             Intent data = new Intent(Intent.ACTION_SENDTO);
             data.setData(Uri.parse("mailto:wellswipe.dev@foxmail.com"));
             data.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.feedback_title));
-            data.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.feedback_content));
+            data.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.feedback_content) + "_" + Utils.getVersionName(this) + ":");
             startActivity(data);
         }
     }

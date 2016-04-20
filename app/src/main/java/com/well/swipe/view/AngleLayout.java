@@ -355,7 +355,6 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                  *转动AngleView
                  */
                 if (mEditState == STATE_NORMAL) {
-//                    Log.i("Gmw", "onTouchEvent_nromal_move");
                     if (mTouchState == TOUCH_STATE_WHIRLING && newY < mHeight) {
                         if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
                             mAngleView.changeAngle(newX, mHeight - newY);

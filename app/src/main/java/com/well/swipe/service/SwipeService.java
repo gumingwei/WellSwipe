@@ -220,7 +220,8 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         mLauncherModel.startLoadTask();
-
+        mTracker.setScreenName("SwipeService::onStartCommand()");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         return super.onStartCommand(intent, flags, startId);
     }
 
