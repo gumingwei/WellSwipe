@@ -12,11 +12,11 @@ public class PositionStateView extends View {
     public int mPositionState = PositionState.POSITION_STATE_LEFT;
 
     public PositionStateView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public PositionStateView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public PositionStateView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -26,5 +26,13 @@ public class PositionStateView extends View {
     public void setPositionState(int state) {
         this.mPositionState = state;
         invalidate();
+    }
+
+    public boolean isLeft() {
+        return mPositionState == PositionState.POSITION_STATE_LEFT;
+    }
+
+    public boolean isRight() {
+        return mPositionState == PositionState.POSITION_STATE_RIGHT;
     }
 }

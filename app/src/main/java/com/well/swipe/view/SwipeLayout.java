@@ -5,9 +5,11 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -53,11 +55,9 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
 
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         mFavoriteLayout = (SwipeEditFavoriteEditDialog) LayoutInflater.from(context).inflate(R.layout.swipe_edit_favorite_layout, null);
-        mFavoriteLayout.setVisibility(GONE);
         addView(mFavoriteLayout, params);
 
         mToolsLayout = (SwipeEditToolsEditDialog) LayoutInflater.from(context).inflate(R.layout.swipe_edit_tools_layout, null);
-        mToolsLayout.setVisibility(GONE);
         addView(mToolsLayout, params);
     }
 
@@ -68,6 +68,7 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
         mAngleLayout.setOnOffListener(this);
         mBgLayout = (LinearLayout) findViewById(R.id.swipe_bg_layout);
         mManager = new SwipeWindowManager(0, 0, getContext());
+
     }
 
     @Override

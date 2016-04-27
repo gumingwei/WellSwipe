@@ -208,10 +208,10 @@ public class CatchView extends PositionStateView {
         mParams = new WindowManager.LayoutParams();
         mManager = (WindowManager) getContext().getSystemService(getContext().WINDOW_SERVICE);
         //mParams.type = WindowManager.LayoutParams.TYPE_PHONE;
-        mParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        mParams.type = WindowManager.LayoutParams.TYPE_TOAST;
         mParams.format = PixelFormat.RGBA_8888;
         mParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                | WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                | WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
         mParams.gravity = Gravity.LEFT | Gravity.TOP;
         if (mPositionState == PositionState.POSITION_STATE_LEFT) {
             mParams.x = 0;

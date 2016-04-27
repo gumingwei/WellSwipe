@@ -167,10 +167,6 @@ public class AngleView extends PositionStateViewGroup {
      * 交换前
      */
     private ArrayList<Coordinate> mExchangePre = new ArrayList<>();
-    /**
-     * 交换后
-     */
-    //private ArrayList<Coordinate> mExchangeNext = new ArrayList<>();
 
     private OnAngleChangeListener mAngleListener;
 
@@ -758,6 +754,10 @@ public class AngleView extends PositionStateViewGroup {
                 size = COUNT_4 + 1;
                 group = index - COUNT_4;
                 radius = mOuterRadius;
+            } else if (index >= 9) {
+                size = COUNT_4 + 1;
+                group = 8 - COUNT_4;
+                radius = mOuterRadius;
             }
         }
         /**
@@ -802,11 +802,13 @@ public class AngleView extends PositionStateViewGroup {
         canvas.restore();
     }
 
+
     @Override
     public boolean onTouchEvent(final MotionEvent event) {
         int action = event.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+
                 mMotionX = event.getX();
                 mMotionY = event.getY();
                 ArrayList<AngleItemCommon> views = getData();
@@ -839,6 +841,7 @@ public class AngleView extends PositionStateViewGroup {
                                         mMotionY < (newtop + mDeleteBtnSize) && ((AngleItemStartUp) mTargetItem).getDelBtn().
                                         getVisibility() == View.VISIBLE) {
                                     mClickType = TYPE_DELCLICK;
+
                                 } else if (((AngleItemStartUp) mTargetItem).getDelBtn().getVisibility() == View.VISIBLE) {
                                     /**
                                      * 最后一个view禁止拖动&在交换动画完成后才有效
@@ -865,7 +868,7 @@ public class AngleView extends PositionStateViewGroup {
 
                 break;
             case MotionEvent.ACTION_MOVE:
-                //handler.removeCallbacks(mLongRunable);
+
                 float movenewx = event.getX();
                 float movenewy = event.getY();
                 if (Math.abs(movenewx - mMotionX) > 10 || Math.abs(movenewy - mMotionY) > 10) {
@@ -873,10 +876,12 @@ public class AngleView extends PositionStateViewGroup {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-
-                if ((mTargetItem).getVisibility() == View.GONE) {
-                    mOnEditModeChangeListener.onCancelDrag();
+                if (mTargetItem != null) {
+                    if ((mTargetItem).getVisibility() == View.GONE) {
+                        mOnEditModeChangeListener.onCancelDrag();
+                    }
                 }
+
                 float clicknewx = event.getX();
                 float clicknewy = event.getY();
                 long clicktime = System.currentTimeMillis();
@@ -1712,7 +1717,7 @@ public class AngleView extends PositionStateViewGroup {
         @Override
         public void run() {
             if (mOnEditModeChangeListener != null) {
-                if (getAngleValues() % DEGREES_90 == 0) {
+                if (getAngleValues() % DEGREES_90 == 0 && getViewsIndex() != 0) {
                     mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
                     long[] pattern = {0, 35};
                     mVibrator.vibrate(pattern, -1);

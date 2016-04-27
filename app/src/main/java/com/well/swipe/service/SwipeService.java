@@ -8,11 +8,14 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.ContentObserver;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Icon;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
@@ -494,8 +497,15 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         AngleItemStartUp itemview = (AngleItemStartUp) view;
         if (object instanceof ActivityManager.RecentTaskInfo) {
             AngleItemStartUp.RecentTag recent = itemview.mRecentTag;
-            startActivity(recent.intent);
-            mSwipeLayout.dismissAnimator();
+            Intent intent;
+            ComponentName component = recent.intent.getComponent();
+            String packageName = component.getPackageName();
+            PackageManager packageManager = this.getPackageManager();
+            intent = packageManager.getLaunchIntentForPackage(packageName);
+            if (null != intent) {
+                startActivity(intent);
+                mSwipeLayout.dismissAnimator();
+            }
         } else if (object instanceof ItemApplication) {
             ItemApplication itemapp = (ItemApplication) view.getTag();
             startActivity(itemapp.mIntent);
@@ -525,6 +535,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     @Override
     public void onDeleteClick(View view) {
+        Log.i("Gmw", "service_onclick");
         Object tag = view.getTag();
         if (tag instanceof ItemApplication) {
             /**
@@ -701,13 +712,21 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, SwipeSettingActivity.class), 0);
         mNotification = new Notification.Builder(this)
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.ic_launcher_48)
                 .setContentTitle(getResources().getString(R.string.swipe_nitification_title))// 设置在下拉status
-
                 .setContentText(getResources().getString(R.string.swipe_nitification_content))// TextView中显示的详细内容
                 .setContentIntent(pendingIntent) // 关联PendingIntent
                 .setNumber(1) // 在TextView的右方显示的数字，可放大图片看，在最右侧。这个number同时也起到一个序列号的左右，如果多个触发多个通知（同一ID），可以指定显示哪一个。
                 .getNotification(); // 需要注意build()是在API level
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            mNotification = new Notification.Builder(this)
+                    .setSmallIcon(R.drawable.logo_alpha)
+                    .setContentTitle(getResources().getString(R.string.swipe_nitification_title))// 设置在下拉status
+                    .setContentText(getResources().getString(R.string.swipe_nitification_content))// TextView中显示的详细内容
+                    .setContentIntent(pendingIntent) // 关联PendingIntent
+                    .setNumber(1) // 在TextView的右方显示的数字，可放大图片看，在最右侧。这个number同时也起到一个序列号的左右，如果多个触发多个通知（同一ID），可以指定显示哪一个。
+                    .getNotification(); // 需要注意build()是在API level
+        }
         mNotification.flags |= Notification.FLAG_AUTO_CANCEL;
     }
 

@@ -24,10 +24,22 @@
         android:layout_width="@dimen/angleview_size"
         android:layout_height="@dimen/angleview_size" />
 
-    <ImageView
+    <com.well.swipe.view.CornerThemeView
+        android:id="@+id/corner_theme"
+        android:layout_width="@dimen/anglelogo_size"
+        android:layout_height="@dimen/anglelogo_size" />
+
+    <com.well.swipe.view.CornerView
+        android:id="@+id/corner_view"
+        android:layout_width="@dimen/anglelogo_size"
+        android:layout_height="@dimen/anglelogo_size" />
+
+
+    <!--<ImageView
         android:id="@+id/angle_logo"
         android:layout_width="@dimen/anglelogo_size"
         android:layout_height="@dimen/anglelogo_size"
-        android:src="@drawable/angle_logo" />
+        android:src="@drawable/angle_logo" />-->
+
 
 </com.well.swipe.view.AngleLayout>

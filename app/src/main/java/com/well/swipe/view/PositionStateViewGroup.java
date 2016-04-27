@@ -32,4 +32,12 @@ public class PositionStateViewGroup extends ViewGroup {
         this.mPositionState = state;
         requestLayout();
     }
+
+    public boolean isLeft() {
+        return mPositionState == PositionState.POSITION_STATE_LEFT;
+    }
+
+    public boolean isRight() {
+        return mPositionState == PositionState.POSITION_STATE_RIGHT;
+    }
 }

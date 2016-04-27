@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.well.swipe.service.SwipeService;
+import com.well.swipe.tools.SwipeSetting;
+import com.well.swipe.utils.SettingHelper;
 
 /**
  * Created by mingwei on 4/9/16.
@@ -12,6 +14,11 @@ import com.well.swipe.service.SwipeService;
 public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        context.startService(new Intent(context, SwipeService.class));
+        if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
+            if (SettingHelper.getInstance(context).getBoolean(SwipeSetting.SWIPE_TOGGLE, true)) {
+                context.startService(new Intent(context, SwipeService.class));
+            }
+        }
+
     }
 }

@@ -3,6 +3,9 @@
     <dimen name="title_height">50dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="anglelogo_size">53dp</dimen>
+    <dimen name="corner_icon_size">24dp</dimen>
+    <dimen name="corner_icon_offset">10dp</dimen>
     <dimen name="angleview_size">335dp</dimen>
     <dimen name="angleview_inner_radius">205dp</dimen>
     <dimen name="angleview_outer_radius">295dp</dimen>
