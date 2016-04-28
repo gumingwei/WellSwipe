@@ -8,8 +8,8 @@ android {
         applicationId "com.well.swipe"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 4
-        versionName "1.0.4"
+        versionCode 6
+        versionName "1.0.6"
 
     }
     buildTypes {
@@ -17,7 +17,6 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-
     }
     lintOptions {
         abortOnError false

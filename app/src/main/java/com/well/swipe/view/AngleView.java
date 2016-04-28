@@ -101,6 +101,20 @@ public class AngleView extends PositionStateViewGroup {
      */
     AngleItemCommon mTargetItem;
     /**
+     * 用于点击或者长按的时候计算得到的当前点击的Item的四个坐标
+     */
+    private float mDownLeft;
+
+    private float mDownTop;
+
+    private float mDownRight;
+
+    private float mDownBottom;
+
+    private int mDragIndex;
+
+
+    /**
      * 顺时针/逆时针
      */
     private int ANGLE_STATE = ANGLE_STATE_REST;
@@ -802,13 +816,13 @@ public class AngleView extends PositionStateViewGroup {
         canvas.restore();
     }
 
+    private boolean isMoveDrag = true;
 
     @Override
     public boolean onTouchEvent(final MotionEvent event) {
         int action = event.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-
                 mMotionX = event.getX();
                 mMotionY = event.getY();
                 ArrayList<AngleItemCommon> views = getData();
@@ -817,12 +831,12 @@ public class AngleView extends PositionStateViewGroup {
 
                         Coordinate coordinate = coordinate2(views, index);
 
-                        float newleft = (float) (coordinate.x - mChildHalfSize);
-                        float newtop = (float) (coordinate.y - mChildHalfSize);
-                        float newright = (float) (coordinate.x + mChildHalfSize);
-                        float newbottom = (float) (coordinate.y + mChildHalfSize);
+                        mDownLeft = (float) (coordinate.x - mChildHalfSize);
+                        mDownTop = (float) (coordinate.y - mChildHalfSize);
+                        mDownRight = (float) (coordinate.x + mChildHalfSize);
+                        mDownBottom = (float) (coordinate.y + mChildHalfSize);
 
-                        if (mMotionX > newleft && mMotionX < newright && mMotionY > newtop && mMotionY < newbottom) {
+                        if (mMotionX > mDownLeft && mMotionX < mDownRight && mMotionY > mDownTop && mMotionY < mDownBottom) {
                             mClickTime1 = System.currentTimeMillis();
                             /**
                              * 找到当前点击的那个item
@@ -837,8 +851,8 @@ public class AngleView extends PositionStateViewGroup {
                             if (mTargetItem instanceof AngleItemStartUp) {
                                 if (((AngleItemStartUp) mTargetItem).getDelBtn().getVisibility() == View.GONE) {
                                     mClickType = TYPE_CLICK;
-                                } else if (mMotionX > newleft && mMotionX < (newleft + mDeleteBtnSize) && mMotionY > newtop &&
-                                        mMotionY < (newtop + mDeleteBtnSize) && ((AngleItemStartUp) mTargetItem).getDelBtn().
+                                } else if (mMotionX > mDownLeft && mMotionX < (mDownLeft + mDeleteBtnSize) && mMotionY > mDownTop &&
+                                        mMotionY < (mDownTop + mDeleteBtnSize) && ((AngleItemStartUp) mTargetItem).getDelBtn().
                                         getVisibility() == View.VISIBLE) {
                                     mClickType = TYPE_DELCLICK;
 
@@ -847,7 +861,7 @@ public class AngleView extends PositionStateViewGroup {
                                      * 最后一个view禁止拖动&在交换动画完成后才有效
                                      */
                                     if (index != views.size() - 1 && isRestoreFinish) {
-                                        mOnEditModeChangeListener.onStartDrag(mTargetItem, newleft, newtop, mMotionX - newleft, mMotionY - newtop);
+                                        mOnEditModeChangeListener.onStartDrag(mTargetItem, mDownLeft, mDownTop, mMotionX - mDownLeft, mMotionY - mDownTop);
                                         /**
                                          * 开始出发拖动的记住一个Index,用作复原动画的时候
                                          */
@@ -868,11 +882,30 @@ public class AngleView extends PositionStateViewGroup {
 
                 break;
             case MotionEvent.ACTION_MOVE:
-
                 float movenewx = event.getX();
                 float movenewy = event.getY();
                 if (Math.abs(movenewx - mMotionX) > 10 || Math.abs(movenewy - mMotionY) > 10) {
                     handler.removeCallbacks(mLongRunable);
+                }
+
+                if (isMoveDrag) {
+                    isMoveDrag = false;
+                    ArrayList<AngleItemCommon> views2 = getData();
+                    if (mTargetItem != null) {
+                        if (mTargetItem instanceof AngleItemStartUp) {
+                            if (((AngleItemStartUp) mTargetItem).getDelBtn().getVisibility() == View.VISIBLE) {
+                                if (mTargetItem.getIndex() != views2.size() - 1 && isRestoreFinish) {
+                                    mOnEditModeChangeListener.onStartDrag(mTargetItem, mDownLeft, mDownTop, mMotionX - mDownLeft, mMotionY - mDownTop);
+                                    /**
+                                     * 开始出发拖动的记住一个Index,用作复原动画的时候
+                                     */
+                                    mDragTargetIndex = mTargetItem.getIndex();
+                                    mTargetItem.setVisibility(GONE);
+                                }
+                            }
+                        }
+                    }
+
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -1167,7 +1200,7 @@ public class AngleView extends PositionStateViewGroup {
      */
     public void exchangeAnimator(final Coordinate resource, final ArrayList<AngleItemCommon> targetView, final int index) {
         ValueAnimator translation = ValueAnimator.ofFloat(0f, 1f);
-        translation.setDuration(180);
+        translation.setDuration(250);
         translation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -1673,6 +1706,7 @@ public class AngleView extends PositionStateViewGroup {
      * 退出当前编辑模式，遍历当前的Views集合，隐藏编辑按钮
      */
     public void endEditMode() {
+        isMoveDrag = true;
         int index = getViewsIndex();
         for (int i = 0; i < mMap.get(index).size(); i++) {
             AngleItemCommon item = mMap.get(index).get(i);
@@ -1680,6 +1714,11 @@ public class AngleView extends PositionStateViewGroup {
                 ((AngleItemStartUp) item).hideDelBtn();
             }
         }
+        /**
+         * 退出编辑模式时把isMoveDrag置空，目的是再次出发编辑模式是Move可以出发拖动
+         */
+
+
     }
 
     public float getChildHalfSize() {

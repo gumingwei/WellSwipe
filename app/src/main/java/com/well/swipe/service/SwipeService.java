@@ -402,11 +402,12 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     @Override
     public void openLeft() {
-        //google
+        // [START custom_event]
         mTracker.send(new HitBuilders.EventBuilder()
                 .setCategory("Action")
                 .setAction("SwipeService::openLeft()")
                 .build());
+        // [END custom_event]
         /**
          * 0 仅桌面的时候打开
          */
@@ -418,11 +419,12 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     @Override
     public void openRight() {
-        //
+        // [START custom_event]
         mTracker.send(new HitBuilders.EventBuilder()
                 .setCategory("Action")
                 .setAction("SwipeService::openRight()")
                 .build());
+        // [END custom_event]
         if (swipeSwipeSetting()) {
             mSwipeLayout.switchRight();
         }

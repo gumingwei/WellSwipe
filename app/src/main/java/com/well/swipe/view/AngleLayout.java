@@ -487,6 +487,9 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         mCornerView.setState(CornerView.STATE_NORMAL);
     }
 
+    /**
+     * 拖拽前赋的值，在松开手之后用来结束时隐藏拖拽View的替身
+     */
     AngleItemCommon mTargetView;
 
     @Override
@@ -565,16 +568,15 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
             } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
                 mAngleView.checkAndChange(x - (mWidth - mAngleSize), y - (mHeight - mAngleSize));
             }
-
-            cornerAnimatorStart(mCornerTheme, mThemeScale);
+            //Log.i("Gmw", "onDragging=" + x + "," + y);
+            //cornerAnimatorStart(mCornerTheme, mThemeScale);
         } else {
             /**
              * 松手后位移
              */
             mDragView.setTranslationX(x);
             mDragView.setTranslationY(y);
-
-            cornerAnimatorReverse(mCornerTheme, mThemeScale);
+            //cornerAnimatorReverse(mCornerTheme, mThemeScale);
         }
     }
 
@@ -620,7 +622,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
             isRestoreFinish = false;
             mAngleView.isRestoreFinish = false;
             ValueAnimator valueAnimator = ValueAnimator.ofFloat(1f, 0f);
-            valueAnimator.setDuration(180);
+            valueAnimator.setDuration(250);
             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
@@ -725,6 +727,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         mAngleView.setPositionState(state);
         mAngleViewTheme.setPositionState(state);
         mCornerView.setPositionState(state);
+        mCornerTheme.setPositionState(state);
     }
 
     public int getPositionState() {
