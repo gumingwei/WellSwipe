@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="anglelogo_size">53dp</dimen>
-    <dimen name="corner_icon_size">24dp</dimen>
+    <dimen name="corner_icon_size">20dp</dimen>
     <dimen name="corner_icon_offset">10dp</dimen>
     <dimen name="angleview_size">330dip</dimen>
     <dimen name="angleview_inner_radius">200dp</dimen>

@@ -525,9 +525,9 @@ public class AngleView extends PositionStateViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int index = (int) ((mBaseAngle) / DEGREES_90);
-        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
+        if (isLeft()) {
             itemLayout(index);
-        } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
+        } else if (isRight()) {
             itemLayout2(index);
         }
     }
@@ -574,9 +574,9 @@ public class AngleView extends PositionStateViewGroup {
                  * 矫正子view
                  * 旋转一定的角度,以保证旋转至第0限象时方向是正的
                  */
-                if (mPositionState == PositionState.POSITION_STATE_LEFT) {
+                if (isLeft()) {
                     views.get(index).setRotation(DEGREES_90 * qua);
-                } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
+                } else if (isRight()) {
                     views.get(index).setRotation(-DEGREES_90 * qua);
                 }
                 /**
@@ -674,7 +674,7 @@ public class AngleView extends PositionStateViewGroup {
          */
         double x = 0l;
         double y = 0l;
-        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
+        if (isLeft()) {
             if (qua == 0) {
                 x = Math.sin(Math.toRadians(newdegree)) * radius;
                 y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
@@ -688,7 +688,7 @@ public class AngleView extends PositionStateViewGroup {
                 x = -Math.cos(Math.toRadians(newdegree)) * radius;
                 y = mHeight - Math.sin(Math.toRadians(newdegree)) * radius;
             }
-        } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
+        } else if (isRight()) {
             if (qua == 0) {
                 x = mWidth - Math.sin(Math.toRadians(newdegree)) * radius;
                 y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
@@ -794,10 +794,10 @@ public class AngleView extends PositionStateViewGroup {
          */
         double x = 0l;
         double y = 0l;
-        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
+        if (isLeft()) {
             x = Math.sin(Math.toRadians(newdegree)) * radius;
             y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
-        } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
+        } else if (isRight()) {
             x = mWidth - Math.sin(Math.toRadians(newdegree)) * radius;
             y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
         }
@@ -807,9 +807,9 @@ public class AngleView extends PositionStateViewGroup {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         canvas.save();
-        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
+        if (isLeft()) {
             canvas.rotate(mBaseAngle + mChangeAngle, 0, mPivotY);
-        } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
+        } else if (isRight()) {
             canvas.rotate(mBaseAngle + mChangeAngle, mPivotX, mPivotY);
         }
         super.dispatchDraw(canvas);
@@ -1278,9 +1278,9 @@ public class AngleView extends PositionStateViewGroup {
         } else {
             ANGLE_STATE = ANGLE_STATE_INVERSE;
         }
-        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
+        if (isLeft()) {
             changeAngle(diffAngle);
-        } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
+        } else if (isRight()) {
             changeAngle(-diffAngle);
         }
     }
@@ -1310,7 +1310,7 @@ public class AngleView extends PositionStateViewGroup {
      * @param vy
      */
     public void fling(float vx, float vy) {
-        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
+        if (isLeft()) {
             if (vy > ALLOW_FLING || vx > ALLOW_FLING) {
                 flingForward();
             } else if (vx < -ALLOW_FLING || vy < -ALLOW_FLING) {
@@ -1318,7 +1318,7 @@ public class AngleView extends PositionStateViewGroup {
             } else {
                 upAngle();
             }
-        } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
+        } else if (isRight()) {
             if (vy > ALLOW_FLING || vx < -ALLOW_FLING) {
                 flingCurrnet();
             } else if (vy < -ALLOW_FLING || vx > ALLOW_FLING) {
@@ -1347,7 +1347,7 @@ public class AngleView extends PositionStateViewGroup {
     private void forward() {
 
         float diff = 0;
-        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
+        if (isLeft()) {
             diff = getAngleValues() % DEGREES_90;
             if (diff > 0 && diff < DEGREES_OFFSET) {
                 flingCurrnet();
@@ -1357,7 +1357,7 @@ public class AngleView extends PositionStateViewGroup {
                  */
                 flingForward();
             }
-        } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
+        } else if (isRight()) {
             diff = DEGREES_90 - getAngleValues() % DEGREES_90;
             if (diff > 0 && diff < DEGREES_OFFSET) {
                 flingForward();
@@ -1375,7 +1375,7 @@ public class AngleView extends PositionStateViewGroup {
      */
     private void reverse() {
         float diff = 0;
-        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
+        if (isLeft()) {
             diff = (DEGREES_1080 - getAngleValues()) % DEGREES_90;
             if (diff > 0 && diff < DEGREES_OFFSET) {
                 flingForward();
@@ -1385,7 +1385,7 @@ public class AngleView extends PositionStateViewGroup {
                  */
                 flingCurrnet();
             }
-        } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
+        } else if (isRight()) {
             diff = getAngleValues() % DEGREES_90;
             if (diff > 0 && diff < DEGREES_OFFSET) {
                 flingCurrnet();
@@ -1423,7 +1423,7 @@ public class AngleView extends PositionStateViewGroup {
      * @param cur 当前被点击的指示器索引
      */
     public void setViewsIndex(int cur) {
-        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
+        if (isLeft()) {
             int index = getViewsIndex((int) (getAngleValues() / DEGREES_90));
             if (index == 0) {
                 if (cur == 1) {
@@ -1444,7 +1444,7 @@ public class AngleView extends PositionStateViewGroup {
                     flingForward();
                 }
             }
-        } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
+        } else if (isRight()) {
             int index = getViewsIndex2((int) (getAngleValues() / DEGREES_90));
             if (index == 0) {
                 if (cur == 1) {
@@ -1498,13 +1498,13 @@ public class AngleView extends PositionStateViewGroup {
             @Override
             public void onAnimationEnd(Animator animation) {
                 int mIndex = ((int) ((mBaseAngle) / DEGREES_90));
-                if (mPositionState == PositionState.POSITION_STATE_LEFT) {
+                if (isLeft()) {
                     /**
                      * getQuaIndex()
                      */
                     itemLayout(mIndex);
 
-                } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
+                } else if (isRight()) {
                     itemLayout2(mIndex);
 
                 }
@@ -1527,10 +1527,6 @@ public class AngleView extends PositionStateViewGroup {
 
     public void setPositionState(int position) {
         super.setPositionState(position);
-    }
-
-    public int getPositionState() {
-        return mPositionState;
     }
 
     /**
@@ -1627,7 +1623,7 @@ public class AngleView extends PositionStateViewGroup {
      * @return 直接返回当前显示数据的Index索引值
      */
     public int getViewsIndex() {
-        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
+        if (isLeft()) {
             return getViewsIndex(((int) ((mBaseAngle) / DEGREES_90)));
         } else {
             return getViewsIndex2(((int) ((mBaseAngle) / DEGREES_90)));
@@ -1636,7 +1632,7 @@ public class AngleView extends PositionStateViewGroup {
 
     public int getQuaIndex() {
         int index = (int) ((mBaseAngle) / DEGREES_90);
-        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
+        if (isLeft()) {
             return getQuaIndex(index);
         } else {
             return getQuaIndex2(index);

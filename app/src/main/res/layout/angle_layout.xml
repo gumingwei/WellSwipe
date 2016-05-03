@@ -33,13 +33,4 @@
         android:id="@+id/corner_view"
         android:layout_width="@dimen/anglelogo_size"
         android:layout_height="@dimen/anglelogo_size" />
-
-
-    <!--<ImageView
-        android:id="@+id/angle_logo"
-        android:layout_width="@dimen/anglelogo_size"
-        android:layout_height="@dimen/anglelogo_size"
-        android:src="@drawable/angle_logo" />-->
-
-
 </com.well.swipe.view.AngleLayout>

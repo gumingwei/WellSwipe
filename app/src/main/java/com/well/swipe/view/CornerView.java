@@ -21,8 +21,6 @@ public class CornerView extends FrameLayout {
 
     private ImageView mIcon;
 
-    //private CornerThemeView mBackgroung;
-
     private int mPositionState;
 
     private int mIconSize;
@@ -62,16 +60,6 @@ public class CornerView extends FrameLayout {
 
     public CornerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        //setBackgroundColor(Color.WHITE);
-        /**
-         * 背景
-         */
-        //mBackgroung = new CornerThemeView(context);
-        //LayoutParams backgroundParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        //addView(mBackgroung, backgroundParams);
-        /**
-         *
-         */
         mIcon = new ImageView(context);
         mIconSize = context.getResources().getDimensionPixelSize(R.dimen.corner_icon_size);
         mIconOffset = context.getResources().getDimensionPixelSize(R.dimen.corner_icon_offset);
