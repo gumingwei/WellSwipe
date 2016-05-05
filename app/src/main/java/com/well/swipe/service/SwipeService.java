@@ -537,7 +537,6 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     @Override
     public void onDeleteClick(View view) {
-        Log.i("Gmw", "service_onclick");
         Object tag = view.getTag();
         if (tag instanceof ItemApplication) {
             /**
@@ -546,7 +545,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
             int index = ((ItemApplication) tag).delete(this);
             if (index > 0) {
                 /**
-                 *删除成功后更新戒面
+                 *删除成功后更新界面
                  */
                 mSwipeLayout.getAngleLayout().getAngleView().removeItem();
             }

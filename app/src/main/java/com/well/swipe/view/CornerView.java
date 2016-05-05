@@ -148,4 +148,14 @@ public class CornerView extends FrameLayout {
         }
         return true;
     }
+
+    public void setTrashState(float p) {
+        if (p < 0.3f) {
+            mIcon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.delete_zone_trash_1));
+        } else if (p > 0.3f && p < 0.6f) {
+            mIcon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.delete_zone_trash_2));
+        } else if (p > 0.6f) {
+            mIcon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.delete_zone_trash_3));
+        }
+    }
 }

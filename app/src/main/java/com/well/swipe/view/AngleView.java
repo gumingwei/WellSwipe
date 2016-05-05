@@ -41,6 +41,8 @@ import java.util.Map;
  * 3.通过捕捉飞快的手指滑动来转动容器
  * 4.给子控件设置扇形的布局坐标
  * 5.长按进入编辑模式
+ * 6.编辑模式下拖拽，拖拽交换位置
+ * 7.拖拽删除
  */
 public class AngleView extends PositionStateViewGroup {
     /**
@@ -262,7 +264,7 @@ public class AngleView extends PositionStateViewGroup {
         void onStartDrag(AngleItemCommon view, float left, float top, float offsetLeft, float offsetTop);
 
         /**
-         * 取消拖拽
+         * 拖拽取消
          */
         void onCancelDrag();
     }
@@ -273,11 +275,11 @@ public class AngleView extends PositionStateViewGroup {
      */
     class Coordinate {
 
-        public double x;
+        public float x;
 
-        public double y;
+        public float y;
 
-        public Coordinate(double x, double y) {
+        public Coordinate(float x, float y) {
             this.x = x;
             this.y = y;
         }
@@ -583,8 +585,8 @@ public class AngleView extends PositionStateViewGroup {
                  * 指定位置
                  */
                 if (index < 9) {
-                    views.get(index).setParentX((float) coordinate.x);
-                    views.get(index).setParentY((float) coordinate.y);
+                    views.get(index).setParentX(coordinate.x);
+                    views.get(index).setParentY(coordinate.y);
                     views.get(index).layout((int) (coordinate.x - mChildHalfSize), (int) (coordinate.y - mChildHalfSize),
                             (int) (coordinate.x + mChildHalfSize), (int) (coordinate.y + mChildHalfSize));
                 }
@@ -672,35 +674,35 @@ public class AngleView extends PositionStateViewGroup {
          * 2.子控件根据不同的呃限象旋转位置满足在第0限象的正常显示效果
          * 3.当整个控件的容器反转之后，为保证显示效果，要做一定的反转
          */
-        double x = 0l;
-        double y = 0l;
+        float x = 0l;
+        float y = 0l;
         if (isLeft()) {
             if (qua == 0) {
-                x = Math.sin(Math.toRadians(newdegree)) * radius;
-                y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
+                x = (float) Math.sin(Math.toRadians(newdegree)) * radius;
+                y = (float) (mHeight - Math.cos(Math.toRadians(newdegree)) * radius);
             } else if (qua == 1) {
-                x = Math.cos(Math.toRadians(newdegree)) * radius;
-                y = mHeight + Math.sin(Math.toRadians(newdegree)) * radius;
+                x = (float) Math.cos(Math.toRadians(newdegree)) * radius;
+                y = (float) (mHeight + Math.sin(Math.toRadians(newdegree)) * radius);
             } else if (qua == 2) {
-                x = -Math.sin(Math.toRadians(newdegree)) * radius;
-                y = mHeight + Math.cos(Math.toRadians(newdegree)) * radius;
+                x = (float) -Math.sin(Math.toRadians(newdegree)) * radius;
+                y = (float) (mHeight + Math.cos(Math.toRadians(newdegree)) * radius);
             } else if (qua == 3) {
-                x = -Math.cos(Math.toRadians(newdegree)) * radius;
-                y = mHeight - Math.sin(Math.toRadians(newdegree)) * radius;
+                x = (float) -Math.cos(Math.toRadians(newdegree)) * radius;
+                y = (float) (mHeight - Math.sin(Math.toRadians(newdegree)) * radius);
             }
         } else if (isRight()) {
             if (qua == 0) {
-                x = mWidth - Math.sin(Math.toRadians(newdegree)) * radius;
-                y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
+                x = (float) (mWidth - Math.sin(Math.toRadians(newdegree)) * radius);
+                y = (float) (mHeight - Math.cos(Math.toRadians(newdegree)) * radius);
             } else if (qua == 1) {
-                x = mWidth - Math.cos(Math.toRadians(newdegree)) * radius;
-                y = mHeight + Math.sin(Math.toRadians(newdegree)) * radius;
+                x = (float) (mWidth - Math.cos(Math.toRadians(newdegree)) * radius);
+                y = (float) (mHeight + Math.sin(Math.toRadians(newdegree)) * radius);
             } else if (qua == 2) {
-                x = mWidth + Math.sin(Math.toRadians(newdegree)) * radius;
-                y = mHeight + Math.cos(Math.toRadians(newdegree)) * radius;
+                x = (float) (mWidth + Math.sin(Math.toRadians(newdegree)) * radius);
+                y = (float) (mHeight + Math.cos(Math.toRadians(newdegree)) * radius);
             } else if (qua == 3) {
-                x = mWidth + Math.cos(Math.toRadians(newdegree)) * radius;
-                y = mHeight - Math.sin(Math.toRadians(newdegree)) * radius;
+                x = (float) (mWidth + Math.cos(Math.toRadians(newdegree)) * radius);
+                y = (float) (mHeight - Math.sin(Math.toRadians(newdegree)) * radius);
             }
         }
 
@@ -792,14 +794,14 @@ public class AngleView extends PositionStateViewGroup {
          * 2.子控件根据不同的呃限象旋转位置满足在第0限象的正常显示效果
          * 3.当整个控件的容器反转之后，为保证显示效果，要做一定的反转
          */
-        double x = 0l;
-        double y = 0l;
+        float x = 0l;
+        float y = 0l;
         if (isLeft()) {
-            x = Math.sin(Math.toRadians(newdegree)) * radius;
-            y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
+            x = (float) Math.sin(Math.toRadians(newdegree)) * radius;
+            y = (float) (mHeight - Math.cos(Math.toRadians(newdegree)) * radius);
         } else if (isRight()) {
-            x = mWidth - Math.sin(Math.toRadians(newdegree)) * radius;
-            y = mHeight - Math.cos(Math.toRadians(newdegree)) * radius;
+            x = (float) (mWidth - Math.sin(Math.toRadians(newdegree)) * radius);
+            y = (float) (mHeight - Math.cos(Math.toRadians(newdegree)) * radius);
         }
         return new Coordinate(x, y);
     }
@@ -831,10 +833,10 @@ public class AngleView extends PositionStateViewGroup {
 
                         Coordinate coordinate = coordinate2(views, index);
 
-                        mDownLeft = (float) (coordinate.x - mChildHalfSize);
-                        mDownTop = (float) (coordinate.y - mChildHalfSize);
-                        mDownRight = (float) (coordinate.x + mChildHalfSize);
-                        mDownBottom = (float) (coordinate.y + mChildHalfSize);
+                        mDownLeft = (coordinate.x - mChildHalfSize);
+                        mDownTop = (coordinate.y - mChildHalfSize);
+                        mDownRight = (coordinate.x + mChildHalfSize);
+                        mDownBottom = (coordinate.y + mChildHalfSize);
 
                         if (mMotionX > mDownLeft && mMotionX < mDownRight && mMotionY > mDownTop && mMotionY < mDownBottom) {
                             mClickTime1 = System.currentTimeMillis();
@@ -909,6 +911,11 @@ public class AngleView extends PositionStateViewGroup {
                 }
                 break;
             case MotionEvent.ACTION_UP:
+                /**
+                 * 这里在拖拽取消是执行，即拖拽还没有发生时抬起了手指，因为一旦拖拽发生，
+                 * 触摸事件就被AngleLayout拦截下来了，AngleView就接受不到触摸事件了，
+                 * So这里叫做取消拖拽并不是结束拖拽，结束拖拽要在AngleLayout里执行
+                 */
                 if (mTargetItem != null) {
                     if ((mTargetItem).getVisibility() == View.GONE) {
                         mOnEditModeChangeListener.onCancelDrag();
@@ -1004,10 +1011,10 @@ public class AngleView extends PositionStateViewGroup {
             for (int index = 0; index < mExchangePre.size(); index++) {
                 if (index != mExchangePre.size() - 1) {
                     Coordinate coordinate = mExchangePre.get(index);
-                    float newleft = (float) (coordinate.x - mChildHalfSize);
-                    float newtop = (float) (coordinate.y - mChildHalfSize);
-                    float newright = (float) (coordinate.x + mChildHalfSize);
-                    float newbottom = (float) (coordinate.y + mChildHalfSize);
+                    float newleft = (coordinate.x - mChildHalfSize);
+                    float newtop = (coordinate.y - mChildHalfSize);
+                    float newright = (coordinate.x + mChildHalfSize);
+                    float newbottom = (coordinate.y + mChildHalfSize);
                     if (centerX > newleft && centerY > newtop && centerX < newright && centerY < newbottom) {
 
                         if (index != mTargetItem.getIndex()) {

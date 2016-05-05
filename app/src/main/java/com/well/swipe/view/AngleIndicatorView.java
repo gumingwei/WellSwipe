@@ -354,6 +354,4 @@ public class AngleIndicatorView extends PositionStateView {
         }
         invalidate();
     }
-
-
 }

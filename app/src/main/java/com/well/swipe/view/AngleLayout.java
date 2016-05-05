@@ -61,7 +61,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
     private float mThemeScale;
 
-    //private Button mTestView;
+    private int mChildHalfSize;
 
     private AngleItemStartUp mDragView;
     /**
@@ -158,6 +158,8 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
     public OnOffListener mOffListener;
 
+    private boolean isDelTrash;
+
     public interface OnOffListener extends OnScaleChangeListener {
         /**
          * 当Angle关闭的时候回调,目的是通知SwipeLayout去dissmis
@@ -216,14 +218,6 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
         mCornerTheme = (CornerThemeView) findViewById(R.id.corner_theme);
 
-        //mTestView = (Button) findViewById(R.id.test_view);
-
-//        mTestView.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.i("Gmw", "onClick");
-//            }
-//        });
 
         /**
          * 拖拽view
@@ -237,6 +231,10 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         mWidth = getMeasuredWidth();
         mHeight = getMeasuredHeight();
+        /**
+         * Item尺寸
+         */
+        mChildHalfSize = getResources().getDimensionPixelSize(R.dimen.angleitem_half_size);
         /**
          * AngleView的大小
          */
@@ -260,7 +258,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         /**
          * AngleView,IndicatorView的大小
          */
-        if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
+        if (mAngleView.isLeft()) {
             mAngleView.layout(0, mHeight - mAngleSize, mAngleSize, mHeight);
             mAngleViewTheme.layout(0, mHeight - mAngleSize, mAngleSize, mHeight);
             mIndicator.layout(0, mHeight - mIndicatorSize, mIndicatorSize, mHeight);
@@ -274,7 +272,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
             mCornerTheme.setPivotX(0);
             mCornerTheme.setPivotY(mAngleLogoSize);
             //mTestView.layout(0, mHeight - mAngleLogoSize, mAngleLogoSize, mHeight);
-        } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
+        } else if (mAngleView.isRight()) {
             mAngleView.layout(mWidth - mAngleSize, mHeight - mAngleSize, mWidth, mHeight);
             mAngleViewTheme.layout(mWidth - mAngleSize, mHeight - mAngleSize, mWidth, mHeight);
             mIndicator.layout(mWidth - mIndicatorSize, mHeight - mIndicatorSize, mWidth, mHeight);
@@ -319,9 +317,9 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
                 mActivePointId = ev.getPointerId(0);
                 if (mEditState == STATE_NORMAL) {
-                    if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
+                    if (mAngleView.isLeft()) {
                         mAngleView.downAngle(mLastMotionX, mHeight - mLastMotionY);
-                    } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
+                    } else if (mAngleView.isRight()) {
                         mAngleView.downAngle(mWidth - mLastMotionX, mHeight - mLastMotionY);
                     }
                 }
@@ -356,7 +354,6 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
         if (getChildCount() <= 0) {
             return super.onTouchEvent(event);
         }
@@ -373,10 +370,10 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                 if (mTouchState == TOUCH_STATE_WHIRLING) {
                 }
                 if (mEditState == STATE_NORMAL) {
-                    if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
+                    if (mAngleView.isLeft()) {
                         mAngleView.downAngle(mLastMotionX, mHeight - mLastMotionY);
                         return true;
-                    } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
+                    } else if (mAngleView.isRight()) {
                         mAngleView.downAngle(mWidth - mLastMotionX, mHeight - mLastMotionY);
                         return true;
                     }
@@ -398,9 +395,9 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                  */
                 if (mEditState == STATE_NORMAL) {
                     if (mTouchState == TOUCH_STATE_WHIRLING && newY < mHeight) {
-                        if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
+                        if (mAngleView.isLeft()) {
                             mAngleView.changeAngle(newX, mHeight - newY);
-                        } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
+                        } else if (mAngleView.isRight()) {
                             mAngleView.changeAngle(mWidth - newX, mHeight - newY);
                         }
                     }
@@ -417,14 +414,47 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                 if (mEditState == STATE_NORMAL) {
                     mAngleView.fling(vx, vy);
                 } else if (mEditState == STATE_EDIT) {
-                    float xy[] = findEndCoordinate();
-                    restoreDragView(event.getX(), xy[0], event.getY(), xy[1]);
+                    Log.i("Gmw", "action_up=" + isDelTrash);
+                    onEndDrag();
+                    if (isDelTrash) {
+                        /**
+                         * 拖拽到了垃圾箱区域当前拖拽的这个
+                         */
+                        if (mTargetView != null) {
+                            Object tag = mTargetView.getTag();
+                            if (tag instanceof ItemApplication) {
+                                int index = ((ItemApplication) tag).delete(mContext);
+                                if (index > 0) {
+                                    /**
+                                     *删除成功后更新界面
+                                     */
+                                    //mTargetView.setVisibility(GONE);
+                                    getAngleView().removeItem();
+
+                                }
+                            } else if (tag instanceof ItemSwipeTools) {
+                                int index = ((ItemSwipeTools) tag).delete(mContext);
+                                if (index > 0) {
+                                    //mTargetView.setVisibility(GONE);
+                                    getAngleView().removeItem();
+                                }
+                            }
+                        }
+
+                    } else {
+                        /**
+                         * 没有拖拽到垃圾箱区域就复原动画
+                         */
+                        float xy[] = findEndCoordinate();
+                        restoreDragView(event.getX(), xy[0], event.getY(), xy[1]);
+                    }
+
                 }
                 recyleVelocityTracker();
                 float upX = event.getX();
                 float upY = event.getY();
                 long upTime = System.currentTimeMillis();
-                if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
+                if (mAngleView.isLeft()) {
                     float upDistance = (float) Math.sqrt(Math.pow((upX - 0), 2) + Math.pow((upY - mHeight), 2));
                     if (Math.abs(upX - mLastMotionX) < 8 && Math.abs(upY - mLastMotionY) < 8 &&
                             (upTime - mLastTime) < 200 && (upDistance > mAngleView.getMeasuredHeight())) {
@@ -434,7 +464,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                             off();
                         }
                     }
-                } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
+                } else if (mAngleView.isRight()) {
                     float upDistance = (float) Math.sqrt(Math.pow((upX - mWidth), 2) + Math.pow((upY - mHeight), 2));
                     if (Math.abs(upX - mLastMotionX) < 8 && Math.abs(upY - mLastMotionY) < 8 &&
                             (upTime - mLastTime) < 200 && (upDistance > mAngleView.getMeasuredHeight())) {
@@ -475,15 +505,15 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
          * 长安之后进入编辑模式
          */
         mEditState = STATE_EDIT;
-
+        /**
+         * 角落View的状态
+         */
         mCornerView.setState(CornerView.STATE_EDIT);
     }
 
     @Override
     public void onExitEditMode() {
-
         mEditState = STATE_NORMAL;
-
         mCornerView.setState(CornerView.STATE_NORMAL);
     }
 
@@ -514,12 +544,13 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
             mAngleView.exchangePre();
             mDragOffsetLeft = offsetLeft;
             mDragoffsetTop = offsetTop;
-            if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
+            if (mAngleView.isLeft()) {
                 startDrag(newleft, newtop);
-            } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
+            } else if (mAngleView.isRight()) {
                 startDrag(newleft + mWidth - mAngleSize, newtop);
             }
         }
+        mCornerView.setState(CornerView.STATE_DRAG);
     }
 
     /**
@@ -555,28 +586,51 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
      */
     public void onDragging(float x, float y, boolean drag) {
         if (isRestoreFinish) {
+
             mDragView.setTranslationX(x);
             mDragView.setTranslationY(y);
+
+
         }
         /**
          * 拖拽中
          */
         if (drag) {
 
-            if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
+            if (mAngleView.isLeft()) {
                 mAngleView.checkAndChange(x, y - (mHeight - mAngleSize));
-            } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
+                /**
+                 * 不为空的时候触发删除，触发开始动画，开始动画开始之后，结束动画才能才能开始
+                 * 松手之后执行复原动画，在动画结束时吧mTargetView置空，用来保证垃圾箱不在拖拽的时候触发
+                 */
+                if (mTargetView != null) {
+                    checkTrashView(x + mChildHalfSize, y + mChildHalfSize, 0, mHeight);
+                }
+            } else if (mAngleView.isRight()) {
                 mAngleView.checkAndChange(x - (mWidth - mAngleSize), y - (mHeight - mAngleSize));
+                if (mTargetView != null) {
+                    checkTrashView(x + mChildHalfSize, y + mChildHalfSize, mWidth, mHeight);
+                }
             }
-            //Log.i("Gmw", "onDragging=" + x + "," + y);
-            //cornerAnimatorStart(mCornerTheme, mThemeScale);
+
         } else {
             /**
              * 松手后位移
              */
             mDragView.setTranslationX(x);
             mDragView.setTranslationY(y);
-            //cornerAnimatorReverse(mCornerTheme, mThemeScale);
+
+        }
+    }
+
+    public void checkTrashView(float x, float y, float centerX, float centerY) {
+        float upDistance = (float) Math.sqrt(Math.pow((x - centerX), 2) + Math.pow((y - centerY), 2));
+        if (upDistance <= mIndicatorSize * (0.7f)) {
+            isDelTrash = true;
+            cornerAnimatorStart();
+        } else {
+            isDelTrash = false;
+            cornerAnimatorReverse();
         }
     }
 
@@ -590,12 +644,12 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         float x = 0f;
         float y = 0f;
         if (coordinate != null) {
-            if (mAngleView.getPositionState() == PositionState.POSITION_STATE_LEFT) {
-                x = (float) coordinate.x + mDragOffsetLeft - mAngleView.getChildHalfSize();
-            } else if (mAngleView.getPositionState() == PositionState.POSITION_STATE_RIGHT) {
-                x = (float) coordinate.x + mDragOffsetLeft - mAngleView.getChildHalfSize() + mWidth - mAngleSize;
+            if (mAngleView.isLeft()) {
+                x = coordinate.x + mDragOffsetLeft - mAngleView.getChildHalfSize();
+            } else if (mAngleView.isRight()) {
+                x = coordinate.x + mDragOffsetLeft - mAngleView.getChildHalfSize() + mWidth - mAngleSize;
             }
-            y = (float) coordinate.y + mDragoffsetTop - mAngleView.getChildHalfSize() + mHeight - mAngleSize;
+            y = coordinate.y + mDragoffsetTop - mAngleView.getChildHalfSize() + mHeight - mAngleSize;
         }
         return new float[]{x, y};
     }
@@ -605,6 +659,12 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     public void onCancelDrag() {
         float xy[] = findEndCoordinate();
         restoreDragView(xy[0], xy[0], xy[1], xy[1]);
+        mCornerView.setState(CornerView.STATE_EDIT);
+    }
+
+    public void onEndDrag() {
+        cornerAnimatorReverse();
+        mCornerView.setState(CornerView.STATE_EDIT);
     }
 
     boolean isRestoreFinish = true;
@@ -642,6 +702,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                     if (null != mTargetView) {
                         mTargetView.setVisibility(VISIBLE);
                     }
+                    mTargetView = null;
                     isRestoreFinish = true;
                     mAngleView.isRestoreFinish = true;
                     /**
@@ -876,49 +937,35 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
     private boolean isCornerAnimatorStart = true;
 
-    public void cornerAnimatorStart(final View view, float tarScale) {
+    /**
+     * 垃圾箱红色背景展开
+     */
+    public void cornerAnimatorStart() {
         if (isCornerAnimatorStart) {
             isCornerAnimatorStart = false;
-            ValueAnimator mCorenerAnimator = ValueAnimator.ofFloat(1f, tarScale);
-            mCorenerAnimator.setDuration(300);
-            mCorenerAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            final float diff = mThemeScale - 1f;
+            ValueAnimator animator = ValueAnimator.ofFloat(1f, mThemeScale);
+            animator.setDuration(200);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float v = (float) animation.getAnimatedValue();
-                    view.setScaleX(v);
-                    view.setScaleY(v);
+                    mCornerTheme.setScaleX(v);
+                    mCornerTheme.setScaleY(v);
+                    mCornerView.setTrashState((v - 1) / diff);
+
                 }
             });
-            mCorenerAnimator.start();
-        }
-
-    }
-
-    private boolean isCornerAnimatorReverse = true;
-
-    public void cornerAnimatorReverse(final View view, float tarScale) {
-        if (isCornerAnimatorReverse) {
-            isCornerAnimatorReverse = false;
-            ValueAnimator mCorenerAnimator = ValueAnimator.ofFloat(1f, tarScale);
-            mCorenerAnimator.setDuration(300);
-            mCorenerAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float v = (float) animation.getAnimatedValue();
-                    view.setScaleX(v);
-                    view.setScaleY(v);
-                }
-            });
-            mCorenerAnimator.addListener(new Animator.AnimatorListener() {
+            animator.addListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
-
+                    mCornerTheme.setWarnColor();
+                    isCornerAnimatorReverse = true;
                 }
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    isCornerAnimatorStart = true;
-                    isCornerAnimatorReverse = true;
+
                 }
 
                 @Override
@@ -931,7 +978,55 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
                 }
             });
-            mCorenerAnimator.reverse();
+            animator.start();
+        }
+
+    }
+
+    private boolean isCornerAnimatorReverse = false;
+
+    /**
+     * 垃圾箱背景关闭
+     */
+    public void cornerAnimatorReverse() {
+        if (isCornerAnimatorReverse) {
+            isCornerAnimatorReverse = false;
+            final float diff = mThemeScale - 1f;
+            ValueAnimator animator = ValueAnimator.ofFloat(1f, mThemeScale);
+            animator.setDuration(200);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float v = (float) animation.getAnimatedValue();
+                    mCornerTheme.setScaleX(v);
+                    mCornerTheme.setScaleY(v);
+                    mCornerView.setTrashState((v - 1) / diff);
+                }
+            });
+            animator.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    isCornerAnimatorStart = true;
+                    mCornerTheme.setGreenColor();
+                    mCornerView.setState(CornerView.STATE_EDIT);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            animator.reverse();
         }
 
     }

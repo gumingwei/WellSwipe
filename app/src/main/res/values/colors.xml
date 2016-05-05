@@ -31,4 +31,5 @@
 
     <color name="title_bar_gradient">#016960</color>
     <color name="GreenColor">#019285</color>
+    <color name="warning_color">#DD2222</color>
 </resources>

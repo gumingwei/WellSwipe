@@ -20,6 +20,10 @@ public class CornerThemeView extends PositionStateView {
 
     private int mInnerSize;
 
+    private int mGreen = getResources().getColor(R.color.GreenColor);
+
+    private int mWarningColor = getResources().getColor(R.color.warning_color);
+
     public CornerThemeView(Context context) {
         this(context, null);
     }
@@ -32,7 +36,7 @@ public class CornerThemeView extends PositionStateView {
         super(context, attrs, defStyleAttr);
         mInnerSize = context.getResources().getDimensionPixelSize(R.dimen.anglelogo_size);
         mPaint = new Paint();
-        mPaint.setColor(getResources().getColor(R.color.GreenColor));
+        mPaint.setColor(mGreen);
         mPaint.setAntiAlias(true);
         mPaint.setStyle(Paint.Style.FILL);
 
@@ -54,4 +58,15 @@ public class CornerThemeView extends PositionStateView {
             canvas.drawCircle(mWidth, mHeight, mInnerSize, mPaint);
         }
     }
+
+    public void setWarnColor() {
+        mPaint.setColor(mWarningColor);
+        invalidate();
+    }
+
+    public void setGreenColor() {
+        mPaint.setColor(mGreen);
+        invalidate();
+    }
+
 }
