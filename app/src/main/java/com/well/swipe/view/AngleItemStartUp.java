@@ -46,23 +46,6 @@ public class AngleItemStartUp extends AngleItemCommon {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-
-        int action = event.getAction();
-        switch (action) {
-            case MotionEvent.ACTION_DOWN:
-
-                break;
-            case MotionEvent.ACTION_MOVE:
-
-                break;
-            case MotionEvent.ACTION_UP:
-                break;
-        }
-        return super.onTouchEvent(event);
-    }
-
     public void showDelBtn() {
         mDelIcon.setVisibility(View.VISIBLE);
     }

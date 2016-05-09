@@ -16,7 +16,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -828,7 +827,10 @@ public class AngleView extends PositionStateViewGroup {
                 mMotionX = event.getX();
                 mMotionY = event.getY();
                 ArrayList<AngleItemCommon> views = getData();
-                if (views != null) {
+                /**
+                 * isRemoveFinish移除动画一处之前不允许再拖动
+                 */
+                if (views != null && isRemoveFinish) {
                     for (int index = 0; index < views.size(); index++) {
 
                         Coordinate coordinate = coordinate2(views, index);
@@ -847,6 +849,7 @@ public class AngleView extends PositionStateViewGroup {
                              */
                             mTargetItem = views.get(index);
                             mTargetItem.setIndex(index);
+
                             /**
                              *
                              */
@@ -896,7 +899,7 @@ public class AngleView extends PositionStateViewGroup {
                     if (mTargetItem != null) {
                         if (mTargetItem instanceof AngleItemStartUp) {
                             if (((AngleItemStartUp) mTargetItem).getDelBtn().getVisibility() == View.VISIBLE) {
-                                if (mTargetItem.getIndex() != views2.size() - 1 && isRestoreFinish) {
+                                if (mTargetItem.getIndex() != views2.size() - 1 && isRestoreFinish && isRemoveFinish) {
                                     mOnEditModeChangeListener.onStartDrag(mTargetItem, mDownLeft, mDownTop, mMotionX - mDownLeft, mMotionY - mDownTop);
                                     /**
                                      * 开始出发拖动的记住一个Index,用作复原动画的时候
@@ -992,9 +995,10 @@ public class AngleView extends PositionStateViewGroup {
     }
 
 
-    boolean isExChangeFinish = true;
-
-    boolean isRestoreFinish = true;
+    /**
+     * 用来锁定复原动画，在动画结束前，不允许动画再次启动
+     */
+    private boolean isRestoreFinish = true;
 
     private int mDragTargetIndex;
 
@@ -1067,6 +1071,14 @@ public class AngleView extends PositionStateViewGroup {
         }
     }
 
+    public boolean isRestoreFinish() {
+        return isRestoreFinish;
+    }
+
+    public void setIsRestoreFinish(boolean isResore) {
+        isRestoreFinish = isResore;
+    }
+
     /**
      * 找view.visiable==gong 的view的坐标
      *
@@ -1084,56 +1096,62 @@ public class AngleView extends PositionStateViewGroup {
         return null;
     }
 
+    private boolean isRemoveFinish = true;
+
     /**
      * 移除动画
      */
     public void removeItem() {
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(1.0f, 0f);
-        valueAnimator.setDuration(150);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float values = (float) animation.getAnimatedValue();
-                mTargetItem.setScaleX(values);
-                mTargetItem.setScaleY(values);
-                requestLayout();
-            }
-        });
-        valueAnimator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                //getData().remove(mTargetItem);
-                mDelPre.clear();
-                mDelPre.addAll(getData());
-                mDelPre.remove(mTargetItem);
-
-                ArrayList<AngleItemCommon> views = mDelPre;
-                if (views != null) {
-                    mDelNext.clear();
-                    for (int index = 0; index < views.size(); index++) {
-                        /**
-                         * size按照当前views的总数，以4为区分，分别计算出<4,=4,超出4的部分剪掉4即从1，2，3重新开始计数
-                         */
-                        mDelNext.add(coordinate(views, index, getQuaIndex()));
-                    }
+        if (isRemoveFinish) {
+            isRemoveFinish = false;
+            ValueAnimator valueAnimator = ValueAnimator.ofFloat(1.0f, 0f);
+            valueAnimator.setDuration(150);
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float values = (float) animation.getAnimatedValue();
+                    mTargetItem.setScaleX(values);
+                    mTargetItem.setScaleY(values);
+                    requestLayout();
                 }
-                transAnimator(mDelNext, mDelPre);
-            }
+            });
+            valueAnimator.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
 
-            @Override
-            public void onAnimationCancel(Animator animation) {
-            }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    //getData().remove(mTargetItem);
+                    mDelPre.clear();
+                    mDelPre.addAll(getData());
+                    mDelPre.remove(mTargetItem);
 
-            @Override
-            public void onAnimationRepeat(Animator animation) {
+                    ArrayList<AngleItemCommon> views = mDelPre;
+                    if (views != null) {
+                        mDelNext.clear();
+                        for (int index = 0; index < views.size(); index++) {
+                            /**
+                             * size按照当前views的总数，以4为区分，分别计算出<4,=4,超出4的部分剪掉4即从1，2，3重新开始计数
+                             */
+                            mDelNext.add(coordinate(views, index, getQuaIndex()));
+                        }
+                    }
+                    transAnimator(mDelNext, mDelPre);
 
-            }
-        });
-        valueAnimator.start();
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            valueAnimator.start();
+        }
     }
 
 
@@ -1179,6 +1197,8 @@ public class AngleView extends PositionStateViewGroup {
                 if (getData().size() == 1) {
                     mOnEditModeChangeListener.onExitEditMode();
                 }
+
+                isRemoveFinish = true;
             }
 
             @Override
@@ -1197,6 +1217,8 @@ public class AngleView extends PositionStateViewGroup {
     public void exchange(final Coordinate recource, AngleItemCommon targetview, final int index) {
 
     }
+
+    boolean isExChangeFinish = true;
 
     /**
      * 交换动画

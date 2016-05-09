@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ public class AngleItemCommon extends RelativeLayout {
      */
     private double mParentY;
 
+
     public AngleItemCommon(Context context) {
         this(context, null);
     }
@@ -46,8 +48,13 @@ public class AngleItemCommon extends RelativeLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mText = (TextView) findViewById(R.id.item_title);
         mIcon = (ImageView) findViewById(R.id.item_icon);
+        mText = (TextView) findViewById(R.id.item_title);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     public void setTitle(String title) {
@@ -63,7 +70,7 @@ public class AngleItemCommon extends RelativeLayout {
     }
 
     public void setItemIconBackground(Drawable drawable) {
-        mIcon.setBackground(drawable);
+        mIcon.setBackgroundDrawable(drawable);
     }
 
     public void setIndex(int index) {

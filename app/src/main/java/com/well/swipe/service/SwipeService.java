@@ -1,6 +1,5 @@
 package com.well.swipe.service;
 
-import android.Manifest;
 import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -14,8 +13,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.ContentObserver;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Icon;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
@@ -24,9 +21,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -38,18 +32,14 @@ import com.well.swipe.R;
 import com.well.swipe.SwipeApplication;
 import com.well.swipe.ItemSwipeTools;
 import com.well.swipe.activitys.SwipeSettingActivity;
-import com.well.swipe.preference.PreferenceCategory;
 import com.well.swipe.tools.SwipeBluetooth;
 import com.well.swipe.tools.SwipeSetting;
 import com.well.swipe.tools.ToolsStrategy;
 import com.well.swipe.tools.WifiAndData;
 import com.well.swipe.utils.SettingHelper;
-import com.well.swipe.utils.Utils;
-import com.well.swipe.view.AngleItemCommon;
 import com.well.swipe.view.AngleItemStartUp;
 import com.well.swipe.view.AngleLayout;
 import com.well.swipe.view.AngleView;
-import com.well.swipe.view.BubbleView;
 import com.well.swipe.view.CatchView;
 import com.well.swipe.view.OnDialogListener;
 import com.well.swipe.view.PositionState;
@@ -687,6 +677,11 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         return false;
     }
 
+    /**
+     * 是否是白名单
+     *
+     * @return
+     */
     private boolean isWhitelistPackage() {
         ActivityManager mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> infos = mActivityManager.getRunningTasks(1);
