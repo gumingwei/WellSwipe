@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -23,7 +24,8 @@ import com.well.swipe.utils.Utils;
  * Created by mingwei on 2/26/16.
  */
 public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeListener,
-        AngleIndicatorView.OnIndexChangedLitener, AngleView.OnEditModeChangeListener, CornerView.OnCornerClickListener {
+        AngleIndicatorView.OnIndexChangedLitener, AngleView.OnEditModeChangeListener, CornerView.OnCornerClickListener,
+        AngleView.OnBindListener {
     /**
      *
      */
@@ -55,6 +57,8 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
     private CornerThemeView mCornerTheme;
 
+    private LoadingView mLoading;
+
     private float mThemeScale;
 
     private int mChildHalfSize;
@@ -72,6 +76,8 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
     private int mAngleLogoSize;
 
     private int mIndicatorSize;
+
+    private int mLoadingSize;
     /**
      * 主题的小用像素，然后根据Indocator再做大小变化
      */
@@ -217,6 +223,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
          */
         mIndicatorThemeSize = getResources().getDimensionPixelSize(R.dimen.angleindicator_theme_size);
         mAngleLogoSize = getResources().getDimensionPixelSize(R.dimen.anglelogo_size);
+        mLoadingSize = getResources().getDimensionPixelSize(R.dimen.loadingview_size);
 
         ViewConfiguration mConfig = ViewConfiguration.get(context);
         mTouchSlop = mConfig.getScaledTouchSlop();
@@ -245,6 +252,9 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         mCornerView.setOnCornerListener(this);
 
         mCornerTheme = (CornerThemeView) findViewById(R.id.corner_theme);
+
+        mLoading = (LoadingView) findViewById(R.id.recent_loading);
+        mAngleView.setOnBindListener(this);
 
 
         /**
@@ -288,7 +298,8 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
             mCornerTheme.layout(0, mHeight - mAngleLogoSize, mAngleLogoSize, mHeight);
             mCornerTheme.setPivotX(0);
             mCornerTheme.setPivotY(mAngleLogoSize);
-            //mTestView.layout(0, mHeight - mAngleLogoSize, mAngleLogoSize, mHeight);
+            mLoading.layout((mAngleSize - mLoadingSize) / 2, mHeight - (mAngleSize + mLoadingSize) / 2,
+                    (mAngleSize + mLoadingSize) / 2, mHeight - (mAngleSize - mLoadingSize) / 2);
         } else if (mAngleView.isRight()) {
             mAngleView.layout(mWidth - mAngleSize, mHeight - mAngleSize, mWidth, mHeight);
             mAngleViewTheme.layout(mWidth - mAngleSize, mHeight - mAngleSize, mWidth, mHeight);
@@ -302,7 +313,8 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
             mCornerTheme.layout(mWidth - mAngleLogoSize, mHeight - mAngleLogoSize, mWidth, mHeight);
             mCornerTheme.setPivotX(mAngleLogoSize);
             mCornerTheme.setPivotY(mAngleLogoSize);
-            //mTestView.layout(mWidth - mAngleLogoSize, mHeight - mAngleLogoSize, mWidth, mHeight);
+            mLoading.layout(mWidth - mAngleSize + (mAngleSize - mLoadingSize) / 2, mHeight - (mAngleSize + mLoadingSize) / 2,
+                    mWidth - mAngleSize + (mAngleSize + mLoadingSize) / 2, mHeight - (mAngleSize - mLoadingSize) / 2);
         }
         /**
          * 根据Indicator来缩放IndicatorTheme保证Theme的质量
@@ -320,7 +332,6 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        //Log.i("Gmw", "AngleLayout_onInterceptTouchEvent");
         if (getChildCount() <= 0) {
             return super.onInterceptTouchEvent(ev);
         }
@@ -354,9 +365,9 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
                     }
 
                 } else if (mEditState == STATE_EDIT) {
-                    if ((Math.abs(diffX) > mTouchSlop || Math.abs(diffY) > mTouchSlop) && isAllowAngle) {
-                        return true;
-                    }
+                    //if ((Math.abs(diffX) > mTouchSlop || Math.abs(diffY) > mTouchSlop) && isAllowAngle) {
+                    return true;
+                    //}
                 }
 
                 break;
@@ -820,6 +831,11 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
         if (mEditState == STATE_NORMAL) {
             off();
         }
+    }
+
+    @Override
+    public void bindComplete() {
+        mLoading.stop();
     }
 
     /**

@@ -33,4 +33,18 @@
         android:id="@+id/corner_view"
         android:layout_width="@dimen/anglelogo_size"
         android:layout_height="@dimen/anglelogo_size" />
+
+    <com.well.swipe.view.LoadingView xmlns:loading="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/recent_loading"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:padding="10dp"
+        loading:inner_color="@color/preference_title_enable_color"
+        loading:inner_rotating_speed="5"
+        loading:inner_width="2dip"
+        loading:outer_color="@color/check_item_enable"
+        loading:outer_width="2dip">
+
+    </com.well.swipe.view.LoadingView>
+
 </com.well.swipe.view.AngleLayout>

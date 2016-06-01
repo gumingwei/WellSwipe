@@ -44,4 +44,13 @@
         <attr name="progressBackgroundColor" format="color" />
         <attr name="thumbAlpha" format="float" />
     </declare-styleable>
+
+    <!--LoadingView-->
+    <declare-styleable name="Loading">
+        <attr name="outer_width" format="dimension" />
+        <attr name="outer_color" format="color" />
+        <attr name="inner_width" format="dimension" />
+        <attr name="inner_color" format="color" />
+        <attr name="inner_rotating_speed" format="integer"></attr>
+    </declare-styleable>
 </resources>

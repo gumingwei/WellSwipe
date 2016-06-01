@@ -268,6 +268,16 @@ public class AngleView extends PositionStateViewGroup {
         void onCancelDrag();
     }
 
+    public OnBindListener mOnBindListener;
+
+    interface OnBindListener {
+
+        /**
+         * 数据绑定完成
+         */
+        void bindComplete();
+    }
+
 
     /**
      * 临时坐标信息
@@ -493,6 +503,11 @@ public class AngleView extends PositionStateViewGroup {
             }
         }
         refresh();
+
+        /**
+         * 绑定万Recent之后调用
+         */
+        mOnBindListener.bindComplete();
     }
 
     public boolean contains(List<ActivityManager.RecentTaskInfo> activityInfoList, ItemApplication app) {
@@ -1281,6 +1296,10 @@ public class AngleView extends PositionStateViewGroup {
 
     public void setOnAngleLongClickListener(OnEditModeChangeListener listener) {
         mOnEditModeChangeListener = listener;
+    }
+
+    public void setOnBindListener(OnBindListener listener) {
+        mOnBindListener = listener;
     }
 
     /**
