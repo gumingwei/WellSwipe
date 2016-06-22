@@ -53,6 +53,9 @@
     <dimen name="preference_category_title_size">18sp</dimen>
     <dimen name="preference_item_title_size">16sp</dimen>
     <dimen name="preference_item_summary_size">12sp</dimen>
+    <dimen name="preference_item_icon_size">20dp</dimen>
+    <dimen name="back_icon_height">30dp</dimen>
+    <dimen name="back_icon_width">30dp</dimen>
 
     <dimen name="ksw_md_thumb_ripple_size">42dp</dimen>
     <dimen name="ksw_md_thumb_solid_inset">11dp</dimen>

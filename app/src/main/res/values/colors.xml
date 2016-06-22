@@ -32,4 +32,10 @@
     <color name="title_bar_gradient">#016960</color>
     <color name="GreenColor">#019285</color>
     <color name="warning_color">#DD2222</color>
+    <color name="transparent">#00000000</color>
+    <color name="transparent_30">#11000000</color>
+    <color name="text_white">#ffffff</color>
+    <color name="text_gray">#c8c8c8</color>
+    <color name="text_white_unclick">#9fffffff</color>
+    <color name="text_gray_unclick">#9fc8c8c8</color>
 </resources>

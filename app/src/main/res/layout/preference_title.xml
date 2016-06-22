@@ -7,21 +7,33 @@
 
     <ImageView
         android:id="@id/preference_icon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="@dimen/preference_item_icon_size"
+        android:layout_height="@dimen/preference_item_icon_size"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
+        android:visibility="gone"
         android:layout_marginLeft="20dp" />
 
     <TextView
-        android:id="@+id/preference_title"
+        android:id="@id/preference_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_toLeftOf="@+id/preference_arraw"
         android:layout_toRightOf="@id/preference_icon"
-        android:textColor="@color/ksw_md_solid_checked"
+        android:textColor="@color/text_white"
         android:textSize="@dimen/preference_item_title_size" />
+
+    <ImageView
+        android:id="@+id/preference_arraw"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="20dp"
+        android:visibility="gone"
+        android:src="@drawable/arrow_white" />
 
 </com.well.swipe.preference.PreferenceTitle>

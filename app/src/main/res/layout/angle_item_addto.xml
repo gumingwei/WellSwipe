@@ -8,17 +8,16 @@
         android:layout_width="@dimen/angle_item_icon_size"
         android:layout_height="@dimen/angle_item_icon_size"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:src="@drawable/swipe_add_icon" />
 
     <TextView
         android:id="@+id/item_title"
         android:layout_width="@dimen/angleitem_size"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/angle_item_icon"
+        android:layout_below="@+id/item_icon"
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:singleLine="true"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 
 </com.well.swipe.view.AngleItemAddTo>

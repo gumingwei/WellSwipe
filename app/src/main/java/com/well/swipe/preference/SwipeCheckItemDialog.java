@@ -3,7 +3,6 @@ package com.well.swipe.preference;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,7 +13,7 @@ import com.well.swipe.view.CheckItemLayout;
  * Created by mingwei on 3/31/16.
  * 滑出时机Dialog
  */
-public class SwipeForDialog extends SwipeDialog {
+public class SwipeCheckItemDialog extends SwipeDialog {
 
     private TextView mTitle;
 
@@ -24,7 +23,7 @@ public class SwipeForDialog extends SwipeDialog {
 
     private CheckItemLayout mItemView;
 
-    public SwipeForDialog(Context context) {
+    public SwipeCheckItemDialog(Context context) {
         super(context);
     }
 
@@ -36,7 +35,7 @@ public class SwipeForDialog extends SwipeDialog {
         return mContentView;
     }
 
-    public SwipeForDialog addItem(String text, View.OnClickListener listener, boolean check) {
+    public SwipeCheckItemDialog addItem(String text, View.OnClickListener listener, boolean check) {
         mItemView = (CheckItemLayout) LayoutInflater.from(getContext()).inflate(R.layout.check_item, null);
         mItemView.setTitle(text);
         mItemView.setChecked(check);
@@ -45,7 +44,7 @@ public class SwipeForDialog extends SwipeDialog {
         return this;
     }
 
-    public SwipeForDialog setTitle(String title) {
+    public SwipeCheckItemDialog setTitle(String title) {
         mTitle.setText(title);
         return this;
     }

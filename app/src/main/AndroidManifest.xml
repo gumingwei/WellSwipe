@@ -19,7 +19,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".SwipeApplication"
@@ -40,6 +40,11 @@
 
         <activity
             android:name=".activitys.SwipeSettingActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activitys.SwipeSettingAdvancedActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 

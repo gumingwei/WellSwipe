@@ -7,11 +7,7 @@ import android.net.Uri;
 import android.os.*;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.View;
-
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.well.swipe.R;
 import com.well.swipe.SwipeApplication;
 import com.well.swipe.service.SwipeService;
@@ -27,7 +23,7 @@ public class SplashActivity extends Activity {
 
     RequestAlertDialog mAlertDialog;
 
-    private Tracker mTracker;
+    //private Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +33,7 @@ public class SplashActivity extends Activity {
             //Process.killProcess(android.os.Process.myPid());
         }
         SwipeApplication application = (SwipeApplication) getApplication();
-        mTracker = application.getDefaultTracker();
+        //mTracker = application.getDefaultTracker();
 
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(this)) {
@@ -79,10 +75,10 @@ public class SplashActivity extends Activity {
                             @Override
                             public void onClick(View v) {
                                 //google anylnitic
-                                mTracker.send(new HitBuilders.EventBuilder()
-                                        .setCategory("Action")
-                                        .setAction("authorized ALERT_WINDOWS")
-                                        .build());
+//                                mTracker.send(new HitBuilders.EventBuilder()
+//                                        .setCategory("Action")
+//                                        .setAction("authorized ALERT_WINDOWS")
+//                                        .build());
                                 startPermission();
                                 mAlertDialog.dissmis();
                             }
@@ -90,10 +86,10 @@ public class SplashActivity extends Activity {
                         .onNegative(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                mTracker.send(new HitBuilders.EventBuilder()
-                                        .setCategory("Action")
-                                        .setAction("denied ALERT_WINDOWS")
-                                        .build());
+//                                mTracker.send(new HitBuilders.EventBuilder()
+//                                        .setCategory("Action")
+//                                        .setAction("denied ALERT_WINDOWS")
+//                                        .build());
                                 finishSplash();
                                 mAlertDialog.dissmis();
                             }

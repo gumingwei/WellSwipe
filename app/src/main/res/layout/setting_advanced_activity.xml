@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/preference_title_enable_color"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/swipe_for"
+        layout="@layout/preference_titlesummary" />
+
+
+    <include
+        android:id="@+id/swipe_area"
+        layout="@layout/preference_titlesummary" />
+
+
+    <include
+        android:id="@+id/swipe_whitelist"
+        layout="@layout/preference_titlesummary" />
+
+</LinearLayout>

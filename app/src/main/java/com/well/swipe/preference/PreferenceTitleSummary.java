@@ -1,8 +1,10 @@
 package com.well.swipe.preference;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.well.swipe.R;
@@ -15,6 +17,10 @@ public class PreferenceTitleSummary extends SwipePreference {
     private TextView mTitle;
 
     private TextView mSummary;
+
+    private ImageView mIcon;
+
+    private ImageView mArrow;
 
     private String mSummaryArray[] = new String[]{};
 
@@ -35,6 +41,8 @@ public class PreferenceTitleSummary extends SwipePreference {
         super.onFinishInflate();
         mTitle = (TextView) findViewById(R.id.preference_title);
         mSummary = (TextView) findViewById(R.id.preference_summary);
+        mIcon = (ImageView) findViewById(R.id.preference_icon);
+        mArrow = (ImageView) findViewById(R.id.preference_arraw);
     }
 
     public void setTitle(int title) {
@@ -73,11 +81,21 @@ public class PreferenceTitleSummary extends SwipePreference {
     public void setClickable(boolean clickable) {
         super.setClickable(clickable);
         if (clickable) {
-            mTitle.setTextColor(getResources().getColor(R.color.preference_title_enable_color));
-            mSummary.setTextColor(getResources().getColor(R.color.preference_summary_enable_color));
+            mTitle.setTextColor(getResources().getColor(R.color.text_white));
+            mSummary.setTextColor(getResources().getColor(R.color.text_gray));
         } else {
-            mTitle.setTextColor(getResources().getColor(R.color.preference_title_unenable_color));
-            mSummary.setTextColor(getResources().getColor(R.color.preference_summary_unenable_color));
+            mTitle.setTextColor(getResources().getColor(R.color.text_white_unclick));
+            mSummary.setTextColor(getResources().getColor(R.color.text_gray_unclick));
         }
     }
+
+    public void setIcon(Drawable drawable) {
+        mIcon.setVisibility(VISIBLE);
+        mIcon.setImageDrawable(drawable);
+    }
+
+    public void showArrow() {
+        mArrow.setVisibility(VISIBLE);
+    }
+
 }

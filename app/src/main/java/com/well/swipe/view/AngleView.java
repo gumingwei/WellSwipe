@@ -113,8 +113,6 @@ public class AngleView extends PositionStateViewGroup {
     private float mDownBottom;
 
     private int mDragIndex;
-
-
     /**
      * 顺时针/逆时针
      */

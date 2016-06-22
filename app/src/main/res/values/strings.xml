@@ -78,6 +78,10 @@
     <string name="googleplay_not_found">Can not find Play Google</string>
     <string name="swipe_about_feedback">Feedback</string>
     <string name="swipe_about_version">App Version</string>
+    <string name="swipe_open_type">Triggering Method</string>
+    <string name="swipe_open_type0">Default(Swipe from the bottom corner)</string>
+    <string name="swipe_open_type1">Swipe Assist</string>
+    <string name="swipe_advanced_setting">Advanced Settings</string>
 
     <string name="feedback_title">fill in the title</string>
     <string name="feedback_content">fill in the content</string>

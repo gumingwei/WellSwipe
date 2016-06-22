@@ -57,6 +57,8 @@ public class PreferenceCategory extends SwipePreference {
     }
 
     public void setIcon(Drawable drawable) {
+        mIcon.setVisibility(VISIBLE);
         mIcon.setImageDrawable(drawable);
     }
+
 }

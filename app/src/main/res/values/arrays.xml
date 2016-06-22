@@ -56,4 +56,9 @@
         <item>@string/swipe_area_type2</item>
     </array>
 
+    <array name="swipe_open_type">
+        <item>@string/swipe_open_type0</item>
+        <item>@string/swipe_open_type1</item>
+    </array>
+
 </resources>

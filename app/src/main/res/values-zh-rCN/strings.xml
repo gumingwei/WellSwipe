@@ -79,6 +79,10 @@
     <string name="googleplay_not_found">找不到Google Play</string>
     <string name="swipe_about_feedback">意见回报</string>
     <string name="swipe_about_version">版本</string>
+    <string name="swipe_open_type">触发方式</string>
+    <string name="swipe_open_type0">从角落触发</string>
+    <string name="swipe_open_type1">“小白点”</string>
+    <string name="swipe_advanced_setting">高级设置</string>
 
     <string name="feedback_title">填写标题</string>
     <string name="feedback_content">填写内容</string>

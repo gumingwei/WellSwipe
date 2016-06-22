@@ -2,16 +2,11 @@ package com.well.swipe;
 
 import android.app.Application;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.os.*;
-import android.os.Process;
-import android.telephony.TelephonyManager;
 
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.Tracker;
 import com.well.swipe.service.SwipeService;
 
 import java.lang.ref.WeakReference;
@@ -26,11 +21,11 @@ public class SwipeApplication extends Application {
     private IconCache mIconCache;
 
     private WeakReference<SwipeProvider> mSwipeProvider;
+
     /**
      * GoogleAnlytatic
      */
-    private Tracker mTracker;
-
+//    private Tracker mTracker;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -84,11 +79,11 @@ public class SwipeApplication extends Application {
         }
     };
 
-    synchronized public Tracker getDefaultTracker() {
-        if (mTracker == null) {
-            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-            mTracker = analytics.newTracker(R.xml.global_tracker);
-        }
-        return mTracker;
-    }
+//    synchronized public Tracker getDefaultTracker() {
+//        if (mTracker == null) {
+//            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+//            mTracker = analytics.newTracker(R.xml.global_tracker);
+//        }
+//        return mTracker;
+//    }
 }

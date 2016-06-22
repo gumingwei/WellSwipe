@@ -1,7 +1,9 @@
 package com.well.swipe.preference;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.well.swipe.R;
@@ -12,6 +14,10 @@ import com.well.swipe.R;
 public class PreferenceTitle extends SwipePreference {
 
     private TextView mTitle;
+
+    private ImageView mIcon;
+
+    private ImageView mArrow;
 
     public PreferenceTitle(Context context) {
         this(context, null);
@@ -29,6 +35,8 @@ public class PreferenceTitle extends SwipePreference {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mTitle = (TextView) findViewById(R.id.preference_title);
+        mIcon = (ImageView) findViewById(R.id.preference_icon);
+        mArrow = (ImageView) findViewById(R.id.preference_arraw);
     }
 
     public void setTitle(int title) {
@@ -38,4 +46,14 @@ public class PreferenceTitle extends SwipePreference {
     public void setTitle(String title) {
         mTitle.setText(title);
     }
+
+    public void setIcon(Drawable drawable) {
+        mIcon.setVisibility(VISIBLE);
+        mIcon.setImageDrawable(drawable);
+    }
+
+    public void showArrow() {
+        mArrow.setVisibility(VISIBLE);
+    }
+
 }

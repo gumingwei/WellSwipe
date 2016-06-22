@@ -6,11 +6,12 @@
 
     <ImageView
         android:id="@id/preference_icon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="@dimen/preference_item_icon_size"
+        android:layout_height="@dimen/preference_item_icon_size"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
+        android:visibility="gone"
         android:layout_marginLeft="20dp" />
 
     <TextView
@@ -18,10 +19,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="20dp"
         android:layout_toLeftOf="@id/preference_switchbtn"
         android:layout_toRightOf="@id/preference_icon"
-        android:textColor="@color/ksw_md_solid_checked"
+        android:textColor="@color/white"
         android:textSize="@dimen/preference_category_title_size" />
 
     <com.well.swipe.view.SwitchButton
