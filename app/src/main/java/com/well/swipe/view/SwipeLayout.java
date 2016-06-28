@@ -125,17 +125,21 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() != KeyEvent.ACTION_UP) {
-
             if (mFavoriteLayout.getVisibility() == VISIBLE) {
                 setEditFavoriteGone();
-            } else if (mToolsLayout.getVisibility() == VISIBLE) {
+                return true;
+            }
+            if (mToolsLayout.getVisibility() == VISIBLE) {
                 setEditToolsGone();
-            } else {
-                if (mAngleLayout.getEditState() == AngleLayout.STATE_EDIT) {
-                    mAngleLayout.setEditState(AngleLayout.STATE_NORMAL);
-                } else if (mAngleLayout.getEditState() == AngleLayout.STATE_NORMAL) {
-                    mAngleLayout.off();
-                }
+                return true;
+            }
+            if (mAngleLayout.getEditState() == AngleLayout.STATE_EDIT) {
+                mAngleLayout.setEditState(AngleLayout.STATE_NORMAL);
+                return true;
+            }
+            if (mAngleLayout.getEditState() == AngleLayout.STATE_NORMAL) {
+                mAngleLayout.off();
+                return true;
             }
             return true;
         }

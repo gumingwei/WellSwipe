@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Well Swipe</string>
+    <string name="recent">最近使用</string>
+    <string name="frequent">常用程式</string>
+    <string name="toolbox">快捷開關</string>
+    <string name="ok_title">確定</string>
+    <string name="cancel_title">取消</string>
+
+    <!--QuickSwitch_ACTION_TITLE-->
+    <string name="swipe_flash_title">手電筒</string>
+    <string name="swipe_wifi_title">Wi-Fi</string>
+    <string name="swipe_screenbrightness_title">屏幕亮度</string>
+    <string name="swipe_speeder_title">加速器</string>
+
+    <string name="swipe_screenlock_title">屏幕鎖</string>
+    <string name="swipe_camere_title">相機</string>
+    <string name="swipe_calendar_title">日歷</string>
+    <string name="swipe_data_title">移動數據</string>
+
+    <string name="swipe_calculator_title">計算器</string>
+    <string name="swipe_flightmode_title">飛行模式</string>
+    <string name="swipe_swipesetting_title">Swipe蔎置</string>
+    <string name="swipe_bluetooth_title">藍厊</string>
+
+    <string name="swipe_mute_title">靜堷</string>
+    <string name="swipe_autorotation_title">洎憅嫙啭屛募</string>
+    <string name="swipe_setting_title">設置</string>
+    <string name="swipe_alarm_title">鬧鐘</string>
+
+    <string name="swipe_edit_header_title">巳選(%1$s/%2$s)</string>
+    <string name="favorite_up_to_9">最多只能添加9個</string>
+    <string name="scene_mode_0">震動</string>
+    <string name="scene_mode_1">靜音</string>
+    <string name="scene_mode_2">音量</string>
+
+    <string name="time_15">15秒</string>
+    <string name="time_30">30秒</string>
+    <string name="time_60">1分</string>
+    <string name="time_120">2分</string>
+    <string name="time_300">5分</string>
+    <string name="time_600">10分</string>
+    <string name="time_1800">30分</string>
+
+    <string name="swipe_toggle">開啟</string>
+    <string name="swipe_for">劃出時機</string>
+    <string name="swipe_for_type0">僅桌面</string>
+    <string name="swipe_for_type1">桌面和所有應用</string>
+    <string name="swipe_active_area">滑出區域</string>
+    <string name="swipe_area_type0">左側底部和右側底部</string>
+    <string name="swipe_area_type1">左側底部</string>
+    <string name="swipe_area_type2">右側底部</string>
+    <string name="swipe_whitelist">免打擾設置(%1$d)</string>
+    <string name="swipe_whitelist_des">使用這些應用時Well Swipe不會被劃出</string>
+    <string name="swipe_whitelist_title">添加應用</string>
+    <string name="swipe_about">關於</string>
+    <string name="swipe_about_rate5start">喜歡就請5星好評吧</string>
+    <string name="googleplay_not_found">找不到Google Play</string>
+    <string name="swipe_about_feedback">意見回報</string>
+    <string name="swipe_about_version">版本</string>
+    <string name="swipe_open_type">觸發方式</string>
+    <string name="swipe_open_type0">從角落觸發</string>
+    <string name="swipe_open_type1">“小白點”</string>
+    <string name="swipe_advanced_setting">高級設置</string>
+
+    <string name="feedback_title">填寫標題</string>
+    <string name="feedback_content">填寫內容</string>
+    <string name="clearmemary_title">釋放內存</string>
+    <string name="clearmemary_wait">等會再試試吧</string>
+    <string name="flash_on">手電筒已打開</string>
+    <string name="flash_off">手電筒關閉</string>
+    <string name="wifi_on">Wifi已連接</string>
+    <string name="wifi_off">Wifi斷開連接</string>
+    <string name="bluetooth_on">藍牙已打開</string>
+    <string name="bluetooth_off">藍牙已關閉</string>
+    <string name="data_on">移動網絡已連接</string>
+    <string name="data_off">移動網絡已斷開</string>
+
+    <string name="request_windows_title">懸浮窗授權</string>
+    <string name="request_windows_content">Well Swipe需要要打開使用懸浮窗授權才能正常使用</string>
+    <string name="request_windows_pos">開始授權</string>
+    <string name="request_windows_nev">退出</string>
+
+    <string name="swipe_nitification_title">Well Swipe正在運行</string>
+    <string name="swipe_nitification_content">點擊進入swipe設置</string>
+    <string name="swipe_whitelist_item_unlauncher">白名單應用不允許啟動</string>
+</resources>

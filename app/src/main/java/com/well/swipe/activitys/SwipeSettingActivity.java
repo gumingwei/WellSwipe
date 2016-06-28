@@ -19,6 +19,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
 import com.well.swipe.SwipeApplication;
@@ -76,7 +78,7 @@ public class SwipeSettingActivity extends BaseSettingActivity implements View.On
      */
     SwipeService mService;
 
-    //private Tracker mTracker;
+    private Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +92,7 @@ public class SwipeSettingActivity extends BaseSettingActivity implements View.On
 
         //Google
         SwipeApplication application = (SwipeApplication) getApplication();
-        //mTracker = application.getDefaultTracker();
+        mTracker = application.getDefaultTracker();
 
         mSwipeToggle = (PreferenceCategory) findViewById(R.id.swipe_toggle);
 
@@ -146,8 +148,8 @@ public class SwipeSettingActivity extends BaseSettingActivity implements View.On
         super.onResume();
         //startService(new Intent(SwipeSettingActivity.this, SwipeService.class));
 
-//        mTracker.setScreenName("SwipeSettingsActivity::onResume()");
-//        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        mTracker.setScreenName("SwipeSettingsActivity::onResume()");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     @Override
@@ -178,7 +180,9 @@ public class SwipeSettingActivity extends BaseSettingActivity implements View.On
             Intent data = new Intent(Intent.ACTION_SENDTO);
             data.setData(Uri.parse("mailto:wellswipe.dev@foxmail.com"));
             data.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.feedback_title));
-            data.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.feedback_content) + "_" + Utils.getVersionName(this) + ":");
+            data.putExtra(Intent.EXTRA_TEXT, "version:" + Utils.getVersionName(this) + "_phone:" +
+                    android.os.Build.MODEL + "_android:" + android.os.Build.VERSION.RELEASE + "_" +
+                    getResources().getString(R.string.feedback_content) + ":");
             startActivity(data);
         } else if (v == mSwipeOpenType) {
             mDialogOpenType = new SwipeCheckItemDialog(this);
@@ -190,7 +194,7 @@ public class SwipeSettingActivity extends BaseSettingActivity implements View.On
                             mSwipeOpenType.refreshSummary();
                             mDialogOpenType.dissmis();
                         }
-                    }, mSwipeOpenType.getIntValue(1) == 0)
+                    }, mSwipeOpenType.getIntValue() == 0)
                     .addItem(mSwipeOpenType.getSummaryArray()[1], new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -198,7 +202,13 @@ public class SwipeSettingActivity extends BaseSettingActivity implements View.On
                             mSwipeOpenType.refreshSummary();
                             mDialogOpenType.dissmis();
                         }
-                    }, mSwipeOpenType.getIntValue(1) == 1)
+                    }, mSwipeOpenType.getIntValue() == 1)
+                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            mService.initWhiteDot();
+                        }
+                    })
                     .show();
         } else if (v == mAdvanced) {
             Intent intent = new Intent(this, SwipeSettingAdvancedActivity.class);

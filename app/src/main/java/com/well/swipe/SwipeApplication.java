@@ -7,6 +7,8 @@ import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.os.*;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
 import com.well.swipe.service.SwipeService;
 
 import java.lang.ref.WeakReference;
@@ -25,7 +27,8 @@ public class SwipeApplication extends Application {
     /**
      * GoogleAnlytatic
      */
-//    private Tracker mTracker;
+    private Tracker mTracker;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -79,11 +82,11 @@ public class SwipeApplication extends Application {
         }
     };
 
-//    synchronized public Tracker getDefaultTracker() {
-//        if (mTracker == null) {
-//            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-//            mTracker = analytics.newTracker(R.xml.global_tracker);
-//        }
-//        return mTracker;
-//    }
+    synchronized public Tracker getDefaultTracker() {
+        if (mTracker == null) {
+            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+            mTracker = analytics.newTracker(R.xml.global_tracker);
+        }
+        return mTracker;
+    }
 }

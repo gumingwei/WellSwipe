@@ -103,8 +103,15 @@ public class SwipeSettingAdvancedActivity extends BaseSettingActivity implements
         if (SettingHelper.getInstance(this).getBoolean(SwipeSetting.SWIPE_TOGGLE, true)) {
             bindSwipeService();
         }
-
+        /**
+         * 当开关关闭时，设置项目不可点击
+         */
         toogleSwipe(SettingHelper.getInstance(this).getBoolean(SwipeSetting.SWIPE_TOGGLE, true));
+
+        int whiteDotValues = SettingHelper.getInstance(this).getInt(SwipeSetting.SWIPE_OPEN_TYPE);
+        if (whiteDotValues == 1) {
+            mSwipeArea.setClickable(false);
+        }
 
 
     }
@@ -132,7 +139,7 @@ public class SwipeSettingAdvancedActivity extends BaseSettingActivity implements
                     }, mSwipeFor.getIntValue(1) == 1).
                     show();
 
-        }else if (v == mSwipeArea) {
+        } else if (v == mSwipeArea) {
             mDialogArea = new SwipeAreaDialog(this);
             mSwipAreaValue = mSwipeArea.getIntValue();
             mSeekBarProgress = SettingHelper.getInstance(this).getInt(SwipeSetting.SWIPE_AREA_PROGRESS, 5);

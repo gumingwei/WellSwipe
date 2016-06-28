@@ -7,27 +7,6 @@
     <string name="ok_title">确定</string>
     <string name="cancel_title">取消</string>
 
-    <!--QuickSwitch_ACTION-->
-    <string name="swipe_flash">com.well.swipe.action.flash</string>
-    <string name="swipe_wifi">com.well.swipe.action.wifi</string>
-    <string name="swipe_screenbrightness">com.well.swipe.action.screenbrightness</string>
-    <string name="swipe_speeder">com.well.swipe.action.speeder</string>
-
-    <string name="swipe_screenlock">com.well.swipe.action.screenlock</string>
-    <string name="swipe_camere">com.well.swipe.action.camera</string>
-    <string name="swipe_calendar">com.well.swipe.action.calendar</string>
-    <string name="swipe_data">com.well.swipe.action.data</string>
-
-    <string name="swipe_calculator">com.well.swipe.action.calculator</string>
-    <string name="swipe_flightmode">com.well.swipe.action.flightmode</string>
-    <string name="swipe_swipesetting">com.well.swipe.action.swipesetting</string>
-    <string name="swipe_bluetooth">com.well.swipe.action.bluetooth</string>
-
-    <string name="swipe_mute">com.well.swipe.action.mute</string>
-    <string name="swipe_autorotation">com.well.swipe.action.autorotation</string>
-    <string name="swipe_setting">com.well.swipe.action.setting</string>
-    <string name="swipe_alarm">com.well.swipe.action.alarm</string>
-
     <!--QuickSwitch_ACTION_TITLE-->
     <string name="swipe_flash_title">手电筒</string>
     <string name="swipe_wifi_title">Wi-Fi</string>
@@ -104,4 +83,5 @@
 
     <string name="swipe_nitification_title">Well Swipe正在运行</string>
     <string name="swipe_nitification_content">点击进入swipe设置</string>
+    <string name="swipe_whitelist_item_unlauncher">白名单应用不允许启动</string>
 </resources>

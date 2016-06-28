@@ -217,7 +217,7 @@ public class AngleView extends PositionStateViewGroup {
         /**
          * 本身的OnClick无效，所以自己根据在onTouch中定义一个Onclick
          */
-        void onClick(View view);
+        void onAngleClick(View view);
 
         /**
          * 位于布局左上角的删除按钮，点击的时候直接在控件AngleView内部处理了数据
@@ -960,7 +960,7 @@ public class AngleView extends PositionStateViewGroup {
                                 @Override
                                 public void run() {
                                     if (mOnClickListener != null) {
-                                        mOnClickListener.onClick(mTargetItem);
+                                        mOnClickListener.onAngleClick(mTargetItem);
 
                                     }
                                 }
@@ -1288,7 +1288,7 @@ public class AngleView extends PositionStateViewGroup {
         mAngleListener = listener;
     }
 
-    public void setOnClickListener(OnClickListener listener) {
+    public void setOnAngleClickListener(OnClickListener listener) {
         mOnClickListener = listener;
     }
 

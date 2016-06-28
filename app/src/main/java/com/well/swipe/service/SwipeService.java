@@ -24,9 +24,12 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Toast;
 
 //import com.google.android.gms.analytics.HitBuilders;
 //import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.well.swipe.BootReceiver;
 import com.well.swipe.ItemApplication;
 import com.well.swipe.LauncherModel;
@@ -39,13 +42,16 @@ import com.well.swipe.tools.SwipeSetting;
 import com.well.swipe.tools.ToolsStrategy;
 import com.well.swipe.tools.WifiAndData;
 import com.well.swipe.utils.SettingHelper;
+import com.well.swipe.utils.Utils;
 import com.well.swipe.view.AngleItemStartUp;
 import com.well.swipe.view.AngleLayout;
 import com.well.swipe.view.AngleView;
+import com.well.swipe.view.BubbleView;
 import com.well.swipe.view.CatchView;
 import com.well.swipe.view.OnDialogListener;
 import com.well.swipe.view.PositionState;
 import com.well.swipe.view.SwipeLayout;
+import com.well.swipe.view.SwipeToast;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -58,13 +64,15 @@ import java.util.List;
  * Created by mingwei on 3/6/16.
  */
 public class SwipeService extends Service implements CatchView.OnEdgeSlidingListener, LauncherModel.Callback,
-        AngleView.OnClickListener, OnDialogListener, AngleLayout.OnItemDragListener {
+        AngleView.OnClickListener, OnDialogListener, AngleLayout.OnItemDragListener, BubbleView.OnOpenClickListener {
 
     SwipeApplication mSwipeApplication;
     /**
      * LauncherModel广播接收机负责加载和更新数据
      */
     LauncherModel mLauncherModel;
+
+    private BubbleView mBubbleView;
 
     /**
      * 屏幕底部负责捕获手势的试图
@@ -113,7 +121,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     private Handler mHandler = new Handler();
 
-//    private Tracker mTracker;
+    private Tracker mTracker;
 
     private HomeWatchReceiver mWatchRecevier = new HomeWatchReceiver();
 
@@ -136,7 +144,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         Log.i("Gmw", "SwipeService_onCreate");
         //Google
         SwipeApplication application = (SwipeApplication) getApplication();
-//        mTracker = application.getDefaultTracker();
+        mTracker = application.getDefaultTracker();
 
         mCatchViewWidth = getResources().getDimensionPixelSize(R.dimen.catch_view_width);
         mCatchViewHeight = getResources().getDimensionPixelSize(R.dimen.catch_view_height);
@@ -163,6 +171,9 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         mCatchViewRight2 = new CatchView(getBaseContext());
         mCatchViewRight2.setOnEdgeSlidingListener(this);
 
+        mBubbleView = new BubbleView(this);
+        mBubbleView.setOnOpenClickListener(this);
+
         updataCatchView(pre);
 
         initCacthView(SettingHelper.getInstance(this).getInt(SwipeSetting.SWIPE_AREA));
@@ -171,7 +182,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         /**
          * AngleView的单击监听
          */
-        mSwipeLayout.getAngleLayout().getAngleView().setOnClickListener(this);
+        mSwipeLayout.getAngleLayout().getAngleView().setOnAngleClickListener(this);
         /**
          * 设置FavoriteAppEditLayout关闭时的监听
          */
@@ -212,6 +223,11 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
          */
         final IntentFilter homeFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         registerReceiver(mWatchRecevier, homeFilter);
+
+        /**
+         * 小白点
+         */
+        initWhiteDot();
     }
 
     @Nullable
@@ -223,8 +239,8 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         mLauncherModel.startLoadTask();
-//        mTracker.setScreenName("SwipeService::onStartCommand()");
-//        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        mTracker.setScreenName("SwipeService::onStartCommand()");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -338,12 +354,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
 
     public void changeCatchView(int area) {
         if (area == 0) {
-            mCatchViewLeft0.show();
-            mCatchViewLeft1.show();
-            mCatchViewLeft2.show();
-            mCatchViewRight0.show();
-            mCatchViewRight1.show();
-            mCatchViewRight2.show();
+            showCatchView();
         } else if (area == 1) {
             mCatchViewLeft0.show();
             mCatchViewLeft1.show();
@@ -359,6 +370,24 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
             mCatchViewRight1.show();
             mCatchViewRight2.show();
         }
+    }
+
+    public void showCatchView() {
+        mCatchViewLeft0.show();
+        mCatchViewLeft1.show();
+        mCatchViewLeft2.show();
+        mCatchViewRight0.show();
+        mCatchViewRight1.show();
+        mCatchViewRight2.show();
+    }
+
+    public void hideCatchView() {
+        mCatchViewLeft0.dismiss();
+        mCatchViewLeft1.dismiss();
+        mCatchViewLeft2.dismiss();
+        mCatchViewRight0.dismiss();
+        mCatchViewRight1.dismiss();
+        mCatchViewRight2.dismiss();
     }
 
     /**
@@ -404,10 +433,10 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     @Override
     public void openLeft() {
         // [START custom_event]
-//        mTracker.send(new HitBuilders.EventBuilder()
-//                .setCategory("Action")
-//                .setAction("SwipeService::openLeft()")
-//                .build());
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Action")
+                .setAction("SwipeService::openLeft()")
+                .build());
         // [END custom_event]
         /**
          * 0 仅桌面的时候打开
@@ -415,16 +444,17 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         if (swipeSwipeSetting()) {
             mSwipeLayout.switchLeft();
         }
+
     }
 
 
     @Override
     public void openRight() {
         // [START custom_event]
-//        mTracker.send(new HitBuilders.EventBuilder()
-//                .setCategory("Action")
-//                .setAction("SwipeService::openRight()")
-//                .build());
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Action")
+                .setAction("SwipeService::openRight()")
+                .build());
         // [END custom_event]
         if (swipeSwipeSetting()) {
             mSwipeLayout.switchRight();
@@ -463,10 +493,14 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
                 /**
                  * 设置RecentTask数据，如果新开机之后没有数据，就拿AllApps的数据做一个补充
                  */
-                mSwipeLayout.getAngleLayout().getAngleView().putRecentTask(mLauncherModel.loadRecentTask(this),
-                        mLauncherModel.getAllAppsList().data);
+                putRecentApps();
             }
         }
+    }
+
+    public void putRecentApps() {
+        mSwipeLayout.getAngleLayout().getAngleView().putRecentTask(mLauncherModel.loadRecentTask(this),
+                mLauncherModel.getAllAppsList().data);
     }
 
     @Override
@@ -495,7 +529,7 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
     }
 
     @Override
-    public void onClick(View view) {
+    public void onAngleClick(View view) {
         Object object = view.getTag();
         AngleItemStartUp itemview = (AngleItemStartUp) view;
         if (object instanceof ActivityManager.RecentTaskInfo) {
@@ -515,7 +549,6 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
             mSwipeLayout.dismissAnimator();
         } else if (object instanceof ItemSwipeTools) {
             if (safeClick()) {
-
                 ItemSwipeTools itemswitch = (ItemSwipeTools) view.getTag();
                 ToolsStrategy.getInstance().toolsClick(this, itemview, itemswitch, mSwipeLayout);
                 /**
@@ -526,6 +559,34 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
             }
         }
     }
+
+    @Override
+    public void onOpenClick() {
+        if (swipeSwipeSetting()) {
+            if (mBubbleView.isLeft()) {
+                mSwipeLayout.switchLeft();
+            } else {
+                mSwipeLayout.switchRight();
+            }
+            mSwipeLayout.on();
+            putRecentApps();
+
+            // [START custom_event]
+            mTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("Action")
+                    .setAction("SwipeService::onClick()::WhiteDot")
+                    .build());
+            // [END custom_event]
+        } else {
+            Utils.swipeToast(getBaseContext(), getResources().getString(R.string.swipe_whitelist_item_unlauncher));
+        }
+
+    }
+
+    //    @Override
+//    public void onClick(View v) {
+//
+//    }
 
     public boolean safeClick() {
         long currentTime = Calendar.getInstance().getTimeInMillis();
@@ -735,6 +796,32 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
                     .getNotification(); // 需要注意build()是在API level
         }
         mNotification.flags |= Notification.FLAG_AUTO_CANCEL;
+    }
+
+
+    /**
+     * 小白点
+     */
+    public void initWhiteDot() {
+        int values = SettingHelper.getInstance(this).getInt(SwipeSetting.SWIPE_OPEN_TYPE);
+        if (values == 1) {
+            mBubbleView.show();
+        } else if (values == 0) {
+            mBubbleView.dismiss();
+        }
+        isCatchViewOrWhiteDot();
+    }
+
+    public void isCatchViewOrWhiteDot() {
+        int values = SettingHelper.getInstance(this).getInt(SwipeSetting.SWIPE_OPEN_TYPE);
+        /**
+         * 如果是小白点就不需要底部的划动区域
+         */
+        if (values == 1) {
+            hideCatchView();
+        } else if (values == 0) {
+            showCatchView();
+        }
     }
 
     /**
