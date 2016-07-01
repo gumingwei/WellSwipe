@@ -24,10 +24,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Toast;
 
-//import com.google.android.gms.analytics.HitBuilders;
-//import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.well.swipe.BootReceiver;
@@ -51,7 +48,6 @@ import com.well.swipe.view.CatchView;
 import com.well.swipe.view.OnDialogListener;
 import com.well.swipe.view.PositionState;
 import com.well.swipe.view.SwipeLayout;
-import com.well.swipe.view.SwipeToast;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

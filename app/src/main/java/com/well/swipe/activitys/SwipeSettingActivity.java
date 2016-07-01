@@ -15,7 +15,6 @@ import android.os.IBinder;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,14 +26,11 @@ import com.well.swipe.SwipeApplication;
 import com.well.swipe.preference.PreferenceCategory;
 import com.well.swipe.preference.PreferenceTitle;
 import com.well.swipe.preference.PreferenceTitleSummary;
-import com.well.swipe.preference.SwipeAreaDialog;
 import com.well.swipe.preference.SwipeCheckItemDialog;
-import com.well.swipe.preference.SwipeWhitelistDialog;
 import com.well.swipe.service.SwipeService;
 import com.well.swipe.tools.SwipeSetting;
 import com.well.swipe.utils.SettingHelper;
 import com.well.swipe.utils.Utils;
-import com.well.swipe.view.CheckItemLayout;
 
 import java.util.ArrayList;
 
@@ -244,16 +240,6 @@ public class SwipeSettingActivity extends BaseSettingActivity implements View.On
         }
     }
 
-    /**
-     * 切换Swipe
-     *
-     * @param click
-     */
-//    public void toogleSwipe(boolean click) {
-//        mSwipeFor.setClickable(click);
-//        mSwipeArea.setClickable(click);
-//        mSwipeWhitelist.setClickable(click);
-//    }
 
     /**
      * 添加白名单
