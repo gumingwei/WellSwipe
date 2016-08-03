@@ -34,14 +34,22 @@ import java.util.Map;
 
 /**
  * Created by mingwei on 2/25/16.
+ *
+ *
+ * 微博：     明伟小学生(http://weibo.com/u/2382477985)
+ * Github:   https://github.com/gumingwei
+ * CSDN:     http://blog.csdn.net/u013045971
+ * QQ：      721881283
+ *
+ *
  * 旋转的扇形View
  * 1.扇形可以放在左边或者右边
- * 2.根据手指在上一层容器的touch事件来处理AngleView的转动，松开手指转动到指定位置
+ * 2.根据手指在上一层容器的touch事件来处理AngleView的转动，松开手指自动转动到指定位置
  * 3.通过捕捉飞快的手指滑动来转动容器
  * 4.给子控件设置扇形的布局坐标
  * 5.长按进入编辑模式
  * 6.编辑模式下拖拽，拖拽交换位置
- * 7.拖拽删除
+ * 7.拖拽到垃圾箱
  */
 public class AngleView extends PositionStateViewGroup {
     /**

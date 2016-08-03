@@ -7,6 +7,14 @@ import android.graphics.Bitmap;
 
 /**
  * Created by mingwei on 3/16/16.
+ *
+ *
+ * 微博：     明伟小学生(http://weibo.com/u/2382477985)
+ * Github:   https://github.com/gumingwei
+ * CSDN:     http://blog.csdn.net/u013045971
+ * QQ：      721881283
+ *
+ *
  */
 public class ItemSwipeTools extends ItemInfo {
     /**

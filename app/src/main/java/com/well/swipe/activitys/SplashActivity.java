@@ -19,6 +19,14 @@ import com.well.swipe.utils.SettingHelper;
 
 /**
  * Created by mingwei on 4/4/16.
+ *
+ *
+ * 微博：     明伟小学生(http://weibo.com/u/2382477985)
+ * Github:   https://github.com/gumingwei
+ * CSDN:     http://blog.csdn.net/u013045971
+ * QQ：      721881283
+ *
+ *
  */
 public class SplashActivity extends Activity {
 

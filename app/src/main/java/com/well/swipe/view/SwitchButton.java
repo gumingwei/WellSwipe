@@ -29,6 +29,14 @@ import com.well.swipe.utils.ColorUtils;
 
 /**
  * Created by mingwei on 3/30/16.
+ *
+ *
+ * 微博：     明伟小学生(http://weibo.com/u/2382477985)
+ * Github:   https://github.com/gumingwei
+ * CSDN:     http://blog.csdn.net/u013045971
+ * QQ：      721881283
+ *
+ *
  */
 public class SwitchButton extends CompoundButton {
     public static final float DEFAULT_BACK_MEASURE_RATIO = 1.8f;

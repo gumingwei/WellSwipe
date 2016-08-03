@@ -21,6 +21,14 @@ import com.well.swipe.utils.Utils;
 
 /**
  * Created by mingwei on 2/26/16.
+ *
+ *
+ * 微博：     明伟小学生(http://weibo.com/u/2382477985)
+ * Github:   https://github.com/gumingwei
+ * CSDN:     http://blog.csdn.net/u013045971
+ * QQ：      721881283
+ *
+ *
  */
 public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeListener,
         AngleIndicatorView.OnIndexChangedLitener, AngleView.OnEditModeChangeListener, CornerView.OnCornerClickListener,

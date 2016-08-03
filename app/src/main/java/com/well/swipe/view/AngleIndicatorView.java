@@ -18,6 +18,14 @@ import com.well.swipe.R;
 
 /**
  * Created by mingwei on 3/4/16.
+ *
+ *
+ * 微博：     明伟小学生(http://weibo.com/u/2382477985)
+ * Github:   https://github.com/gumingwei
+ * CSDN:     http://blog.csdn.net/u013045971
+ * QQ：      721881283
+ *
+ *
  * AngleLayout的指示器
  */
 public class AngleIndicatorView extends PositionStateView {

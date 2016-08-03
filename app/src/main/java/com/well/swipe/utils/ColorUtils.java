@@ -2,7 +2,16 @@ package com.well.swipe.utils;
 
 import android.content.res.ColorStateList;
 
-
+/**
+ * Created by mingwei on 3/25/16.
+ *
+ * 微博：     明伟小学生(http://weibo.com/u/2382477985)
+ * Github:   https://github.com/gumingwei
+ * CSDN:     http://blog.csdn.net/u013045971
+ * QQ：      721881283
+ *
+ *
+ */
 public class ColorUtils {
     private static final int ENABLE_ATTR = android.R.attr.state_enabled;
     private static final int CHECKED_ATTR = android.R.attr.state_checked;
