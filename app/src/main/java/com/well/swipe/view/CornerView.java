@@ -55,7 +55,7 @@ public class CornerView extends FrameLayout {
         /**
          * 点击事件
          */
-        void CornerEvent();
+        void cornerEvent();
     }
 
     public CornerView(Context context) {
@@ -149,7 +149,7 @@ public class CornerView extends FrameLayout {
                 if (Math.abs(mLastEventX - newX) < 10 && Math.abs(mLastEventY - newY) < 10) {
                     long time = Math.abs(mClickTime - clicktime);
                     if (time < 300) {
-                        mListener.CornerEvent();
+                        mListener.cornerEvent();
                     }
                 }
                 break;

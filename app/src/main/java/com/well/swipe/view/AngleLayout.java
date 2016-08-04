@@ -828,7 +828,7 @@ public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeL
 
 
     @Override
-    public void CornerEvent() {
+    public void cornerEvent() {
         if (mEditState == STATE_EDIT) {
             setEditState(AngleLayout.STATE_NORMAL);
             return;

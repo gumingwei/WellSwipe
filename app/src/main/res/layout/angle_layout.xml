@@ -43,8 +43,6 @@
         loading:inner_rotating_speed="5"
         loading:inner_width="2dip"
         loading:outer_color="@color/check_item_enable"
-        loading:outer_width="2dip">
-
-    </com.well.swipe.view.LoadingView>
+        loading:outer_width="2dip"/>
 
 </com.well.swipe.view.AngleLayout>
