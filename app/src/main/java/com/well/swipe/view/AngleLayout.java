@@ -33,9 +33,7 @@ import com.well.swipe.utils.Utils;
 public class AngleLayout extends FrameLayout implements AngleView.OnAngleChangeListener,
         AngleIndicatorView.OnIndexChangedLitener, AngleView.OnEditModeChangeListener, CornerView.OnCornerClickListener,
         AngleView.OnBindListener {
-    /**
-     *
-     */
+    
     private Context mContext;
     /**
      * 旋转View

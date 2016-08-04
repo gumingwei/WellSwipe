@@ -39,7 +39,7 @@ import java.util.Map;
  * 微博：     明伟小学生(http://weibo.com/u/2382477985)
  * Github:   https://github.com/gumingwei
  * CSDN:     http://blog.csdn.net/u013045971
- * QQ：      721881283
+ * QQ&WX：   721881283
  *
  *
  * 旋转的扇形View
@@ -629,6 +629,10 @@ public class AngleView extends PositionStateViewGroup {
          * group可认为是跟随环数而变化的一个值，用来计算index非0时的子控件的角度增长
          * 角度增为只有一个子控件的时候：90/1=45；
          * index非0的时候：(group＋0.5)*newdegree(按照当前环中子控件的总数平分90的值)
+         * 微博：     明伟小学生(http://weibo.com/u/2382477985)
+         * Github:   https://github.com/gumingwei
+         * CSDN:     http://blog.csdn.net/u013045971
+         * QQ：      721881283
          */
         int group = 0;
         /**
