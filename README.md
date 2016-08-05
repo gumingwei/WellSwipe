@@ -9,10 +9,10 @@ gif预览：
 
 
 ##支持开发者
-###1.进入酷安或者Play下载安装，送上5星好评。
+###1.可以这样->进入酷安或者Play下载安装，送上5星好评。
 ####酷安：http://www.coolapk.com/apk/com.well.swipe
 ####Play：https://play.google.com/store/apps/details?id=com.well.swipe&hl=zh
-###2.如果你觉得该文章，该开源项目对你的学习和工作起到了帮助，可以通过打赏2元的方式支持开发者！
+###2.也可以这样->如果你觉得该文章，该开源项目对你的学习和工作起到了帮助，可以通过打赏2元的方式支持开发者！
 
 ![Image text](https://github.com/gumingwei/WellSwipe/blob/master/app/wx.png)
 
