@@ -7,7 +7,10 @@ gif预览：
 
 ![Image text](https://github.com/gumingwei/WellSwipe/blob/master/app/wellswipe5.gif)
 
-##如果你觉得该文章，该开源项目对你的学习和工作起到了帮助，那就打赏开发者以表支持吧！
+
+##支持开发者
+###1.进入酷安下载安装，送上5星好评。http://www.coolapk.com/apk/com.well.swipe
+###2.如果你觉得该文章，该开源项目对你的学习和工作起到了帮助，那就打赏开发者以表支持吧！
 
 ![Image text](https://github.com/gumingwei/WellSwipe/blob/master/app/wx.png)
 
