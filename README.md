@@ -1,4 +1,4 @@
-# WellSwipe
+# WellSwipe\Well划划
 ##猎豹"快切App"中用到的Android开发技巧探索[附源码]
 ##原文链接：http://blog.csdn.net/u013045971/article/details/52119117
 gif预览：
@@ -9,7 +9,9 @@ gif预览：
 
 
 ##支持开发者
-###1.进入酷安下载安装，送上5星好评。http://www.coolapk.com/apk/com.well.swipe
+###1.进入酷安或者Play下载安装，送上5星好评。
+####酷安：http://www.coolapk.com/apk/com.well.swipe
+####Play：https://play.google.com/store/apps/details?id=com.well.swipe&hl=zh
 ###2.如果你觉得该文章，该开源项目对你的学习和工作起到了帮助，那就打赏开发者以表支持吧！
 
 ![Image text](https://github.com/gumingwei/WellSwipe/blob/master/app/wx.png)
