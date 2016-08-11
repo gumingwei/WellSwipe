@@ -12,7 +12,7 @@ gif预览：
 ###1.可以这样->进入酷安或者Play下载安装，送上5星好评。
 ####酷安：http://www.coolapk.com/apk/com.well.swipe
 ####Play：https://play.google.com/store/apps/details?id=com.well.swipe&hl=zh
-###2.如果你觉该项目还不错的话，抬起你的小手，右上角点“star”让我看到你有多帅。
+###2.也可以这样->如果你觉该项目还不错的话，抬起你的小手，右上角点“star”让我看到你有多帅。
 
 ##关于我：
 * 微博：     明伟小学生(http://weibo.com/u/2382477985)
