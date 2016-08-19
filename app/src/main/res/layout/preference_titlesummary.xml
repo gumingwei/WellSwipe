@@ -38,7 +38,7 @@
         android:textSize="@dimen/preference_item_summary_size" />
 
     <ImageView
-        android:id="@+id/preference_arraw"
+        android:id="@id/preference_arraw"
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:layout_alignParentRight="true"

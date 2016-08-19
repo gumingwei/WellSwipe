@@ -9,6 +9,7 @@
     <item name="preference_icon" type="id">preference_icon</item>
     <item name="preference_title" type="id">preference_title</item>
     <item name="preference_summary" type="id">preference_summary</item>
+    <item name="preference_arraw" type="id">preference_arraw</item>
     <item name="preference_switchbtn" type="id">preference_switchbtn</item>
     <item name="dialog_title" type="id">dialog_title</item>
     <item name="dialog_content_list" type="id">dialog_content_list</item>
