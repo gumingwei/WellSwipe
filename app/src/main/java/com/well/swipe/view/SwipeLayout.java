@@ -13,18 +13,17 @@ import android.widget.RelativeLayout;
 
 import com.well.swipe.R;
 import com.well.swipe.utils.SwipeWindowManager;
+import com.well.swipecomm.view.SwipeToast;
 
 
 /**
  * Created by mingwei on 3/9/16.
- *
- *
+ * <p/>
+ * <p/>
  * 微博：     明伟小学生(http://weibo.com/u/2382477985)
  * Github:   https://github.com/gumingwei
  * CSDN:     http://blog.csdn.net/u013045971
  * QQ&WX：   721881283
- *
- *
  */
 public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffListener {
 

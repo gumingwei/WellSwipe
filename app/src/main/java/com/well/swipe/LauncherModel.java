@@ -14,7 +14,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
 
 import com.well.swipe.utils.Utilities;
 
@@ -47,7 +46,7 @@ public class LauncherModel extends BroadcastReceiver {
     /**
      * 应用Application注册LauncherModel
      */
-    private SwipeApplication mApplication;
+    private SwipefreeApplication mApplication;
     /**
      * 所有的app数据
      */
@@ -109,7 +108,7 @@ public class LauncherModel extends BroadcastReceiver {
         void bindFinish();
     }
 
-    public LauncherModel(SwipeApplication app, IconCache iconCache) {
+    public LauncherModel(SwipefreeApplication app, IconCache iconCache) {
         mApplication = app;
         mAllAppsList = new AllAppsList(iconCache);
         mAllToolsList = new AllToolsList(app);

@@ -8,19 +8,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.AlarmClock;
 import android.provider.Settings;
-import android.text.Html;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.widget.Toast;
 
 import com.well.swipe.ItemSwipeTools;
 import com.well.swipe.R;
 import com.well.swipe.activitys.SwipeSettingActivity;
-import com.well.swipe.utils.Utils;
+import com.well.swipecomm.utils.Utils;
 import com.well.swipe.view.AngleItemCommon;
 import com.well.swipe.view.AngleItemStartUp;
 import com.well.swipe.view.SwipeLayout;
-import com.well.swipe.view.SwipeToast;
 
 
 /**

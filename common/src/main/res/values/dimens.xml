@@ -1,0 +1,79 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="title_height">50dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="anglelogo_size">53dp</dimen>
+    <dimen name="corner_icon_size">20dp</dimen>
+    <dimen name="corner_icon_offset">10dp</dimen>
+    <dimen name="angleview_size">335dp</dimen>
+    <dimen name="angleview_inner_radius">205dp</dimen>
+    <dimen name="angleview_outer_radius">295dp</dimen>
+    <dimen name="angleindicator_size">144dp</dimen>
+    <dimen name="angleindicator_text_paddingleft">73dp</dimen>
+    <dimen name="angleindicator_text_paddingright">71dp</dimen>
+    <dimen name="angleindicator_arc_rect">105dp</dimen>
+    <dimen name="angleindicator_arc_width">75dp</dimen>
+    <dimen name="angleindicator_arc_textsize">15sp</dimen>
+    <dimen name="angleindicator_arc_textsize_offset_y">7dp</dimen>
+    <dimen name="angleindicator_arc_inner_size">55dp</dimen>
+    <!--<dimen name="angleindicator_theme_innersize">62.5dp</dimen>-->
+    <!--<dimen name="angleindicator_theme_outersize">135dp</dimen>-->
+    <dimen name="angleitem_half_size">32dp</dimen>
+    <dimen name="angleitem_size">64dp</dimen>
+    <dimen name="angle_item_icon_size">40dp</dimen>
+    <dimen name="app_icon_size">48dp</dimen>
+    <dimen name="angle_item_text_size">12sp</dimen>
+    <dimen name="angleview_indicatorview_distance">2dp</dimen>
+    <dimen name="catch_view_height">100dp</dimen>
+    <dimen name="catch_view_width">50dp</dimen>
+    <dimen name="catch_view_broad_size_base">10dp</dimen>
+    <dimen name="catch_view_broad_size_change">40dp</dimen>
+
+    <dimen name="angleview_item_delete_size">20dp</dimen>
+    <dimen name="swipe_edit_header_height">48dp</dimen>
+    <dimen name="swipe_edit_header_title_padding_left">15dp</dimen>
+    <dimen name="swipe_edit_header_title_size">16sp</dimen>
+    <dimen name="swipe_edit_ok_size">14sp</dimen>
+    <dimen name="swipe_toast_title_size">14sp</dimen>
+    <dimen name="swipe_toast_padding">20dp</dimen>
+    <dimen name="swipe_toast_height">38dp</dimen>
+
+    <dimen name="swipe_edit_keyitem_size">40dp</dimen>
+    <dimen name="swipe_edit_keyitem_marginleft">10dp</dimen>
+    <dimen name="swipe_edit_keyitem_margintop">10dp</dimen>
+    <dimen name="swipe_edit_layout_width">280dp</dimen>
+    <dimen name="swipe_edit_layout_height">280dp</dimen>
+    <dimen name="swipe_edit_tools_layout_height">220dp</dimen>
+
+    <dimen name="preference_height">60dp</dimen>
+    <dimen name="preference_category_icon_size">30dp</dimen>
+    <dimen name="preference_category_title_marginleft">30dp</dimen>
+    <dimen name="preference_item_height">55dp</dimen>
+    <dimen name="preference_category_title_size">18sp</dimen>
+    <dimen name="preference_item_title_size">16sp</dimen>
+    <dimen name="preference_item_summary_size">12sp</dimen>
+    <dimen name="preference_item_icon_size">20dp</dimen>
+    <dimen name="back_icon_height">30dp</dimen>
+    <dimen name="back_icon_width">30dp</dimen>
+
+    <dimen name="ksw_md_thumb_ripple_size">42dp</dimen>
+    <dimen name="ksw_md_thumb_solid_inset">11dp</dimen>
+    <dimen name="ksw_md_thumb_shadow_inset">11dp</dimen>
+    <dimen name="ksw_md_thumb_shadow_inset_top">11dp</dimen>
+    <dimen name="ksw_md_thumb_shadow_inset_bottom">10dp</dimen>
+
+    <dimen name="ksw_md_thumb_solid_size">20dp</dimen>
+    <dimen name="ksw_md_thumb_shadow_size">21dp</dimen>
+    <dimen name="ksw_md_thumb_shadow_offset">2dp</dimen>
+
+    <dimen name="dialog_width">300dp</dimen>
+    <dimen name="dialog_round_rect_radius">2dp</dimen>
+    <dimen name="check_item_margin">20dp</dimen>
+    <dimen name="default_margin">16dp</dimen>
+
+    <dimen name="test">100dp</dimen>
+    <dimen name="one_dp">1dp</dimen>
+
+
+</resources>

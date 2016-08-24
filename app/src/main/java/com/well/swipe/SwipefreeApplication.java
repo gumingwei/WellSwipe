@@ -21,13 +21,13 @@ import java.lang.ref.WeakReference;
  * CSDN:     http://blog.csdn.net/u013045971
  * QQ&WX：   721881283
  */
-public class SwipeApplication extends Application {
+public class SwipefreeApplication extends Application {
 
     private LauncherModel mModel;
 
     private IconCache mIconCache;
 
-    private WeakReference<SwipeProvider> mSwipeProvider;
+    private WeakReference<SwipefreeProvider> mSwipeProvider;
 
     /**
      * GoogleAnlytatic
@@ -69,11 +69,11 @@ public class SwipeApplication extends Application {
         return mModel;
     }
 
-    public void setProvider(SwipeProvider provider) {
+    public void setProvider(SwipefreeProvider provider) {
         mSwipeProvider = new WeakReference<>(provider);
     }
 
-    public SwipeProvider getProvider() {
+    public SwipefreeProvider getProvider() {
         return mSwipeProvider.get();
     }
 

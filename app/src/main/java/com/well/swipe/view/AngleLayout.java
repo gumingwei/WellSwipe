@@ -17,7 +17,7 @@ import com.well.swipe.ItemApplication;
 import com.well.swipe.ItemSwipeTools;
 import com.well.swipe.R;
 import com.well.swipe.tools.ToolsStrategy;
-import com.well.swipe.utils.Utils;
+import com.well.swipecomm.utils.Utils;
 
 /**
  * Created by mingwei on 2/26/16.

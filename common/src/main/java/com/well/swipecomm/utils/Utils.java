@@ -1,44 +1,29 @@
-package com.well.swipe.utils;
+package com.well.swipecomm.utils;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BlurMaskFilter;
-import android.graphics.Canvas;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.PaintDrawable;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.widget.Toast;
 
-
-import com.well.swipe.R;
-import com.well.swipe.view.SwipeToast;
+import com.well.swipecomm.R;
+import com.well.swipecomm.view.SwipeToast;
 
 import java.lang.reflect.Field;
 
 /**
- * Created by mingwei on 2/26/16.
- *
- *
+ * Created by mingwei on 3/9/16.
+ * <p/>
+ * <p/>
  * 微博：     明伟小学生(http://weibo.com/u/2382477985)
  * Github:   https://github.com/gumingwei
  * CSDN:     http://blog.csdn.net/u013045971
  * QQ&WX：   721881283
- *
- *
  */
 public class Utils {
-
 
     public static int dp2px(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;

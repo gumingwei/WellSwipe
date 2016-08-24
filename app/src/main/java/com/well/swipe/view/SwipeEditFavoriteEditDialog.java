@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,7 @@ import android.widget.ListView;
 import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
 import com.well.swipe.utils.Pinyin;
-import com.well.swipe.utils.Utils;
+import com.well.swipecomm.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -31,7 +31,7 @@ import com.well.swipe.BootReceiver;
 import com.well.swipe.ItemApplication;
 import com.well.swipe.LauncherModel;
 import com.well.swipe.R;
-import com.well.swipe.SwipeApplication;
+import com.well.swipe.SwipefreeApplication;
 import com.well.swipe.ItemSwipeTools;
 import com.well.swipe.activitys.SwipeSettingActivity;
 import com.well.swipe.tools.SwipeBluetooth;
@@ -39,7 +39,7 @@ import com.well.swipe.tools.SwipeSetting;
 import com.well.swipe.tools.ToolsStrategy;
 import com.well.swipe.tools.WifiAndData;
 import com.well.swipe.utils.SettingHelper;
-import com.well.swipe.utils.Utils;
+import com.well.swipecomm.utils.Utils;
 import com.well.swipe.view.AngleItemStartUp;
 import com.well.swipe.view.AngleLayout;
 import com.well.swipe.view.AngleView;
@@ -70,7 +70,7 @@ import java.util.List;
 public class SwipeService extends Service implements CatchView.OnEdgeSlidingListener, LauncherModel.Callback,
         AngleView.OnClickListener, OnDialogListener, AngleLayout.OnItemDragListener, BubbleView.OnOpenClickListener {
 
-    SwipeApplication mSwipeApplication;
+    SwipefreeApplication mSwipeApplication;
     /**
      * LauncherModel广播接收机负责加载和更新数据
      */
@@ -147,13 +147,13 @@ public class SwipeService extends Service implements CatchView.OnEdgeSlidingList
         super.onCreate();
         Log.i("Gmw", "SwipeService_onCreate");
         //Google
-        SwipeApplication application = (SwipeApplication) getApplication();
+        SwipefreeApplication application = (SwipefreeApplication) getApplication();
         mTracker = application.getDefaultTracker();
 
         mCatchViewWidth = getResources().getDimensionPixelSize(R.dimen.catch_view_width);
         mCatchViewHeight = getResources().getDimensionPixelSize(R.dimen.catch_view_height);
         mCatchViewBroadSize = getResources().getDimensionPixelSize(R.dimen.catch_view_broad_size_base);
-        mSwipeApplication = (SwipeApplication) getApplication();
+        mSwipeApplication = (SwipefreeApplication) getApplication();
         mLauncherModel = mSwipeApplication.setLaunchr(this);
         float pre = (float) SettingHelper.getInstance(this).getInt(SwipeSetting.SWIPE_AREA_PROGRESS, 5) / 10;
 

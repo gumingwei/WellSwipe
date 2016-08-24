@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="indicator_theme_purple">#673ab7</color>
+    <color name="indicator_theme_purple_selector">#7e57c2</color>
+    <color name="white">#ffffff</color>
+    <color name="swipe_header_title_color">#383838</color>
+    <color name="swipe_bottom_gray">#cccccc</color>
+    <color name="anglelayout_background">#99202020</color>
+    <color name="angleview_arc_background">#cf202020</color>
+    <color name="indicator_color">#4493ff</color>
+
+    <color name="ksw_md_ripple_normal">#1E000000</color>
+    <color name="ksw_md_ripple_checked">#33019285</color>
+    <color name="ksw_md_solid_shadow">#33000000</color>
+    <color name="ksw_md_solid_normal">#ECECEC</color>
+    <color name="ksw_md_solid_checked">#019285</color>
+    <color name="ksw_md_solid_disable">#FFFFFF</color>
+    <color name="ksw_md_solid_checked_disable">#aaaaaa</color>
+
+    <color name="preference_title_enable_color">#019285</color>
+    <color name="preference_title_unenable_color">#63c3ba</color>
+    <color name="preference_summary_enable_color">#787878</color>
+    <color name="preference_summary_unenable_color">#b4b4b4</color>
+    <color name="preference_divide">#d9d9d9</color>
+    <color name="seekbar_progress_color">#8e8e8e</color>
+    <color name="check_item_enable">#e5e5e5</color>
+    <color name="catch_view_color_gary">#8e8e8e</color>
+
+    <color name="title_bar_gradient">#016960</color>
+    <color name="GreenColor">#019285</color>
+    <color name="warning_color">#DD2222</color>
+    <color name="transparent">#00000000</color>
+    <color name="transparent_30">#11000000</color>
+    <color name="text_white">#ffffff</color>
+    <color name="text_gray">#c8c8c8</color>
+    <color name="text_white_unclick">#9fffffff</color>
+    <color name="text_gray_unclick">#9fc8c8c8</color>
+</resources>

@@ -1,24 +1,25 @@
-package com.well.swipe.view;
+package com.well.swipecomm.view;
 
 import android.content.Context;
 import android.text.Html;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.well.swipe.R;
+import com.well.swipecomm.R;
+
 
 /**
- * Created by mingwei on 4/3/16.
- *
- *
+ * Created by mingwei on 3/9/16.
+ * <p/>
+ * <p/>
  * 微博：     明伟小学生(http://weibo.com/u/2382477985)
  * Github:   https://github.com/gumingwei
  * CSDN:     http://blog.csdn.net/u013045971
  * QQ&WX：   721881283
- *
- *
  */
 public class SwipeToast extends RelativeLayout {
 

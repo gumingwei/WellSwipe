@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import com.well.swipe.ItemSwipeTools;
 import com.well.swipe.R;
 import com.well.swipe.tools.ToolsStrategy;
-import com.well.swipe.utils.Utils;
+import com.well.swipecomm.utils.Utils;
 
 import java.util.ArrayList;
 

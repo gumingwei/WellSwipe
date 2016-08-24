@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
@@ -38,13 +37,13 @@ public class IconCache {
     }
 
     private final Bitmap mDefaultIcon;
-    private final SwipeApplication mContext;
+    private final SwipefreeApplication mContext;
     private final PackageManager mPackageManager;
     private final HashMap<ComponentName, CacheEntry> mCache =
             new HashMap<ComponentName, CacheEntry>(INITIAL_ICON_CACHE_CAPACITY);
     private int mIconDpi;
 
-    public IconCache(SwipeApplication context) {
+    public IconCache(SwipefreeApplication context) {
         ActivityManager activityManager =
                 (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 

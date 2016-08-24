@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -16,7 +15,7 @@ import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
 import com.well.swipe.R;
-import com.well.swipe.utils.Utils;
+import com.well.swipecomm.utils.Utils;
 
 /**
  * Created by mingwei on 3/8/16.

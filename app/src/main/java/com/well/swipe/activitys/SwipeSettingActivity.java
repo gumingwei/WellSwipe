@@ -22,7 +22,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
-import com.well.swipe.SwipeApplication;
+import com.well.swipe.SwipefreeApplication;
 import com.well.swipe.preference.PreferenceCategory;
 import com.well.swipe.preference.PreferenceTitle;
 import com.well.swipe.preference.PreferenceTitleSummary;
@@ -30,7 +30,7 @@ import com.well.swipe.preference.SwipeCheckItemDialog;
 import com.well.swipe.service.SwipeService;
 import com.well.swipe.tools.SwipeSetting;
 import com.well.swipe.utils.SettingHelper;
-import com.well.swipe.utils.Utils;
+import com.well.swipecomm.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -98,7 +98,7 @@ public class SwipeSettingActivity extends BaseSettingActivity implements View.On
                 getResources().getDimensionPixelSize(R.dimen.test));
 
         //Google
-        SwipeApplication application = (SwipeApplication) getApplication();
+        SwipefreeApplication application = (SwipefreeApplication) getApplication();
         mTracker = application.getDefaultTracker();
 
         mSwipeToggle = (PreferenceCategory) findViewById(R.id.swipe_toggle);

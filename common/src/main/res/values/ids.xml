@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="angle_logo" type="id">angle_logo</item>
+    <item name="angleview" type="id">angleview</item>
+    <item name="indicator" type="id">indicator</item>
+    <item name="angleview_theme" type="id">angleview_theme</item>
+    <item name="indicator_theme" type="id">indicator_theme</item>
+
+    <item name="preference_icon" type="id">preference_icon</item>
+    <item name="preference_title" type="id">preference_title</item>
+    <item name="preference_summary" type="id">preference_summary</item>
+    <item name="preference_arraw" type="id">preference_arraw</item>
+    <item name="preference_switchbtn" type="id">preference_switchbtn</item>
+    <item name="dialog_title" type="id">dialog_title</item>
+    <item name="dialog_content_list" type="id">dialog_content_list</item>
+</resources>

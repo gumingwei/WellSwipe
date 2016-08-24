@@ -12,7 +12,7 @@ import android.view.View;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.well.swipe.R;
-import com.well.swipe.SwipeApplication;
+import com.well.swipe.SwipefreeApplication;
 import com.well.swipe.service.SwipeService;
 import com.well.swipe.tools.SwipeSetting;
 import com.well.swipe.utils.SettingHelper;
@@ -43,7 +43,7 @@ public class SplashActivity extends Activity {
         if (isEmulator(getApplicationContext())) {
             //Process.killProcess(android.os.Process.myPid());
         }
-        SwipeApplication application = (SwipeApplication) getApplication();
+        SwipefreeApplication application = (SwipefreeApplication) getApplication();
         mTracker = application.getDefaultTracker();
 
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {

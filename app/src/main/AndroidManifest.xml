@@ -22,7 +22,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:name=".SwipeApplication"
+        android:name=".SwipefreeApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -51,7 +51,7 @@
         <service android:name=".service.SwipeService" />
 
         <provider
-            android:name="com.well.swipe.SwipeProvider"
+            android:name=".SwipefreeProvider"
             android:authorities="com.well.swipe.favorites"
             android:exported="true" />
 

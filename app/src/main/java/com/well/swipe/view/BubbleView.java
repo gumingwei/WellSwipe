@@ -6,17 +6,13 @@ import android.graphics.*;
 import android.util.AttributeSet;
 
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.well.swipe.R;
 import com.well.swipe.utils.SettingHelper;
-import com.well.swipe.utils.Utils;
-
-import java.util.Set;
+import com.well.swipecomm.utils.Utils;
 
 
 /**

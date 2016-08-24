@@ -1,4 +1,108 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">common</string>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">Well Swipe</string>
+    <string name="recent">Recent</string>
+    <string name="frequent">Frequent</string>
+    <string name="toolbox">Toolbox</string>
+    <string name="ok_title">Ok</string>
+    <string name="cancel_title">Cancel</string>
+
+    <!--QuickSwitch_ACTION-->
+    <string name="swipe_flash">com.well.swipe.action.flash</string>
+    <string name="swipe_wifi">com.well.swipe.action.wifi</string>
+    <string name="swipe_screenbrightness">com.well.swipe.action.screenbrightness</string>
+    <string name="swipe_speeder">com.well.swipe.action.speeder</string>
+
+    <string name="swipe_screenlock">com.well.swipe.action.screenlock</string>
+    <string name="swipe_camere">com.well.swipe.action.camera</string>
+    <string name="swipe_calendar">com.well.swipe.action.calendar</string>
+    <string name="swipe_data">com.well.swipe.action.data</string>
+
+    <string name="swipe_calculator">com.well.swipe.action.calculator</string>
+    <string name="swipe_flightmode">com.well.swipe.action.flightmode</string>
+    <string name="swipe_swipesetting">com.well.swipe.action.swipesetting</string>
+    <string name="swipe_bluetooth">com.well.swipe.action.bluetooth</string>
+
+    <string name="swipe_mute">com.well.swipe.action.mute</string>
+    <string name="swipe_autorotation">com.well.swipe.action.autorotation</string>
+    <string name="swipe_setting">com.well.swipe.action.setting</string>
+    <string name="swipe_alarm">com.well.swipe.action.alarm</string>
+    <!--QuickSwitch_ACTION_TITLE-->
+    <string name="swipe_flash_title">Flashlight</string>
+    <string name="swipe_wifi_title">Wi-Fi</string>
+    <string name="swipe_screenbrightness_title">Brightness</string>
+    <string name="swipe_speeder_title">Booster</string>
+
+    <string name="swipe_screenlock_title">Timeout</string>
+    <string name="swipe_camere_title">Camera</string>
+    <string name="swipe_calendar_title">Calendar</string>
+    <string name="swipe_data_title">Data</string>
+
+    <string name="swipe_calculator_title">Calculator</string>
+    <string name="swipe_flightmode_title">Airplane mode</string>
+    <string name="swipe_swipesetting_title">Swipe Setting</string>
+    <string name="swipe_bluetooth_title">Bluetooth</string>
+
+    <string name="swipe_mute_title">Sound</string>
+    <string name="swipe_autorotation_title">Rotation</string>
+    <string name="swipe_setting_title">Settings</string>
+    <string name="swipe_alarm_title">Alarm</string>
+
+
+    <string name="swipe_edit_header_title">selected(%1$s/%2$s)</string>
+    <string name="favorite_up_to_9">up to 9</string>
+    <string name="scene_mode_0">Vibrator</string>
+    <string name="scene_mode_1">Muted</string>
+    <string name="scene_mode_2">volume</string>
+
+    <string name="time_15">15s</string>
+    <string name="time_30">30s</string>
+    <string name="time_60">1m</string>
+    <string name="time_120">2m</string>
+    <string name="time_300">5m</string>
+    <string name="time_600">10m</string>
+    <string name="time_1800">30m</string>
+
+    <string name="swipe_toggle">Toggle</string>
+    <string name="swipe_for">Enable Well Swipe for</string>
+    <string name="swipe_for_type0">Homescreen only</string>
+    <string name="swipe_for_type1">Homescreen and all apps</string>
+    <string name="swipe_active_area">Active area position</string>
+    <string name="swipe_area_type0">Bottom left and Bottom right</string>
+    <string name="swipe_area_type1">Bottom left</string>
+    <string name="swipe_area_type2">Bottom right</string>
+    <string name="swipe_whitelist">Do not disturb settings(%1$d)</string>
+    <string name="swipe_whitelist_des">Choose apps that disable Well Swipe</string>
+    <string name="swipe_whitelist_title">Add app</string>
+    <string name="swipe_about">About</string>
+    <string name="swipe_about_rate5start">Love us?Rate 5 starts</string>
+    <string name="googleplay_not_found">Can not find Play Google</string>
+    <string name="swipe_about_feedback">Feedback</string>
+    <string name="swipe_about_version">App Version</string>
+    <string name="swipe_open_type">Triggering Method</string>
+    <string name="swipe_open_type0">Default(Swipe from the bottom corner)</string>
+    <string name="swipe_open_type1">Swipe Assist</string>
+    <string name="swipe_advanced_setting">Advanced Settings</string>
+
+    <string name="feedback_title">fill in the title</string>
+    <string name="feedback_content">fill in the content</string>
+    <string name="clearmemary_title">clear memary</string>
+    <string name="clearmemary_wait">Try again after a while</string>
+    <string name="flash_on">Flashlight is turned on</string>
+    <string name="flash_off">Flashlight is turned off</string>
+    <string name="wifi_on">WiFi is connected</string>
+    <string name="wifi_off">WiFi is disconnected</string>
+    <string name="bluetooth_on">bluetooth is turned on</string>
+    <string name="bluetooth_off">bluetooth is turned off</string>
+    <string name="data_on">Mobile data has been connected</string>
+    <string name="data_off">Mobile data has been disconnected</string>
+
+    <string name="request_windows_title">SYSTEM_ALERT_WINDOW</string>
+    <string name="request_windows_content">Well Swipe needs permission</string>
+    <string name="request_windows_pos">Start</string>
+    <string name="request_windows_nev">Quit</string>
+
+    <string name="swipe_nitification_title">Well Swipe is running</string>
+    <string name="swipe_nitification_content">touch to view swipe settings</string>
+    <string name="swipe_whitelist_item_unlauncher">White list application is not allowed to start</string>
 </resources>
