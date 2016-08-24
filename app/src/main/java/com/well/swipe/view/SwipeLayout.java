@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.well.swipe.R;
-import com.well.swipe.utils.SwipeWindowManager;
+import com.well.swipecomm.utils.SwipeWindowManager;
 import com.well.swipecomm.view.SwipeToast;
 
 
@@ -33,17 +33,9 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
 
     private LinearLayout mBgLayout;
 
-    private BubbleView mBubble;
-
     private SwipeEditFavoriteEditDialog mFavoriteLayout;
 
     private SwipeEditToolsEditDialog mToolsLayout;
-
-    private SwipeToast mSwipeToast;
-
-    private int mWidth;
-
-    private int mHeight;
 
     static int mAnimatorDur = 250;
 
@@ -79,8 +71,6 @@ public class SwipeLayout extends RelativeLayout implements AngleLayout.OnOffList
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        mWidth = getMeasuredWidth();
-        mHeight = getMeasuredHeight();
     }
 
     /**

@@ -20,7 +20,7 @@ import com.well.swipe.preference.SwipeCheckItemDialog;
 import com.well.swipe.preference.SwipeWhitelistDialog;
 import com.well.swipe.service.SwipeService;
 import com.well.swipe.tools.SwipeSetting;
-import com.well.swipe.utils.SettingHelper;
+import com.well.swipecomm.utils.SettingHelper;
 import com.well.swipe.view.CheckItemLayout;
 
 import java.util.ArrayList;

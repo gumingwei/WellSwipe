@@ -29,7 +29,7 @@ import com.well.swipe.preference.PreferenceTitleSummary;
 import com.well.swipe.preference.SwipeCheckItemDialog;
 import com.well.swipe.service.SwipeService;
 import com.well.swipe.tools.SwipeSetting;
-import com.well.swipe.utils.SettingHelper;
+import com.well.swipecomm.utils.SettingHelper;
 import com.well.swipecomm.utils.Utils;
 
 import java.util.ArrayList;

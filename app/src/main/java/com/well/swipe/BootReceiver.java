@@ -3,11 +3,10 @@ package com.well.swipe;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
 import com.well.swipe.service.SwipeService;
 import com.well.swipe.tools.SwipeSetting;
-import com.well.swipe.utils.SettingHelper;
+import com.well.swipecomm.utils.SettingHelper;
 
 /**
  * Created by mingwei on 4/9/16.

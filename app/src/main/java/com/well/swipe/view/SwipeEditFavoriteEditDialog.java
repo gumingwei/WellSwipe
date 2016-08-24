@@ -18,7 +18,7 @@ import android.widget.ListView;
 
 import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
-import com.well.swipe.utils.Pinyin;
+import com.well.swipecomm.utils.Pinyin;
 import com.well.swipecomm.utils.Utils;
 
 import java.util.ArrayList;

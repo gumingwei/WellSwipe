@@ -11,7 +11,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.well.swipe.R;
-import com.well.swipe.utils.SettingHelper;
+import com.well.swipecomm.utils.SettingHelper;
 import com.well.swipecomm.utils.Utils;
 
 

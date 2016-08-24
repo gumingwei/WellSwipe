@@ -38,7 +38,7 @@ import com.well.swipe.tools.SwipeBluetooth;
 import com.well.swipe.tools.SwipeSetting;
 import com.well.swipe.tools.ToolsStrategy;
 import com.well.swipe.tools.WifiAndData;
-import com.well.swipe.utils.SettingHelper;
+import com.well.swipecomm.utils.SettingHelper;
 import com.well.swipecomm.utils.Utils;
 import com.well.swipe.view.AngleItemStartUp;
 import com.well.swipe.view.AngleLayout;

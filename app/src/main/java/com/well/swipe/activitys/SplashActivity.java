@@ -15,7 +15,7 @@ import com.well.swipe.R;
 import com.well.swipe.SwipefreeApplication;
 import com.well.swipe.service.SwipeService;
 import com.well.swipe.tools.SwipeSetting;
-import com.well.swipe.utils.SettingHelper;
+import com.well.swipecomm.utils.SettingHelper;
 
 /**
  * Created by mingwei on 4/4/16.

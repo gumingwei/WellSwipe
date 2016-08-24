@@ -15,7 +15,7 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.HandlerThread;
 
-import com.well.swipe.utils.Utilities;
+import com.well.swipecomm.utils.Utilities;
 
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;

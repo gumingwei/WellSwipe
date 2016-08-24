@@ -1,0 +1,514 @@
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/AndroidManifest.xml	(date 1460046900000)
++++ app/src/main/AndroidManifest.xml	(date 1460215717000)
+@@ -47,6 +47,12 @@
+             android:name="com.well.swipe.SwipeProvider"
+             android:authorities="com.well.swipe.favorites"
+             android:exported="true" />
++
++        <receiver android:name=".BootReceiver">
++            <intent-filter>
++                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
++            </intent-filter>
++        </receiver>
+     </application>
+ 
+ </manifest>
+Index: app/src/main/java/com/well/swipe/BootReceiver.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/well/swipe/BootReceiver.java	(date 1460215717000)
++++ app/src/main/java/com/well/swipe/BootReceiver.java	(date 1460215717000)
+@@ -0,0 +1,17 @@
++package com.well.swipe;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++
++import com.well.swipe.service.SwipeService;
++
++/**
++ * Created by mingwei on 4/9/16.
++ */
++public class BootReceiver extends BroadcastReceiver {
++    @Override
++    public void onReceive(Context context, Intent intent) {
++        context.startService(new Intent(context, SwipeService.class));
++    }
++}
+Index: app/src/main/java/com/well/swipe/service/SwipeService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/well/swipe/service/SwipeService.java	(date 1460046900000)
++++ app/src/main/java/com/well/swipe/service/SwipeService.java	(date 1460215717000)
+@@ -670,7 +670,6 @@
+         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                 new Intent(this, SwipeSettingActivity.class), 0);
+         mNotification = new Notification.Builder(this)
+-                .setSmallIcon(R.drawable.ic_launcher_48)
+                 .setTicker("")
+                 .setContentTitle(getResources().getString(R.string.swipe_nitification_title))
+                 .setContentText(getResources().getString(R.string.swipe_nitification_content))
+Index: app/src/main/java/com/well/swipe/view/AngleIndicatorView.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/well/swipe/view/AngleIndicatorView.java	(date 1460046900000)
++++ app/src/main/java/com/well/swipe/view/AngleIndicatorView.java	(date 1460215717000)
+@@ -32,9 +32,6 @@
+     private String mColors[] = new String[]{"#ffffff", "#eaeaea", "#e1e1e1", "#d6d6d6", "#cac9c9",
+             "#bfbebe", "#b6b5b5", "#aeadad", "#a5a4a4", "#9c9c9c"};
+ 
+-//    private String mColors[] = new String[]{"#9c9c9c", "#a5a4a4", "#aeadad", "#b6b5b5", "#bfbebe",
+-//            "#cac9c9", "#d6d6d6", "#e1e1e1", "#eaeaea", "#f0f0f0"};
+-
+     private Paint mArcPaint;
+ 
+     private Paint mInnerPaint;
+@@ -138,10 +135,6 @@
+         super.onDraw(canvas);
+         int degree = DEGREES_90 / 4;
+         if (mPositionState == PositionState.POSITION_STATE_LEFT) {
+-            //RectF f = new RectF(-mRect, -mRect, mRect, mRect);
+-
+-            //canvas.drawCircle(0, 0, mRect + mIndicatorWidth / 2, mInnerPaint);
+-            //canvas.drawArc(f, mLeftArcStart, mArcSweep, false, mArcPaint);
+             canvas.save();
+             canvas.rotate(degree, 0, 0);
+             mPaint0.setTextAlign(Paint.Align.LEFT);
+@@ -154,10 +147,6 @@
+             canvas.drawText(getResources().getString(R.string.frequent), mLeftOffset, OFFSET_Y, mPaint2);
+             canvas.restore();
+         } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
+-            //RectF f = new RectF(mWidth - mRect, -mRect, mWidth + mRect, mRect);
+-
+-            //canvas.drawCircle(mWidth, 0, mRect + mIndicatorWidth / 2, mInnerPaint);
+-            //canvas.drawArc(f, mRightArcStart, mArcSweep, false, mArcPaint);
+             canvas.save();
+             canvas.rotate(-degree, mWidth, 0);
+             mPaint0.setTextAlign(Paint.Align.RIGHT);
+Index: app/src/main/java/com/well/swipe/view/AngleIndicatorViewTheme.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/well/swipe/view/AngleIndicatorViewTheme.java	(date 1460046900000)
++++ app/src/main/java/com/well/swipe/view/AngleIndicatorViewTheme.java	(date 1460215717000)
+@@ -6,15 +6,20 @@
+ import android.graphics.Paint;
+ import android.graphics.PorterDuff;
+ import android.graphics.PorterDuffXfermode;
++import android.graphics.RectF;
+ import android.util.AttributeSet;
++import android.util.Log;
+ 
+ import com.well.swipe.R;
+ 
+ /**
+  * Created by mingwei on 3/29/16.
++ * 默认蓝色的指示器
+  */
+ public class AngleIndicatorViewTheme extends PositionStateView {
+ 
++    private Paint mBoundPaint;
++
+     private Paint mPaint;
+ 
+     private int mColor;
+@@ -23,10 +28,26 @@
+ 
+     private int mHeight;
+ 
+-    private int mDistance;
++    private RectF mInneRectF = new RectF();
+ 
+-    private int mIndicatorInnerSize;
++    private float mInnerSize;
+ 
++    private RectF mMindRectF = new RectF();
++
++    private float mMidSize;
++
++    private RectF mOuterRecF = new RectF();
++
++    private float mOuterSize;
++
++    private float mUtilAngle = 90f / 8f;
++
++    private float mLeftStartAngle = mUtilAngle;
++
++    private float mRightStartAngle = mUtilAngle * 5 + DEGREES_90;
++
++    public static final int DEGREES_90 = 90;
++
+     public AngleIndicatorViewTheme(Context context) {
+         this(context, null);
+     }
+@@ -37,44 +58,119 @@
+ 
+     public AngleIndicatorViewTheme(Context context, AttributeSet attrs, int defStyleAttr) {
+         super(context, attrs, defStyleAttr);
++        mColor = getResources().getColor(R.color.indicator_color);
++        mBoundPaint = new Paint();
++        mBoundPaint.setAntiAlias(true);
++        mBoundPaint.setColor(mColor);
++        mBoundPaint.setStyle(Paint.Style.STROKE);
++        mBoundPaint.setStrokeWidth(20);
++        mBoundPaint.setStrokeCap(Paint.Cap.ROUND);
+ 
+-        mDistance = getResources().getDimensionPixelSize(R.dimen.angleview_indicatorview_distance);
+-        mIndicatorInnerSize = getResources().getDimensionPixelSize(R.dimen.angleindicator_arc_inner_size);
+-        mColor = getResources().getColor(R.color.indicator_arc_background);
+         mPaint = new Paint();
+         mPaint.setAntiAlias(true);
+-        mPaint.setColor(Color.BLUE);
+-        mPaint.setStyle(Paint.Style.FILL);
++        mPaint.setColor(mColor);
++        mPaint.setStyle(Paint.Style.STROKE);
++
++        mWidth = getResources().getDimensionPixelSize(R.dimen.angleindicator_size);
++        mHeight = getResources().getDimensionPixelSize(R.dimen.angleindicator_size);
++
++        mInnerSize = getResources().getDimensionPixelSize(R.dimen.angleindicator_theme_innersize);
++        mOuterSize = getResources().getDimensionPixelSize(R.dimen.angleindicator_theme_outersize);
++
++        mMidSize = mInnerSize + (mOuterSize - mInnerSize) / 2;
++
+     }
+ 
+     @Override
+     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+-        mWidth = getMeasuredWidth();
+-        mHeight = getMeasuredHeight();
++        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
++
++            mInneRectF.left = -mInnerSize;
++            mInneRectF.top = mHeight - mInnerSize;
++            mInneRectF.right = mInnerSize;
++            mInneRectF.bottom = mHeight + mInnerSize;
++
++            mOuterRecF.left = -mOuterSize;
++            mOuterRecF.top = mHeight - mOuterSize;
++            mOuterRecF.right = mOuterSize;
++            mOuterRecF.bottom = mHeight + mOuterSize;
++
++            mMindRectF.left = -mMidSize;
++            mMindRectF.top = mHeight - mMidSize;
++            mMindRectF.right = mMidSize;
++            mMindRectF.bottom = mHeight + mMidSize;
++            mPaint.setStrokeWidth(mOuterSize - mInnerSize);
++        } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
++            mInneRectF.left = mWidth - mInnerSize;
++            mInneRectF.top = mHeight - mInnerSize;
++            mInneRectF.right = mWidth + mInnerSize;
++            mInneRectF.bottom = mHeight + mInnerSize;
++
++            mOuterRecF.left = mWidth - mOuterSize;
++            mOuterRecF.top = mHeight - mOuterSize;
++            mOuterRecF.right = mWidth + mOuterSize;
++            mOuterRecF.bottom = mHeight + mOuterSize;
++
++            mMindRectF.left = mWidth - mMidSize;
++            mMindRectF.top = mHeight - mMidSize;
++            mMindRectF.right = mWidth + mMidSize;
++            mMindRectF.bottom = mHeight + mMidSize;
++            mPaint.setStrokeWidth(mOuterSize - mInnerSize);
++
++
+-    }
++        }
+ 
++    }
++
+     @Override
+     protected void onDraw(Canvas canvas) {
+         super.onDraw(canvas);
+         if (mPositionState == PositionState.POSITION_STATE_LEFT) {
+-            mPaint.setColor(mColor);
+-            canvas.drawCircle(0, mHeight, mHeight, mPaint);
+-            mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
+-            mPaint.setColor(Color.TRANSPARENT);
+-            canvas.drawCircle(0, mHeight, mIndicatorInnerSize, mPaint);
++            canvas.drawArc(mInneRectF, 270 + mLeftStartAngle + 4.5f, mUtilAngle * 2 - 9.5f, false, mBoundPaint);
++            canvas.drawArc(mOuterRecF, 270 + mLeftStartAngle + 2.2f, mUtilAngle * 2 - 4.1f, false, mBoundPaint);
++            canvas.drawArc(mMindRectF, 270 + mLeftStartAngle, mUtilAngle * 2, false, mPaint);
+         } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
+-            mPaint.setColor(mColor);
+-            canvas.drawCircle(mWidth, mHeight, mHeight, mPaint);
+-            mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
+-            mPaint.setColor(Color.TRANSPARENT);
+-            canvas.drawCircle(mWidth, mHeight, mIndicatorInnerSize, mPaint);
++            canvas.drawArc(mInneRectF, 90 + mRightStartAngle + 4.5f, mUtilAngle * 2 - 9.5f, false, mBoundPaint);
++            canvas.drawArc(mOuterRecF, 90 + mRightStartAngle + 2.2f, mUtilAngle * 2 - 4.1f, false, mBoundPaint);
++            canvas.drawArc(mMindRectF, 90 + mRightStartAngle, mUtilAngle * 2, false, mPaint);
+         }
+-        mPaint.setXfermode(null);
+     }
+ 
+     @Override
+     public void setPositionState(int state) {
+         super.setPositionState(state);
++    }
++
++    public void changeStartAngle(int cur, float pre) {
++
++        if (mPositionState == PositionState.POSITION_STATE_LEFT) {
++            if (cur == 0) {
++                mLeftStartAngle = 5 * mUtilAngle + 28 * mUtilAngle * (1 - pre);
++
++            } else if (cur == 1) {
++                mLeftStartAngle = mUtilAngle + 2 * mUtilAngle * (1 - pre);
++
++            } else if (cur == 2) {
++                mLeftStartAngle = 3 * mUtilAngle + 2 * mUtilAngle * (1 - pre);
++
++            }
++        } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
++            if (cur == 0) {
++                mRightStartAngle = DEGREES_90 + 3 * mUtilAngle + 2 * mUtilAngle * (1 - pre);
++
++            } else if (cur == 1) {
++                if (pre < 0.5) {
++                    mRightStartAngle = DEGREES_90 - mUtilAngle + 2 * mUtilAngle * (1 - pre) - DEGREES_90 * 2 * pre;
++                } else {
++                    mRightStartAngle = DEGREES_90 + 5 * mUtilAngle + 2 * mUtilAngle * (1 - pre) + DEGREES_90 * 2 * (1 - pre);
++                }
++
++            } else if (cur == 2) {
++                mRightStartAngle = DEGREES_90 + mUtilAngle + 2 * mUtilAngle * (1 - pre);
++
++            }
++        }
++        invalidate();
+     }
+ }
+Index: app/src/main/java/com/well/swipe/view/AngleLayout.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/well/swipe/view/AngleLayout.java	(date 1460046900000)
++++ app/src/main/java/com/well/swipe/view/AngleLayout.java	(date 1460215717000)
+@@ -176,16 +176,10 @@
+          * AngleView的大小
+          */
+         mAngleSize = getResources().getDimensionPixelSize(R.dimen.angleview_size);
+-        //LayoutParams params = new LayoutParams(mAngleSize, mAngleSize);
+-        //mAngleView.setLayoutParams(params);
+-        //mAngleViewTheme.setLayoutParams(params);
+         /**
+          * IndicatorView的大小
+          */
+         mIndicatorSize = getResources().getDimensionPixelSize(R.dimen.angleindicator_size);
+-//        LayoutParams indicatorParams = new LayoutParams(mIndicatorSize, mIndicatorSize);
+-//        mIndicator.setLayoutParams(indicatorParams);
+-//        mIndicatorTheme.setLayoutParams(indicatorParams);
+ 
+         mAngleLogoSize = getResources().getDimensionPixelSize(R.dimen.anglelogo_size);
+     }
+@@ -345,6 +339,7 @@
+     @Override
+     public void onAngleChanged(int cur, float p) {
+         mIndicator.onAngleChanged2(cur, p);
++        mIndicatorTheme.changeStartAngle(cur, p);
+     }
+ 
+     @Override
+@@ -355,7 +350,7 @@
+     @Override
+     public void onIndexChanged(int index) {
+         /**
+-         * flag==true手动旋转
++         * 点击Indicator的时候自动旋转AngleView
+          */
+         if (mEditState == STATE_NORMAL) {
+             mAngleView.setViewsIndex(index);
+Index: app/src/main/java/com/well/swipe/view/AngleView.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/well/swipe/view/AngleView.java	(date 1460046900000)
++++ app/src/main/java/com/well/swipe/view/AngleView.java	(date 1460215717000)
+@@ -293,7 +293,7 @@
+         for (ItemSwipeTools appitem : itemlist) {
+             itemview = (AngleItemStartUp) LayoutInflater.from(getContext()).inflate(R.layout.angle_item_startup, null);
+             itemview.setTitle(appitem.mTitle.toString());
+-            //itemview.setItemIconBackground(getResources().getDrawable(R.drawable.angle_item_bg));
++            itemview.setItemIconBackground(getResources().getDrawable(R.drawable.angle_item_bg));
+             ToolsStrategy.getInstance().initView(getContext(), itemview, appitem);
+             itemview.setTag(appitem);
+             mSwitchList.add(itemview);
+Index: app/src/main/java/com/well/swipe/view/AngleViewTheme.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/well/swipe/view/AngleViewTheme.java	(date 1460046900000)
++++ app/src/main/java/com/well/swipe/view/AngleViewTheme.java	(date 1460215717000)
+@@ -46,7 +46,6 @@
+         mColor = getResources().getColor(R.color.angleview_arc_background);
+         mPaint = new Paint();
+         mPaint.setAntiAlias(true);
+-        mPaint.setColor(Color.BLUE);
+         mPaint.setStyle(Paint.Style.FILL);
+     }
+ 
+@@ -66,12 +65,16 @@
+             mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
+             mPaint.setColor(mColor);
+             canvas.drawCircle(0, mHeight, mInnerSize + mDistance, mPaint);
++            mPaint.setXfermode(null);
++            canvas.drawCircle(0, mHeight, mInnerSize, mPaint);
+         } else if (mPositionState == PositionState.POSITION_STATE_RIGHT) {
+             canvas.drawCircle(mWidth, mHeight, mHeight, mPaint);
+             mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
+             mPaint.setColor(mColor);
+             canvas.drawCircle(mWidth, mHeight, mInnerSize + mDistance, mPaint);
+-        }
+-        mPaint.setXfermode(null);
++            mPaint.setXfermode(null);
++            canvas.drawCircle(mWidth, mHeight, mInnerSize, mPaint);
++        }
++        //mPaint.setXfermode(null);
+     }
+ }
+Index: app/src/main/res/drawable/angle_item_bg.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable/angle_item_bg.xml	(date 1460046900000)
++++ app/src/main/res/drawable/angle_item_bg.xml	(date 1460215717000)
+@@ -2,5 +2,5 @@
+ <shape xmlns:android="http://schemas.android.com/apk/res/android"
+     android:shape="oval">
+     
+-    <solid android:color="@color/anglelayout_background" />
++    <solid android:color="@color/indicator_color" />
+ </shape>
+\ No newline at end of file
+Index: app/src/main/res/values-sw320dp/dimens.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values-sw320dp/dimens.xml	(date 1460046900000)
++++ app/src/main/res/values-sw320dp/dimens.xml	(date 1460215717000)
+@@ -2,9 +2,9 @@
+ <resources>
+     <!--moto g 480*1280-->
+     <dimen name="anglelogo_size">53dp</dimen>
+-    <dimen name="angleview_size">325dp</dimen>
+-    <dimen name="angleview_inner_radius">195dp</dimen>
+-    <dimen name="angleview_outer_radius">275dp</dimen>
++    <dimen name="angleview_size">320dip</dimen>
++    <dimen name="angleview_inner_radius">190dp</dimen>
++    <dimen name="angleview_outer_radius">270dp</dimen>
+     <dimen name="angleindicator_size">144dp</dimen>
+     <dimen name="angleindicator_text_paddingleft">73dp</dimen>
+     <dimen name="angleindicator_text_paddingright">71dp</dimen>
+@@ -12,10 +12,13 @@
+     <dimen name="angleindicator_arc_width">75dp</dimen>
+     <dimen name="angleindicator_arc_textsize">15sp</dimen>
+     <dimen name="angleindicator_arc_inner_size">55dp</dimen>
++    <dimen name="angleindicator_theme_innersize">62.5dp</dimen>
++    <dimen name="angleindicator_theme_outersize">135dp</dimen>
+     <dimen name="angleitem_half_size">32dp</dimen>
+     <dimen name="angleitem_size">64dp</dimen>
+     <dimen name="angle_item_icon_size">40dp</dimen>
+     <dimen name="app_icon_size">48dp</dimen>
+     <dimen name="angleview_item_delete_size">20dp</dimen>
+-    <dimen name="test">101dp</dimen>
++
++    <dimen name="test">100dp</dimen>
+ </resources>
+\ No newline at end of file
+Index: app/src/main/res/values-sw600dp/dimens.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values-sw600dp/dimens.xml	(date 1460046900000)
++++ app/src/main/res/values-sw600dp/dimens.xml	(date 1460215717000)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <resources>
+-    <dimen name="angleview_size">335dp</dimen>
++    <dimen name="angleview_size">355dp</dimen>
+     <dimen name="angleview_inner_radius">205dp</dimen>
+     <dimen name="angleview_outer_radius">295dp</dimen>
+     <dimen name="angleindicator_size">144dp</dimen>
+@@ -13,5 +13,5 @@
+     <dimen name="angleitem_size">64dp</dimen>
+     <dimen name="angle_item_icon_size">40dp</dimen>
+     <dimen name="app_icon_size">48dp</dimen>
+-    <dimen name="test">100dp</dimen>
++    <dimen name="test">101dp</dimen>
+ </resources>
+\ No newline at end of file
+Index: app/src/main/res/values/colors.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/colors.xml	(date 1460046900000)
++++ app/src/main/res/values/colors.xml	(date 1460215717000)
+@@ -10,7 +10,7 @@
+     <color name="swipe_bottom_gray">#cccccc</color>
+     <color name="anglelayout_background">#99202020</color>
+     <color name="angleview_arc_background">#cf202020</color>
+-    <color name="indicator_arc_background">#f103a9f4</color>
++    <color name="indicator_color">#4493ff</color>
+ 
+     <color name="ksw_md_ripple_normal">#1E000000</color>
+     <color name="ksw_md_ripple_checked">#33019285</color>
+Index: app/src/main/res/values/dimens.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/dimens.xml	(date 1460046900000)
++++ app/src/main/res/values/dimens.xml	(date 1460215717000)
+@@ -12,12 +12,15 @@
+     <dimen name="angleindicator_arc_rect">105dp</dimen>
+     <dimen name="angleindicator_arc_width">75dp</dimen>
+     <dimen name="angleindicator_arc_textsize">15sp</dimen>
++    <dimen name="angleindicator_arc_inner_size">55dp</dimen>
++    <dimen name="angleindicator_theme_innersize">62.5dp</dimen>
++    <dimen name="angleindicator_theme_outersize">135dp</dimen>
+     <dimen name="angleitem_half_size">32dp</dimen>
+     <dimen name="angleitem_size">64dp</dimen>
+     <dimen name="angle_item_icon_size">40dp</dimen>
+     <dimen name="app_icon_size">48dp</dimen>
+     <dimen name="angle_item_text_size">12sp</dimen>
+-    <dimen name="angleview_indicatorview_distance">3dp</dimen>
++    <dimen name="angleview_indicatorview_distance">2dp</dimen>
+     <dimen name="catch_view_height">100dp</dimen>
+     <dimen name="catch_view_width">50dp</dimen>
+     <dimen name="catch_view_broad_size_base">10dp</dimen>
+Index: app/src/main/res/values/strings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/strings.xml	(date 1460046900000)
++++ app/src/main/res/values/strings.xml	(date 1460215717000)
+@@ -1,5 +1,5 @@
+ <resources>
+-    <string name="app_name">WellSwipe</string>
++    <string name="app_name">Well Swipe</string>
+     <string name="recent">Recent</string>
+     <string name="frequent">Frequent</string>
+     <string name="toolbox">Toolbox</string>

@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.well.swipe.R;
-import com.well.swipe.view.SwitchButton;
+import com.well.swipecomm.view.SwitchButton;
 
 /**
  * Created by mingwei on 3/30/16.

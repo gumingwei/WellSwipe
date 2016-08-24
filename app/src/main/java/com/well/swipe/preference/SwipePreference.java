@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
-import com.well.swipe.utils.SettingHelper;
+import com.well.swipecomm.utils.SettingHelper;
 
 /**
  * Created by mingwei on 3/30/16.

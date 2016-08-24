@@ -12,7 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 
-import com.well.swipe.utils.Utilities;
+import com.well.swipecomm.utils.Utilities;
 
 import java.util.HashMap;
 
