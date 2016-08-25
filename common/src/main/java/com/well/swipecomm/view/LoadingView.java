@@ -1,4 +1,4 @@
-package com.well.swipe.view;
+package com.well.swipecomm.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -9,18 +9,15 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.well.swipe.R;
+import com.well.swipecomm.R;
 
 /**
  * Created by mingwei on 5/31/16.
- *
- *
+ * <p/>
  * 微博：     明伟小学生(http://weibo.com/u/2382477985)
  * Github:   https://github.com/gumingwei
  * CSDN:     http://blog.csdn.net/u013045971
  * QQ&WX：   721881283
- *
- *
  */
 public class LoadingView extends View {
 

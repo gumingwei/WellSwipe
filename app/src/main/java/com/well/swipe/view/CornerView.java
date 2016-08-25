@@ -8,17 +8,18 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.well.swipe.R;
+import com.well.swipecomm.view.PositionState;
 
 /**
  * Created by mingwei on 4/25/16.
- *
- *
+ * <p/>
+ * <p/>
  * 微博：     明伟小学生(http://weibo.com/u/2382477985)
  * Github:   https://github.com/gumingwei
  * CSDN:     http://blog.csdn.net/u013045971
  * QQ&WX：   721881283
- *
- *
+ * <p/>
+ * <p/>
  * 角落里的状态View分别在正常模式，编辑模式，拖动模式下呈现不同的状态给用户
  */
 public class CornerView extends FrameLayout {

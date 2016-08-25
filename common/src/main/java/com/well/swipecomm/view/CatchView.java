@@ -1,4 +1,4 @@
-package com.well.swipe.view;
+package com.well.swipecomm.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -14,19 +14,19 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
-import com.well.swipe.R;
+import com.well.swipecomm.R;
 import com.well.swipecomm.utils.Utils;
 
 /**
  * Created by mingwei on 3/8/16.
- *
- *
+ * <p/>
+ * <p/>
  * 微博：     明伟小学生(http://weibo.com/u/2382477985)
  * Github:   https://github.com/gumingwei
  * CSDN:     http://blog.csdn.net/u013045971
  * QQ&WX：   721881283
- *
- *
+ * <p/>
+ * <p/>
  * 作为触发屏幕触摸事件的View
  */
 public class CatchView extends PositionStateView {

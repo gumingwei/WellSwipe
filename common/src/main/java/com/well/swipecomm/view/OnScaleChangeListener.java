@@ -1,4 +1,4 @@
-package com.well.swipe.view;
+package com.well.swipecomm.view;
 
 /**
  * Created by mingwei on 3/12/16.

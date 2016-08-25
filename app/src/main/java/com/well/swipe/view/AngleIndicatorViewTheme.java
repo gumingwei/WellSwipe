@@ -7,6 +7,8 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 
 import com.well.swipe.R;
+import com.well.swipecomm.view.PositionState;
+import com.well.swipecomm.view.PositionStateView;
 
 /**
  * Created by mingwei on 3/29/16.

@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.well.swipe.R;
+import com.well.swipecomm.view.OnDialogListener;
 
 /**
  * Created by mingwei on 3/25/16.

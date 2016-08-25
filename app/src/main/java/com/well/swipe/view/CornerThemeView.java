@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 
 import com.well.swipe.R;
+import com.well.swipecomm.view.PositionStateView;
 
 /**
  * Created by mingwei on 4/25/16.

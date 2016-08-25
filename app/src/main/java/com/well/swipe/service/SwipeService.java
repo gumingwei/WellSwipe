@@ -43,11 +43,11 @@ import com.well.swipecomm.utils.Utils;
 import com.well.swipe.view.AngleItemStartUp;
 import com.well.swipe.view.AngleLayout;
 import com.well.swipe.view.AngleView;
-import com.well.swipe.view.BubbleView;
-import com.well.swipe.view.CatchView;
-import com.well.swipe.view.OnDialogListener;
-import com.well.swipe.view.PositionState;
+import com.well.swipecomm.view.BubbleView;
+import com.well.swipecomm.view.CatchView;
+import com.well.swipecomm.view.OnDialogListener;
 import com.well.swipe.view.SwipeLayout;
+import com.well.swipecomm.view.PositionState;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -58,14 +58,12 @@ import java.util.List;
 
 /**
  * Created by mingwei on 3/6/16.
- *
- *
+ * <p/>
+ * <p/>
  * 微博：     明伟小学生(http://weibo.com/u/2382477985)
  * Github:   https://github.com/gumingwei
  * CSDN:     http://blog.csdn.net/u013045971
  * QQ&WX：   721881283
- *
- *
  */
 public class SwipeService extends Service implements CatchView.OnEdgeSlidingListener, LauncherModel.Callback,
         AngleView.OnClickListener, OnDialogListener, AngleLayout.OnItemDragListener, BubbleView.OnOpenClickListener {

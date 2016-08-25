@@ -2,14 +2,13 @@ package com.well.swipe.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.Xfermode;
 import android.util.AttributeSet;
 
 import com.well.swipe.R;
+import com.well.swipecomm.view.PositionStateView;
 
 /**
  * Created by mingwei on 3/29/16.

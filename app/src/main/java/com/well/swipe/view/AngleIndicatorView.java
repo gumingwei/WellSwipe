@@ -12,6 +12,8 @@ import android.view.ViewConfiguration;
 import android.view.animation.DecelerateInterpolator;
 
 import com.well.swipe.R;
+import com.well.swipecomm.view.PositionState;
+import com.well.swipecomm.view.PositionStateView;
 
 /**
  * Created by mingwei on 3/4/16.

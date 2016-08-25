@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.well.swipe.R;
 import com.well.swipe.view.CheckItemLayout;
-import com.well.swipe.view.SeekBarCompat;
+import com.well.swipecomm.view.SeekBarCompat;
 
 /**
  * Created by mingwei on 3/31/16.

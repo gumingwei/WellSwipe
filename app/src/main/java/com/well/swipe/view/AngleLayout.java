@@ -18,6 +18,9 @@ import com.well.swipe.ItemSwipeTools;
 import com.well.swipe.R;
 import com.well.swipe.tools.ToolsStrategy;
 import com.well.swipecomm.utils.Utils;
+import com.well.swipecomm.view.LoadingView;
+import com.well.swipecomm.view.OnScaleChangeListener;
+import com.well.swipecomm.view.PositionState;
 
 /**
  * Created by mingwei on 2/26/16.

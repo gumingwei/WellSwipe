@@ -34,7 +34,7 @@
         android:layout_width="@dimen/anglelogo_size"
         android:layout_height="@dimen/anglelogo_size" />
 
-    <com.well.swipe.view.LoadingView xmlns:loading="http://schemas.android.com/apk/res-auto"
+    <com.well.swipecomm.view.LoadingView xmlns:loading="http://schemas.android.com/apk/res-auto"
         android:id="@+id/recent_loading"
         android:layout_width="20dp"
         android:layout_height="20dp"

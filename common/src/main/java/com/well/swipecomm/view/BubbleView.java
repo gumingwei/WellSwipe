@@ -1,16 +1,15 @@
-package com.well.swipe.view;
+package com.well.swipecomm.view;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.PixelFormat;
 import android.util.AttributeSet;
-
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.well.swipe.R;
+import com.well.swipecomm.R;
 import com.well.swipecomm.utils.SettingHelper;
 import com.well.swipecomm.utils.Utils;
 
