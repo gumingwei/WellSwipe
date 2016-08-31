@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
 import com.well.swipe.view.GridLayoutItemView;
+import com.well.swipecomm.preference.SwipeDialog;
 
 import java.util.ArrayList;
 import java.util.Iterator;

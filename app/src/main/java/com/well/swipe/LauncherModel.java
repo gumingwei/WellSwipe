@@ -171,18 +171,18 @@ public class LauncherModel extends BroadcastReceiver {
      */
     public ArrayList<ItemApplication> loadFavorite(Context context) {
         ContentResolver resolver = context.getContentResolver();
-        Cursor cursor = resolver.query(SwipeSettings.Favorites.CONTENT_URI, null, SwipeSettings.
-                BaseColumns.ITEM_TYPE + "=?", new String[]{String.valueOf(SwipeSettings.
+        Cursor cursor = resolver.query(SwipefreeSettings.Favorites.CONTENT_URI, null, SwipefreeSettings.
+                BaseColumns.ITEM_TYPE + "=?", new String[]{String.valueOf(SwipefreeSettings.
                 BaseColumns.ITEM_TYPE_APPLICATION)}, null);
         ArrayList<ItemApplication> favorites = new ArrayList<>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            int type = cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TYPE));
-            String title = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TITLE));
-            String intentStr = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_INTENT));
-            int iconType = cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ICON_TYPE));
-            int packagenameIndex = cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ICON_PACKAGENAME);
-            int resourcenameIndex = cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ICON_RESOURCE);
-            int iconIndex = cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ICON_BITMAP);
+            int type = cursor.getInt(cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ITEM_TYPE));
+            String title = cursor.getString(cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ITEM_TITLE));
+            String intentStr = cursor.getString(cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ITEM_INTENT));
+            int iconType = cursor.getInt(cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ICON_TYPE));
+            int packagenameIndex = cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ICON_PACKAGENAME);
+            int resourcenameIndex = cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ICON_RESOURCE);
+            int iconIndex = cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ICON_BITMAP);
             Intent intent = null;
             Bitmap icon = null;
             try {
@@ -195,7 +195,7 @@ public class LauncherModel extends BroadcastReceiver {
             application.mTitle = title;
             application.mIntent = intent;
             switch (iconType) {
-                case SwipeSettings.BaseColumns.ICON_TYPE_RESOURCE:
+                case SwipefreeSettings.BaseColumns.ICON_TYPE_RESOURCE:
                     String packagename = cursor.getString(packagenameIndex);
                     String resourcename = cursor.getString(resourcenameIndex);
                     PackageManager packageManager = context.getPackageManager();
@@ -217,7 +217,7 @@ public class LauncherModel extends BroadcastReceiver {
                         application.isFallbackIcon = true;
                     }
                     break;
-                case SwipeSettings.BaseColumns.ICON_TYPE_BITMAP:
+                case SwipefreeSettings.BaseColumns.ICON_TYPE_BITMAP:
                     icon = getIconFromCursor(cursor, iconIndex, context);
                     if (icon == null) {
                         icon = getFallbackIcon();
@@ -243,16 +243,16 @@ public class LauncherModel extends BroadcastReceiver {
 
     public ArrayList<ItemSwipeTools> loadTools(Context context) {
         ContentResolver resolver = context.getContentResolver();
-        Cursor cursor = resolver.query(SwipeSettings.Favorites.CONTENT_URI, null, SwipeSettings.
-                BaseColumns.ITEM_TYPE + "=?", new String[]{String.valueOf(SwipeSettings.
+        Cursor cursor = resolver.query(SwipefreeSettings.Favorites.CONTENT_URI, null, SwipefreeSettings.
+                BaseColumns.ITEM_TYPE + "=?", new String[]{String.valueOf(SwipefreeSettings.
                 BaseColumns.ITEM_TYPE_SWITCH)}, null);
         ArrayList<ItemSwipeTools> switches = new ArrayList<>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             ItemSwipeTools application = new ItemSwipeTools();
-            application.mType = cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TYPE));
-            application.mTitle = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TITLE));
-            application.mAction = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_ACTION));
-            application.mTitle = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TITLE));
+            application.mType = cursor.getInt(cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ITEM_TYPE));
+            application.mTitle = cursor.getString(cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ITEM_TITLE));
+            application.mAction = cursor.getString(cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ITEM_ACTION));
+            application.mTitle = cursor.getString(cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ITEM_TITLE));
             //#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10200000;component=com.android.camera/.Camera;end
             //index.add(cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.Favorites.ITEM_INDEX)));
             switches.add(application);
@@ -263,10 +263,10 @@ public class LauncherModel extends BroadcastReceiver {
 
     public ArrayList<ItemApplication> loadWhitelist(Context context) {
         ContentResolver resolver = context.getContentResolver();
-        Cursor cursor = resolver.query(SwipeSettings.Favorites.CONTENT_URI_WHITELIST, null, null, null, null);
+        Cursor cursor = resolver.query(SwipefreeSettings.Favorites.CONTENT_URI_WHITELIST, null, null, null, null);
         ArrayList<ItemApplication> whitelist = new ArrayList<>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            String intentStr = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_INTENT));
+            String intentStr = cursor.getString(cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ITEM_INTENT));
             Intent intent = null;
             try {
                 intent = Intent.parseUri(intentStr, 0);
@@ -362,20 +362,20 @@ public class LauncherModel extends BroadcastReceiver {
          */
         public void bindFavorites() {
             ContentResolver resolver = mContext.getContentResolver();
-            Cursor cursor = resolver.query(SwipeSettings.Favorites.CONTENT_URI, null, SwipeSettings.
-                    BaseColumns.ITEM_TYPE + "=?", new String[]{String.valueOf(SwipeSettings.
+            Cursor cursor = resolver.query(SwipefreeSettings.Favorites.CONTENT_URI, null, SwipefreeSettings.
+                    BaseColumns.ITEM_TYPE + "=?", new String[]{String.valueOf(SwipefreeSettings.
                     BaseColumns.ITEM_TYPE_APPLICATION)}, null);
             ArrayList<ItemApplication> favorites = new ArrayList<>();
             Intent intent = null;
             Bitmap icon = null;
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                int type = cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TYPE));
-                String title = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TITLE));
-                String intentStr = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_INTENT));
-                int iconType = cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ICON_TYPE));
-                int packagenameIndex = cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ICON_PACKAGENAME);
-                int resourcenameIndex = cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ICON_RESOURCE);
-                int iconIndex = cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ICON_BITMAP);
+                int type = cursor.getInt(cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ITEM_TYPE));
+                String title = cursor.getString(cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ITEM_TITLE));
+                String intentStr = cursor.getString(cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ITEM_INTENT));
+                int iconType = cursor.getInt(cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ICON_TYPE));
+                int packagenameIndex = cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ICON_PACKAGENAME);
+                int resourcenameIndex = cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ICON_RESOURCE);
+                int iconIndex = cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ICON_BITMAP);
 
                 try {
                     intent = Intent.parseUri(intentStr, 0);
@@ -387,7 +387,7 @@ public class LauncherModel extends BroadcastReceiver {
                 application.mTitle = title;
                 application.mIntent = intent;
                 switch (iconType) {
-                    case SwipeSettings.BaseColumns.ICON_TYPE_RESOURCE:
+                    case SwipefreeSettings.BaseColumns.ICON_TYPE_RESOURCE:
                         String packagename = cursor.getString(packagenameIndex);
                         String resourcename = cursor.getString(resourcenameIndex);
                         PackageManager packageManager = mContext.getPackageManager();
@@ -409,7 +409,7 @@ public class LauncherModel extends BroadcastReceiver {
                             application.isFallbackIcon = true;
                         }
                         break;
-                    case SwipeSettings.BaseColumns.ICON_TYPE_BITMAP:
+                    case SwipefreeSettings.BaseColumns.ICON_TYPE_BITMAP:
                         icon = getIconFromCursor(cursor, iconIndex, mContext);
                         if (icon == null) {
                             icon = getFallbackIcon();
@@ -437,16 +437,16 @@ public class LauncherModel extends BroadcastReceiver {
          */
         private void bindSwitch() {
             ContentResolver resolver = mContext.getContentResolver();
-            Cursor cursor = resolver.query(SwipeSettings.Favorites.CONTENT_URI, null, SwipeSettings.
-                    BaseColumns.ITEM_TYPE + "=?", new String[]{String.valueOf(SwipeSettings.
+            Cursor cursor = resolver.query(SwipefreeSettings.Favorites.CONTENT_URI, null, SwipefreeSettings.
+                    BaseColumns.ITEM_TYPE + "=?", new String[]{String.valueOf(SwipefreeSettings.
                     BaseColumns.ITEM_TYPE_SWITCH)}, null);
             ArrayList<ItemSwipeTools> switches = new ArrayList<>();
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 ItemSwipeTools application = new ItemSwipeTools();
-                application.mType = cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TYPE));
-                application.mTitle = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TITLE));
-                application.mAction = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_ACTION));
-                application.mTitle = cursor.getString(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_TITLE));
+                application.mType = cursor.getInt(cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ITEM_TYPE));
+                application.mTitle = cursor.getString(cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ITEM_TITLE));
+                application.mAction = cursor.getString(cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ITEM_ACTION));
+                application.mTitle = cursor.getString(cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ITEM_TITLE));
                 //#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10200000;component=com.android.camera/.Camera;end
                 //index.add(cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.Favorites.ITEM_INDEX)));
                 switches.add(application);

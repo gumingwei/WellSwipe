@@ -44,7 +44,7 @@ import java.util.ArrayList;
  * CSDN:     http://blog.csdn.net/u013045971
  * QQ&WX：   721881283
  */
-public class SwipefreeProvider extends ContentProvider {
+public class SwipefreeProvider extends ContentProvider{
 
     private DatabaseHelper mDatabaseHelper;
 
@@ -340,18 +340,18 @@ public class SwipefreeProvider extends ContentProvider {
                     intent.setComponent(cn);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
                     int item_index = array.getInt(R.styleable.Favorite_item_index, 0);
-                    values.put(SwipeSettings.BaseColumns.ITEM_TITLE, item_title);
-                    values.put(SwipeSettings.BaseColumns.ITEM_INTENT, intent.toUri(0));
-                    values.put(SwipeSettings.BaseColumns.ITEM_INDEX, item_index);
-                    values.put(SwipeSettings.BaseColumns.ITEM_TYPE, SwipeSettings.BaseColumns.ITEM_TYPE_APPLICATION);
-                    values.put(SwipeSettings.BaseColumns.ICON_TYPE, SwipeSettings.BaseColumns.ICON_TYPE_BITMAP);
+                    values.put(SwipefreeSettings.BaseColumns.ITEM_TITLE, item_title);
+                    values.put(SwipefreeSettings.BaseColumns.ITEM_INTENT, intent.toUri(0));
+                    values.put(SwipefreeSettings.BaseColumns.ITEM_INDEX, item_index);
+                    values.put(SwipefreeSettings.BaseColumns.ITEM_TYPE, SwipefreeSettings.BaseColumns.ITEM_TYPE_APPLICATION);
+                    values.put(SwipefreeSettings.BaseColumns.ICON_TYPE, SwipefreeSettings.BaseColumns.ICON_TYPE_BITMAP);
                     //把bitmap存入数据库
-                    values.put(SwipeSettings.BaseColumns.ICON_BITMAP, flattenBitmap(bd.getBitmap()));
+                    values.put(SwipefreeSettings.BaseColumns.ICON_BITMAP, flattenBitmap(bd.getBitmap()));
 
                     /**
                      * 如果表里已经包含了存在的index，就不在插入了
                      */
-                    if (!hasIndex(database, item_index, SwipeSettings.BaseColumns.ITEM_TYPE_APPLICATION)) {
+                    if (!hasIndex(database, item_index, SwipefreeSettings.BaseColumns.ITEM_TYPE_APPLICATION)) {
                         checkInsert(database, TAG_FAORITES, values);
                     }
                     //database.close();
@@ -372,12 +372,12 @@ public class SwipefreeProvider extends ContentProvider {
             }
             String item_title = array.getString(R.styleable.Favorite_item_title);
             int item_index = array.getInt(R.styleable.Favorite_item_index, 0);
-            values.put(SwipeSettings.BaseColumns.ITEM_TITLE, item_title);
-            values.put(SwipeSettings.BaseColumns.ITEM_INDEX, item_index);
-            values.put(SwipeSettings.BaseColumns.ITEM_TYPE, SwipeSettings.BaseColumns.ITEM_TYPE_SWITCH);
-            values.put(SwipeSettings.BaseColumns.ITEM_ACTION, item_action);
+            values.put(SwipefreeSettings.BaseColumns.ITEM_TITLE, item_title);
+            values.put(SwipefreeSettings.BaseColumns.ITEM_INDEX, item_index);
+            values.put(SwipefreeSettings.BaseColumns.ITEM_TYPE, SwipefreeSettings.BaseColumns.ITEM_TYPE_SWITCH);
+            values.put(SwipefreeSettings.BaseColumns.ITEM_ACTION, item_action);
 
-            if (!hasIndex(database, item_index, SwipeSettings.BaseColumns.ITEM_TYPE_SWITCH)) {
+            if (!hasIndex(database, item_index, SwipefreeSettings.BaseColumns.ITEM_TYPE_SWITCH)) {
                 checkInsert(database, TAG_FAORITES, values);
             }
             //database.close();
@@ -399,7 +399,7 @@ public class SwipefreeProvider extends ContentProvider {
             if (cursor.getCount() < 9) {
                 if (cursor.getCount() > 0) {
                     for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                        index.add(cursor.getInt(cursor.getColumnIndexOrThrow(SwipeSettings.BaseColumns.ITEM_INDEX)));
+                        index.add(cursor.getInt(cursor.getColumnIndexOrThrow(SwipefreeSettings.BaseColumns.ITEM_INDEX)));
                     }
                 } else {
                     return false;

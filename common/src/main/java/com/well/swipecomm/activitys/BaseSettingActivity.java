@@ -1,4 +1,4 @@
-package com.well.swipe.activitys;
+package com.well.swipecomm.activitys;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,7 +8,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.well.swipe.R;
+import com.well.swipecomm.R;
 
 
 /**

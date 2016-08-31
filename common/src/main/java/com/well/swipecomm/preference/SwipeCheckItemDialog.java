@@ -1,4 +1,4 @@
-package com.well.swipe.preference;
+package com.well.swipecomm.preference;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,8 +6,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.well.swipe.R;
-import com.well.swipe.view.CheckItemLayout;
+import com.well.swipecomm.R;
+import com.well.swipecomm.preference.SwipeDialog;
+import com.well.swipecomm.view.CheckItemLayout;
 
 /**
  * Created by mingwei on 3/31/16.

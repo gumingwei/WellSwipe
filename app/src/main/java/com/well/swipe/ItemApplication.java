@@ -8,10 +8,11 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+
+import com.well.swipecomm.ItemInfo;
 
 import java.util.HashMap;
 
@@ -54,7 +55,7 @@ public class ItemApplication extends ItemInfo {
     static final int UPDATED_SYSTEM_APP_FLAG = 2;
 
     public ItemApplication() {
-        mType = SwipeSettings.BaseColumns.ITEM_TYPE_APPLICATION;
+        mType = SwipefreeSettings.BaseColumns.ITEM_TYPE_APPLICATION;
     }
 
     public ItemApplication(ItemApplication appinfo) {
@@ -93,25 +94,25 @@ public class ItemApplication extends ItemInfo {
         mIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         mIntent.setComponent(clazzName);
         mIntent.setFlags(flag);
-        mType = SwipeSettings.BaseColumns.ITEM_TYPE_APPLICATION;
+        mType = SwipefreeSettings.BaseColumns.ITEM_TYPE_APPLICATION;
     }
 
     public int delete(Context context) {
         ContentResolver resolver = context.getContentResolver();
-        return resolver.delete(SwipeSettings.Favorites.CONTENT_URI, SwipeSettings.BaseColumns.ITEM_INTENT + "=?",
+        return resolver.delete(SwipefreeSettings.Favorites.CONTENT_URI, SwipefreeSettings.BaseColumns.ITEM_INTENT + "=?",
                 new String[]{mIntent.toUri(0)});
     }
 
     public int deleteAll(Context context) {
         ContentResolver resolver = context.getContentResolver();
-        return resolver.delete(SwipeSettings.Favorites.CONTENT_URI, SwipeSettings.BaseColumns.ITEM_TYPE + "=?",
-                new String[]{String.valueOf(SwipeSettings.BaseColumns.ITEM_TYPE_APPLICATION)});
+        return resolver.delete(SwipefreeSettings.Favorites.CONTENT_URI, SwipefreeSettings.BaseColumns.ITEM_TYPE + "=?",
+                new String[]{String.valueOf(SwipefreeSettings.BaseColumns.ITEM_TYPE_APPLICATION)});
     }
 
 
     public void insert(Context context, int index, Intent intent, PackageManager packageManager) {
         ContentResolver resolver = context.getContentResolver();
-        resolver.insert(SwipeSettings.Favorites.CONTENT_URI, assembleContentValues(context, index, intent, packageManager));
+        resolver.insert(SwipefreeSettings.Favorites.CONTENT_URI, assembleContentValues(context, index, intent, packageManager));
     }
 
     /**
@@ -131,12 +132,12 @@ public class ItemApplication extends ItemInfo {
             Drawable drawable = appinfo.loadIcon(packageManager);
             BitmapDrawable bd = (BitmapDrawable) drawable;
             ContentValues values = new ContentValues();
-            values.put(SwipeSettings.BaseColumns.ITEM_TITLE, mTitle.toString());
-            values.put(SwipeSettings.BaseColumns.ITEM_INTENT, intent.toUri(0));
-            values.put(SwipeSettings.BaseColumns.ITEM_INDEX, index);
-            values.put(SwipeSettings.BaseColumns.ITEM_TYPE, SwipeSettings.BaseColumns.ITEM_TYPE_APPLICATION);
-            values.put(SwipeSettings.BaseColumns.ICON_TYPE, SwipeSettings.BaseColumns.ICON_TYPE_BITMAP);
-            values.put(SwipeSettings.BaseColumns.ICON_BITMAP, flattenBitmap(bd.getBitmap()));
+            values.put(SwipefreeSettings.BaseColumns.ITEM_TITLE, mTitle.toString());
+            values.put(SwipefreeSettings.BaseColumns.ITEM_INTENT, intent.toUri(0));
+            values.put(SwipefreeSettings.BaseColumns.ITEM_INDEX, index);
+            values.put(SwipefreeSettings.BaseColumns.ITEM_TYPE, SwipefreeSettings.BaseColumns.ITEM_TYPE_APPLICATION);
+            values.put(SwipefreeSettings.BaseColumns.ICON_TYPE, SwipefreeSettings.BaseColumns.ICON_TYPE_BITMAP);
+            values.put(SwipefreeSettings.BaseColumns.ICON_BITMAP, flattenBitmap(bd.getBitmap()));
             return values;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -146,7 +147,7 @@ public class ItemApplication extends ItemInfo {
 
     public void bulkInsert(Context context, ContentValues values[]) {
         ContentResolver resolver = context.getContentResolver();
-        resolver.bulkInsert(SwipeSettings.Favorites.CONTENT_URI, values);
+        resolver.bulkInsert(SwipefreeSettings.Favorites.CONTENT_URI, values);
     }
 
     public void insertWhitelist(Context context, Intent intent) {
@@ -154,13 +155,13 @@ public class ItemApplication extends ItemInfo {
         intent.setComponent(mIntent.getComponent());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         ContentValues values = new ContentValues();
-        values.put(SwipeSettings.BaseColumns.ITEM_INTENT, intent.toUri(0));
-        resolver.insert(SwipeSettings.Favorites.CONTENT_URI_WHITELIST, values);
+        values.put(SwipefreeSettings.BaseColumns.ITEM_INTENT, intent.toUri(0));
+        resolver.insert(SwipefreeSettings.Favorites.CONTENT_URI_WHITELIST, values);
         //SwipeProvider.DatabaseHelper helper = new SwipeProvider.DatabaseHelper(context);
     }
 
     public int deleteWhitelist(Context context) {
         ContentResolver resolver = context.getContentResolver();
-        return resolver.delete(SwipeSettings.Favorites.CONTENT_URI_WHITELIST, null, null);
+        return resolver.delete(SwipefreeSettings.Favorites.CONTENT_URI_WHITELIST, null, null);
     }
 }

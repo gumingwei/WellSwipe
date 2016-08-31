@@ -20,7 +20,7 @@
             android:textColor="@color/ksw_md_solid_checked"
             android:textSize="18sp" />
 
-        <com.well.swipe.view.SeekBarCompat xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.well.swipecomm.view.SeekBarCompat xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/materialSeekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

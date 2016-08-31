@@ -1,4 +1,4 @@
-package com.well.swipe;
+package com.well.swipecomm;
 
 import android.content.ContentValues;
 import android.content.Intent;
@@ -9,21 +9,19 @@ import java.io.IOException;
 
 /**
  * Created by mingwei on 3/16/16.
- *
- *
+ * <p/>
+ * <p/>
  * 微博：     明伟小学生(http://weibo.com/u/2382477985)
  * Github:   https://github.com/gumingwei
  * CSDN:     http://blog.csdn.net/u013045971
  * QQ&WX：   721881283
- *
- *
  */
 public class ItemInfo {
 
     /**
      * item类型
      */
-    int mType;
+    public int mType;
     /**
      * Item的名字
      */
@@ -32,20 +30,18 @@ public class ItemInfo {
     /**
      * Item的顺序索引
      */
-    int mIndex;
+    public int mIndex;
 
-
-    ItemInfo() {
-
+    public ItemInfo() {
     }
 
-    ItemInfo(ItemInfo info) {
+    public ItemInfo(ItemInfo info) {
         mType = info.mType;
         mTitle = info.mTitle;
         mIndex = info.mIndex;
     }
 
-    static String getPackageName(Intent intent) {
+    public static String getPackageName(Intent intent) {
         if (intent != null) {
             String packageName = intent.getPackage();
             if (packageName == null && intent.getComponent() != null) {
@@ -58,7 +54,7 @@ public class ItemInfo {
         return "";
     }
 
-    void onAddToDatabase(ContentValues values) {
+    public void onAddToDatabase(ContentValues values) {
         values.put(SwipeSettings.BaseColumns.ITEM_TYPE, mType);
         values.put(SwipeSettings.BaseColumns.ITEM_TITLE, mTitle.toString());
         values.put(SwipeSettings.BaseColumns.ITEM_INDEX, mIndex);
@@ -70,7 +66,7 @@ public class ItemInfo {
      * @param bitmap
      * @return
      */
-    static byte[] flattenBitmap(Bitmap bitmap) {
+    public static byte[] flattenBitmap(Bitmap bitmap) {
         int size = bitmap.getWidth() * bitmap.getHeight() * 4;
         ByteArrayOutputStream out = new ByteArrayOutputStream(size);
         try {
@@ -90,7 +86,7 @@ public class ItemInfo {
      * @param values
      * @param bitmap
      */
-    static void writeBitmap(ContentValues values, Bitmap bitmap) {
+    public static void writeBitmap(ContentValues values, Bitmap bitmap) {
         if (bitmap != null) {
             byte[] data = flattenBitmap(bitmap);
             values.put(SwipeSettings.BaseColumns.ITEM_ICON, data);

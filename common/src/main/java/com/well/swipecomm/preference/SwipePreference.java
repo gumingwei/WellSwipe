@@ -1,4 +1,4 @@
-package com.well.swipe.preference;
+package com.well.swipecomm.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;

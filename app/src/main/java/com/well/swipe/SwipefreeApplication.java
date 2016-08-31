@@ -53,7 +53,7 @@ public class SwipefreeApplication extends Application {
         registerReceiver(mModel, filter);
 
         ContentResolver resolver = getContentResolver();
-        resolver.registerContentObserver(SwipeSettings.Favorites.CONTENT_URI, true,
+        resolver.registerContentObserver(SwipefreeSettings.Favorites.CONTENT_URI, true,
                 mFavoritesObserver);
 
     }

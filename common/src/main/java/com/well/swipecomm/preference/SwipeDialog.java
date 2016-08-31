@@ -1,4 +1,4 @@
-package com.well.swipe.preference;
+package com.well.swipecomm.preference;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.well.swipe.R;
+import com.well.swipecomm.R;
 
 /**
  * Created by mingwei on 3/31/16.

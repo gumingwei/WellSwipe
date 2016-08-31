@@ -1,4 +1,4 @@
-package com.well.swipe;
+package com.well.swipecomm;
 
 import android.net.Uri;
 
@@ -46,14 +46,6 @@ public class SwipeSettings {
         public static final int ICON_TYPE_RESOURCE = 0;
 
         public static final int ICON_TYPE_BITMAP = 1;
-
-    }
-
-    public static class Favorites {
-
-        public static final Uri CONTENT_URI = Uri.parse("content://" + SwipefreeProvider.AUTHORITY + "/" + SwipefreeProvider.TABLE_FAVORITES);
-
-        public static final Uri CONTENT_URI_WHITELIST = Uri.parse("content://" + SwipefreeProvider.AUTHORITY + "/" + SwipefreeProvider.TABLE_WHITELIST);
 
     }
 }

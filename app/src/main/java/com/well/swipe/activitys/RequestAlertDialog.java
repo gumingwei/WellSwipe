@@ -7,7 +7,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.well.swipe.R;
-import com.well.swipe.preference.SwipeDialog;
+import com.well.swipecomm.preference.SwipeDialog;
 
 /**
  * Created by mingwei on 4/19/16.

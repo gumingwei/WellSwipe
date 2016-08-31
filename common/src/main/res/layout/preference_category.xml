@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.well.swipe.preference.PreferenceCategory xmlns:android="http://schemas.android.com/apk/res/android"
+<com.well.swipecomm.preference.PreferenceCategory xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/preference_height"
     android:background="@drawable/check_item_selector">
@@ -36,4 +36,4 @@
         android:checked="false"
         android:gravity="center_vertical" />
 
-</com.well.swipe.preference.PreferenceCategory>
+</com.well.swipecomm.preference.PreferenceCategory>
