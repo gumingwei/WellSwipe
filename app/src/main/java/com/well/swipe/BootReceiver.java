@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.well.swipe.service.SwipeService;
-import com.well.swipe.tools.SwipeSetting;
+import com.well.swipecomm.tools.SwipeSetting;
 import com.well.swipecomm.utils.SettingHelper;
 
 /**

@@ -1,4 +1,4 @@
-package com.well.swipe.view;
+package com.well.swipecomm.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -6,20 +6,18 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 
-import com.well.swipe.R;
-import com.well.swipecomm.view.PositionState;
-import com.well.swipecomm.view.PositionStateView;
+import com.well.swipecomm.R;
 
 /**
  * Created by mingwei on 3/29/16.
- *
- *
+ * <p/>
+ * <p/>
  * 微博：     明伟小学生(http://weibo.com/u/2382477985)
  * Github:   https://github.com/gumingwei
  * CSDN:     http://blog.csdn.net/u013045971
  * QQ&WX：   721881283
- *
- *
+ * <p/>
+ * <p/>
  * 默认蓝色的指示器
  */
 public class AngleIndicatorViewTheme extends PositionStateView {

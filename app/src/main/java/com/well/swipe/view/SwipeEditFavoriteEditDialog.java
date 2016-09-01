@@ -20,6 +20,7 @@ import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
 import com.well.swipecomm.utils.Pinyin;
 import com.well.swipecomm.utils.Utils;
+import com.well.swipecomm.view.GridLayoutItemView;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package com.well.swipe.tools;
+package com.well.swipecomm.tools;
 
 /**
  * Created by mingwei on 3/31/16.

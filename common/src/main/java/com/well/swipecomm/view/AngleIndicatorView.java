@@ -1,4 +1,4 @@
-package com.well.swipe.view;
+package com.well.swipecomm.view;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -11,7 +11,7 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.animation.DecelerateInterpolator;
 
-import com.well.swipe.R;
+import com.well.swipecomm.R;
 import com.well.swipecomm.view.PositionState;
 import com.well.swipecomm.view.PositionStateView;
 

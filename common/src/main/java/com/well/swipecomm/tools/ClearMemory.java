@@ -1,4 +1,4 @@
-package com.well.swipe.tools;
+package com.well.swipecomm.tools;
 
 import android.app.ActivityManager;
 import android.content.ComponentName;

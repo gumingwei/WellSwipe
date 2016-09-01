@@ -12,6 +12,7 @@ import com.well.swipe.ItemSwipeTools;
 import com.well.swipe.R;
 import com.well.swipe.tools.ToolsStrategy;
 import com.well.swipecomm.utils.Utils;
+import com.well.swipecomm.view.GridLayoutItemView;
 
 import java.util.ArrayList;
 

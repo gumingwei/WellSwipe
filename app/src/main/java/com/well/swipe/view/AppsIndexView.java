@@ -10,19 +10,18 @@ import android.widget.TextView;
 
 import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
+import com.well.swipecomm.view.GridLayoutItemView;
 
 import java.util.ArrayList;
 
 /**
  * Created by mingwei on 3/21/16.
- *
- *
+ * <p/>
+ * <p/>
  * 微博：     明伟小学生(http://weibo.com/u/2382477985)
  * Github:   https://github.com/gumingwei
  * CSDN:     http://blog.csdn.net/u013045971
  * QQ&WX：   721881283
- *
- *
  */
 public class AppsIndexView extends LinearLayout {
 

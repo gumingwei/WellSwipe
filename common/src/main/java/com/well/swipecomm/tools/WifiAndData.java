@@ -1,4 +1,4 @@
-package com.well.swipe.tools;
+package com.well.swipecomm.tools;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
@@ -8,7 +8,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
-import com.well.swipe.R;
+import com.well.swipecomm.R;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

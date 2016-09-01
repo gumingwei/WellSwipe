@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.well.swipe.view.AngleItemAddTo xmlns:android="http://schemas.android.com/apk/res/android"
+<com.well.swipecomm.view.AngleItemAddTo xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -20,4 +20,4 @@
         android:singleLine="true"
         android:visibility="visible" />
 
-</com.well.swipe.view.AngleItemAddTo>
+</com.well.swipecomm.view.AngleItemAddTo>

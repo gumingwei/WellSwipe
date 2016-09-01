@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.well.swipe.view.AngleItemStartUp xmlns:android="http://schemas.android.com/apk/res/android"
+<com.well.swipecomm.view.AngleItemStartUp xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -30,4 +30,4 @@
         android:src="@drawable/icon_edit_delete"
         android:visibility="gone" />
 
-</com.well.swipe.view.AngleItemStartUp>
+</com.well.swipecomm.view.AngleItemStartUp>

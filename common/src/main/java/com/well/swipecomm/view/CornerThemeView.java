@@ -1,11 +1,11 @@
-package com.well.swipe.view;
+package com.well.swipecomm.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 
-import com.well.swipe.R;
+import com.well.swipecomm.R;
 import com.well.swipecomm.view.PositionStateView;
 
 /**

@@ -1,10 +1,11 @@
-package com.well.swipe.tools;
+package com.well.swipecomm.tools;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
 
-import com.well.swipe.R;
+import com.well.swipecomm.R;
+import com.well.swipecomm.tools.SwipeTools;
 
 /**
  * Created by mingwei on 3/27/16.
@@ -33,7 +34,7 @@ public class SwipeAudio extends SwipeTools {
 
     public static SwipeAudio getInstance(Context context) {
         if (mInstance == null) {
-            synchronized (ToolsStrategy.class) {
+            synchronized (SwipeAudio.class) {
                 if (mInstance == null) {
                     mInstance = new SwipeAudio(context);
                 }

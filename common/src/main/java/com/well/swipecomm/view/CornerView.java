@@ -1,4 +1,4 @@
-package com.well.swipe.view;
+package com.well.swipecomm.view;
 
 import android.content.Context;
 
@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.well.swipe.R;
+import com.well.swipecomm.R;
 import com.well.swipecomm.view.PositionState;
 
 /**

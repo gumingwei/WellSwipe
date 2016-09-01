@@ -12,9 +12,18 @@ import android.provider.Settings;
 import com.well.swipe.ItemSwipeTools;
 import com.well.swipe.R;
 import com.well.swipe.activitys.SwipeSettingActivity;
+import com.well.swipecomm.tools.ClearMemory;
+import com.well.swipecomm.tools.FlashLight;
+import com.well.swipecomm.tools.FlightMode;
+import com.well.swipecomm.tools.LockTime;
+import com.well.swipecomm.tools.SwipeAudio;
+import com.well.swipecomm.tools.SwipeBluetooth;
+import com.well.swipecomm.tools.SwipeBrightness;
+import com.well.swipecomm.tools.SwipeRotation;
+import com.well.swipecomm.tools.WifiAndData;
 import com.well.swipecomm.utils.Utils;
-import com.well.swipe.view.AngleItemCommon;
-import com.well.swipe.view.AngleItemStartUp;
+import com.well.swipecomm.view.AngleItemCommon;
+import com.well.swipecomm.view.AngleItemStartUp;
 import com.well.swipe.view.SwipeLayout;
 
 

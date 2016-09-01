@@ -1,11 +1,11 @@
-package com.well.swipe.tools;
+package com.well.swipecomm.tools;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.provider.Settings;
 
-import com.well.swipe.R;
+import com.well.swipecomm.R;
 
 /**
  * Created by mingwei on 3/27/16.

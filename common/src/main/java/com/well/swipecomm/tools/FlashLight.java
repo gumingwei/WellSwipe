@@ -1,4 +1,4 @@
-package com.well.swipe.tools;
+package com.well.swipecomm.tools;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -8,7 +8,8 @@ import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.widget.Toast;
 
-import com.well.swipe.R;
+import com.well.swipecomm.R;
+import com.well.swipecomm.tools.SwipeTools;
 
 /**
  * Created by mingwei on 3/27/16.

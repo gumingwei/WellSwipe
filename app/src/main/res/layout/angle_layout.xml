@@ -4,17 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.well.swipe.view.AngleViewTheme
+    <com.well.swipecomm.view.AngleViewTheme
         android:id="@id/angleview_theme"
         android:layout_width="@dimen/angleview_size"
         android:layout_height="@dimen/angleview_size" />
 
-    <com.well.swipe.view.AngleIndicatorViewTheme
+    <com.well.swipecomm.view.AngleIndicatorViewTheme
         android:id="@id/indicator_theme"
         android:layout_width="@dimen/angleindicator_theme_size"
         android:layout_height="@dimen/angleindicator_theme_size" />
 
-    <com.well.swipe.view.AngleIndicatorView
+    <com.well.swipecomm.view.AngleIndicatorView
         android:id="@id/indicator"
         android:layout_width="@dimen/angleindicator_size"
         android:layout_height="@dimen/angleindicator_size" />
@@ -24,12 +24,12 @@
         android:layout_width="@dimen/angleview_size"
         android:layout_height="@dimen/angleview_size" />
 
-    <com.well.swipe.view.CornerThemeView
+    <com.well.swipecomm.view.CornerThemeView
         android:id="@+id/corner_theme"
         android:layout_width="@dimen/anglelogo_size"
         android:layout_height="@dimen/anglelogo_size" />
 
-    <com.well.swipe.view.CornerView
+    <com.well.swipecomm.view.CornerView
         android:id="@+id/corner_view"
         android:layout_width="@dimen/anglelogo_size"
         android:layout_height="@dimen/anglelogo_size" />

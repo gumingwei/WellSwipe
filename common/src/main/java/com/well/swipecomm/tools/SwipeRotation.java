@@ -1,4 +1,4 @@
-package com.well.swipe.tools;
+package com.well.swipecomm.tools;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -6,7 +6,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.provider.Settings;
 
-import com.well.swipe.R;
+import com.well.swipecomm.R;
 
 /**
  * Created by mingwei on 3/27/16.

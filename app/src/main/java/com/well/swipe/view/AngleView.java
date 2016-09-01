@@ -25,6 +25,9 @@ import com.well.swipe.ItemApplication;
 import com.well.swipe.R;
 import com.well.swipe.ItemSwipeTools;
 import com.well.swipe.tools.ToolsStrategy;
+import com.well.swipecomm.view.AngleItemAddTo;
+import com.well.swipecomm.view.AngleItemCommon;
+import com.well.swipecomm.view.AngleItemStartUp;
 import com.well.swipecomm.view.PositionStateViewGroup;
 
 import java.util.ArrayList;

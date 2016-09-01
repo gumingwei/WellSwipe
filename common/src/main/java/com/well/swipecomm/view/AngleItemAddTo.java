@@ -1,7 +1,9 @@
-package com.well.swipe.view;
+package com.well.swipecomm.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+
+import com.well.swipecomm.view.AngleItemCommon;
 
 /**
  * Created by mingwei on 3/19/16.

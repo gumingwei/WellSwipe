@@ -17,7 +17,7 @@ import com.well.swipe.R;
 import com.well.swipecomm.preference.*;
 import com.well.swipe.preference.SwipeWhitelistDialog;
 import com.well.swipe.service.SwipeService;
-import com.well.swipe.tools.SwipeSetting;
+import com.well.swipecomm.tools.SwipeSetting;
 import com.well.swipecomm.activitys.BaseSettingActivity;
 import com.well.swipecomm.utils.SettingHelper;
 import com.well.swipecomm.view.CheckItemLayout;

@@ -1,4 +1,4 @@
-package com.well.swipe.view;
+package com.well.swipecomm.view;
 
 import android.app.ActivityManager;
 import android.content.Context;
@@ -12,7 +12,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.well.swipe.R;
+import com.well.swipecomm.R;
+import com.well.swipecomm.view.AngleItemCommon;
 
 /**
  * Created by mingwei on 3/13/16.

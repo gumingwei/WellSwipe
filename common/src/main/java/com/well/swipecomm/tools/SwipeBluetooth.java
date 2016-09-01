@@ -1,10 +1,11 @@
-package com.well.swipe.tools;
+package com.well.swipecomm.tools;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 
-import com.well.swipe.R;
+import com.well.swipecomm.R;
+import com.well.swipecomm.tools.SwipeTools;
 
 /**
  * Created by mingwei on 3/27/16.

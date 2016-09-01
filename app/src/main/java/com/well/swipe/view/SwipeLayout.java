@@ -13,7 +13,6 @@ import android.widget.RelativeLayout;
 
 import com.well.swipe.R;
 import com.well.swipecomm.utils.SwipeWindowManager;
-import com.well.swipecomm.view.SwipeToast;
 
 
 /**
